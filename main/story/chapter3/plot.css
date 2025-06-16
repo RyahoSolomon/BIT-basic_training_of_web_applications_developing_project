@@ -1,0 +1,186 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    height: 100vh; 
+    background-image: none;
+}
+.centered-text {
+    font-family: "ZCOOL KuaiLe", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+	 text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, -1px 1px 2px #000, 1px -1px 2px #000;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3vw; /* 使用vw单位 */
+    color: white;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 1s ease-out; /* 1s 渐隐效果 */
+}
+.image-container {
+   position: absolute;
+    height: 30vh;
+    width: 80vw;
+    left: 10vw;
+    bottom: 1vh;
+    cursor: pointer;
+}
+
+.topLeftText {
+    position: absolute; /* 相对于 .image-container 定位 */
+    top: 0%; /* 调整顶部间距，使文本段落第一行处于同一高度 */
+    left: 3%; /* 左对齐并调整左侧间距 */
+    transform: translate(0, 0); /* 移除居中对齐的 transform */
+    font-family: 隶书!important;
+    font-weight: 400;
+    font-size: 2.5vw;
+    text-align: left; 
+	padding-left: 0;/* 设置文本左对齐 */
+    color: black;
+	text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); 
+    z-index: 20; /* 确保文字在图片之上 */
+    width: 90%; /* 设置宽度以控制文本行长度 */
+    line-height: 1.5; /* 设置行高以保证文本阅读性 */
+	opacity: 0; /* 初始状态隐藏 */
+    transition: opacity 1s ease-in-out; /* 添加淡入效果 */
+}
+
+.text {
+    position: absolute;
+    top: 30%;
+    left: 3%;
+    width: 90%; /* 确保在容器内 */
+    font-family: 华文新魏 !important;
+    font-weight: 400;
+    text-align: left; 
+    color: black;
+    z-index: 20; 
+    line-height: 1.5; 
+    font-size: 2vw; 
+    padding-left: 0; /* 统一左边距 */
+    margin-left: 0; /* 确保所有文本左对齐 */
+    opacity: 0; 
+    transition: opacity 1s ease-in-out;
+}
+
+#slideImage {
+    position: absolute;
+    bottom: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: bottom 1s ease-in-out;
+    pointer-events: auto;
+    height: 100%; /* 确保图片尺寸自动适应 */
+    width: 100%;  /* 保证图片宽度为容器的100% */
+}
+.button-container {
+    display: none; /* 初始隐藏 */
+    flex-direction: column; /* 垂直排列 */
+    align-items: center; /* 居中对齐 */
+    position: absolute;
+    top: 30%; /* 调整为页面较低位置，避免与 image-container 重叠 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    gap: 20px; /* 调整按钮之间的间距 */
+    z-index: 50; /* 确保按钮在其他元素之上 */
+}
+
+.button {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.button-text {
+    position: absolute;
+    top: 10px; /* 根据需要调整文字相对于按钮图片的位置 */
+    font-family: 楷体 !important;
+    font-weight: 400;
+    text-align: left; 
+    color: black;
+    font-size: 1.7vw;
+    z-index: 60;
+}
+.button:hover .button-text {
+    color: blue;
+    text-decoration: underline;
+}
+.button img {
+    width: 850px;
+    height:72px;
+    object-fit: cover;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.button img:hover {
+    transform: scale(1.05);
+}
+.text button {
+    position: absolute;
+    top: 30%;
+    left: 5%;
+    width: 90%; /* 确保在容器内 */
+    font-family: 华文新魏 !important;
+    font-weight: 400;
+    text-align: left; 
+    color: black;
+    z-index: 20; 
+    line-height: 1.5; 
+    font-size: 2vw; 
+    padding-left: 0; /* 统一左边距 */
+    margin-left: 0; /* 确保所有文本左对齐 */ /* 初始字体颜色 */
+    background-color: transparent; /* 透明背景 */
+    border: none; /* 无边框 */
+    cursor: pointer; /* 鼠标悬停时显示手型光标 */
+    text-decoration: none; /* 无下划线 */
+    padding: 0; /* 去除默认按钮的内边距 */
+}
+
+/* 鼠标悬停时改变字体颜色并添加下划线 */
+.text button:hover {
+    color: blue; /* 悬停时字体变蓝 */
+    text-decoration: underline; /* 添加下划线 */
+}
+
+.button-group {
+	position: absolute;
+	right: 2vw;
+	top: 2vh;
+	z-index: 4;
+}
+
+.button-group div {
+	position: relative;
+	height: 7vh;
+	width: 7vh;
+}
+.button-group div:hover {
+	transform: translateX(2px) translateY(2px);
+	cursor: pointer;
+}
+.button-group img {
+	height: 100%;
+	width: 100%;
+}
+
+.button-save {
+    cursor: pointer;
+	top: 8vh;
+}
+.button-return {
+    cursor: pointer;
+	top: 2vh;
+}
+.button-music {
+    cursor: pointer;
+	top: 5vh;
+}

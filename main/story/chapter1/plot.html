@@ -1,0 +1,97 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-07 09:58:17
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:32:16
+ * @FilePath: \源神1.0.5.1\developing\main\story\chapter1\plot.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第一章</title>
+<link rel="stylesheet" type="text/css" href="plot.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/007_outside_altar.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/003_forest.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+        <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+		<div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+    </div>
+    <div id="text1" class="centered-text">第二天下午 龙鳞森林深处</div>
+
+    <div class="image-container">
+         <div class="topLeftText">
+            （左上角文本内容）
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            [叶岱]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >(我的小队一共三名成员,我是从禁卫军中选拔出来的先锋战士)</div>
+         <div class="text" >（父母都是森民的鸢阑,继承了森民的特质,弓术超凡）</div>
+         <div class="text" >(来自昆仑,十分沉默的叶岱,修行过昆仑法术)</div>
+		<div class="text" >(到如今,我们已经合作了数年了,给皇室解决了不少麻烦,我们都是互相可以交付后背的战友...)</div>
+		<div class="text" >看地图的话前面不远处就是青龙祭坛了耶!说起来一路上居然没遇到什么大麻烦呢,不过是些零散的怪物.</div>
+		<div class="text" >哈,你父亲就是森林入口那个龙须镇的吧,你居然还不知道路。</div>
+		<div class="text" >什么嘛,毕竟我们也很少进入森林深处啦.</div>
+		<div class="text" >据说最早刚修建祭坛的时候,祖先们还经常去森林里面朝拜,但毕竟离开结界,多少会遇到一些危险,后来就很少有人去了,现在祭坛想必很破败了</div>
+		<div class="text" >说起来真是讽刺啊,我们总把四圣兽在上挂在嘴边,可是我们却连基本的供奉也做不到.</div>
+		<div class="text" >毕竟有危险呀,结界只能维持在四大祭坛围起来的范围里生效..</div>
+		<div class="text" >说起来这个,在四圣兽被创造出来前,外围的村镇还要面临这些怪物的无穷骚扰啊,我们有这样安定的环境还真是好啊...</div>
+		<div class="text" >是呀!四圣兽在上!</div>
+		<div class="text" >...</div>
+		<div class="text">
+    <a>
+        <button id="button1" onclick="go()" >【到祭坛了!居然有这么多怪物!恐怕是被里面的灵力吸引的吧!准备战斗!】</button>
+    </a>
+	</div>
+	
+		<script src = "plot.js"></script>
+		<script src="../../js/music_player.js"></script>
+		<script>
+
+			function go(){
+				window.location.href = "../war_chess/war_chess.html";
+			}
+			var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../war_chess/war_chess.html";
+        });
+
+		initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+
+		</script>
+</body>
+</html>

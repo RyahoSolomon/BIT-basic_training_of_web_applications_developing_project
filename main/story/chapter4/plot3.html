@@ -1,0 +1,84 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-06 16:25:42
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:37:38
+ * @FilePath: \源神(2)\源神\main\story\chapter4\plot3.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第四章</title>
+<link rel="stylesheet" type="text/css" href="plot1.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/016_penglai_west_dock.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/009_after_penglai.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+        <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+        <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+    </div>
+    <div id="text1" class="centered-text">片刻后 北海 蓬莱 西码头</div>
+    <div class="image-container">
+         <div class="topLeftText">
+             (左上角内容)
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            [叶岱]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image" >
+        <!-- 添加左上角文本 -->
+        <div class="text" >那些黑衣人...是神族</div>
+		<div class="text" >你说什么?神族?!为什么神族要袭击蓬莱?</div>
+		<div class="text" >恐怕我们永远也不会知道了...圣山就在眼前,我们做好最后的准备吧,希望能够找回四圣兽</div>
+		<div class="text" >恐怕是因为岛主梓决曾经反抗过神族长老,如今被长老得知,神族长老才派人来暗杀梓决的...</div>
+		<div class="text" >毕竟从行为上来看,他们几乎是直奔梓决而去...</div>
+		<div class="text" >那些人都凶悍异常,恐怕在神族也是他们长老的亲信一脉</div>
+		<div class="text" >神族长老吗...那他不会找我们麻烦吧...</div>
+		<div class="text" >我想应该不会,我们毕竟只是小角色,但是如果长老真如太上老君所述一般,梓决恐怕今后难以善终....</div>
+		<div class="text" >圣山就在眼前,我们做好最后的准备吧,希望能够找回四圣兽 </div>
+        <div class="text" >前面就是梓决岛主所说的护山大阵了!做好准备吧!我们要找到所有阵眼! </div>
+		</div>
+		<script src = "plot3.js"></script>
+        <script src="../../js/music_player.js"></script>
+        <script>
+
+            var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../Minesweeper/Sweep.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener); 
+        </script>
+</body>
+</html>

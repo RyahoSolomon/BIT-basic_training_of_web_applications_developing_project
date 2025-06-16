@@ -1,0 +1,52 @@
+body
+{ margin: 0; 
+  background-image: url("../assets/background/winter_palace.jpg"); 
+  background-repeat: no-repeat; 
+  background-position: center;
+  background-size: cover;
+}
+.container
+{
+  top:10%;
+  margin:0 auto;
+  height: 360px;
+  width: 640px;
+  position: relative;
+}
+#gameover_box
+{
+  top: 0px;
+  height: 360px;
+  width: 640px;
+  position: absolute
+}
+
+#confirm
+{
+  top: 225px;
+  height: 74px;
+  width: 226px;
+  position: absolute;
+  left: 212px;
+  top: 225px;
+}
+
+.result_inform
+{
+  font-size: 64px;
+  font-family: "隶书";
+  position: absolute;
+  color: rgb(102, 63, 49);
+  top: 100px;
+  left: 180px;
+}
+
+.button_text
+{
+  font-size: 40px;
+  font-family: "黑体";
+  position: absolute;
+  color: rgb(102, 63, 49);
+  top: 240px;
+  left: 285px;
+}

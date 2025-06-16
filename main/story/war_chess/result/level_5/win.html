@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>胜利</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../css/gameover_display.css">
+
+    <script type="text/javascript" src="../../js/gameover.js"></script>
+    <script>
+      function leave(){
+        window.localStorage.setItem('level5',1);
+        var username = window.localStorage.getItem('username');
+        var current = window.localStorage.getItem('current');
+        current = JSON.parse(current);
+        if(current.hidden_clue_god && current.hidden_clue_poison){
+            window.localStorage.setItem('level6',114);
+            window.location.href = "../../../chapter5/plotb.html";
+        }
+        else{
+            window.location.href = "../../../chapter5/plota.html";
+        }
+      }
+    </script>
+  </head>
+
+  <body ondragstart='return false' oncontextmenu='self.event.returnValue=false'>
+    <div class="container">
+      <img src = "../../assets/UI/game_over_box.png" id = "gameover_box">
+      <a class = "result_inform" style = "cursor: pointer;" onclick = "leave()">游戏胜利!</a>
+      <img src = "../../assets/UI/confirm.png" style = "cursor: pointer;" id = "confirm" onclick = "leave()">
+      <a class = "button_text">确定</a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+@font-face{
+  font-family: "汉仪书魂体";
+  src: url("../../fonts/汉仪书魂体简.ttf");
+}
+@font-face{
+font-family: "字神苏轼豪放体";
+src: url("../../fonts/字神苏轼豪放体.ttf");
+}
+@font-face{
+font-family: "汉仪颜楷";
+src: url("../../fonts/汉仪颜楷简.ttf");
+}
+
+#achievement_popup {
+  width: 35%; /* 可以根据需要调整宽度百分比 */
+  aspect-ratio: 576 / 320; /* 保持宽高比 576:320 */
+  margin: 0 auto;
+  position: absolute;
+  left: 33%;
+  top: 12%;
+  background-image: url("achievement_popup.png");
+  background-size: contain; /* 保持图片长宽比 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
+  background-position: center; /* 图片居中 */
+  color: rgb(130, 43, 216);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.achievement_title_container {
+  width: 80%;
+  text-align: center;
+  overflow: hidden;
+}
+
+.achievement_title {
+  font-family: "字神苏轼豪放体";
+  font-size: 1.6vw;
+  color: rgb(96, 65, 51);
+  margin-bottom: -1%; /* 控制标题和内容之间的间距 */
+  overflow: hidden;
+}
+
+.achievement_content_container {
+  width: 80%;
+  text-align: center;
+  overflow: hidden;
+}
+
+.achievement_content {
+  font-family: "汉仪颜楷";
+  font-size: 1.2vw;
+  color: rgb(96, 65, 51);
+  margin-bottom: -1%; /* 控制内容和按钮之间的间距 */
+  overflow: hidden;
+}
+
+/* #achievement_confirm_button_mask {
+  background-image: url("./confirm.png");
+  overflow: hidden;
+  text-align: center;
+} */
+
+#achievement_confirm_button_mask {
+  /* background-image: url("./confirm.png"); */
+  background-size: cover; /* 使图片覆盖整个容器 */
+  background-position: center; /* 确保图片居中 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
+  overflow: hidden;
+  text-align: center;
+}
+
+#achievement_confirm_button_text {
+  cursor: pointer;
+  font-family: "汉仪书魂体";
+  font-size: 1.6vw;
+  color: rgb(96, 65, 51);
+  overflow: hidden;
+  margin-bottom: -1%;
+}

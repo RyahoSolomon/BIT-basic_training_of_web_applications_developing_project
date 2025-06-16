@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>save</title>
+  <link rel="stylesheet" href="css/archive.css">
+  <link href="../images/icon.jpg" type="image/x-icon" rel="icon">
+  <script src="js/controll.js"></script>
+
+  <script>
+    
+    /*var imgurl; // 在全局范围内定义 imgurl 变量
+    // 在页面加载时执行
+    window.onload = function () {
+      // 从localStorage中获取MSYGameName和MSYTime
+      var userArr = JSON.parse(window.localStorage.userArr);
+      var MSYGameName = userArr[window.localStorage.userid].MSYGameName; // 0 表示第一个存档点
+      var MSYTime = userArr[window.localStorage.userid].MSYTime; // 同样是第一个存档点
+      imgurl = userArr[window.localStorage.userid].MSYback;
+
+      
+      // 将值设置到对应的元素中
+      for(var i = 0; i < 9; i++){
+        if(MSYGameName[i] != 0){
+          document.getElementById('gamename' + i).textContent = MSYGameName[i];
+          document.getElementById('time' + i).textContent = MSYTime[i];
+        }
+        if(imgurl[i] == 0) imgurl[i] = "../images/2023-06-27_00.16.47.png"
+      }
+
+    };*/
+    
+    window.onload = function () {
+      var username = localStorage.username;
+      var array = JSON.parse(localStorage.getItem(username+'savearea')) || [];
+      var temp = {
+        saveurl: 0, 
+        currentDateTime: 0,  
+        level1: 0,
+        level2: 0,
+        level3: 0,
+        level4: 0,
+        level5: 0,
+        level6: 0,  
+        MSYgamename: 0, 
+        current: 0, 
+    };
+    temp = JSON.stringify(temp);
+    if(array){
+
+    }else{
+        for(let i=0;i<10;++i){
+            array.push(temp);
+        }
+    }
+      for(var i = 0; i < 9; i++){
+        if(array[i]){
+          document.getElementById('gamename' + i).textContent = array[i].MSYgamename;
+          document.getElementById('time' + i).textContent = array[i].currentDateTime;
+        }
+      }
+
+    };
+  </script>
+
+</head>
+
+<body>
+
+  <div class="header">
+    <h1 class="logo"></h1>
+    <nav>
+      <ul>
+        <li><a href="achievement.html">成就页</a></li>
+        <li><a href="_INDEX.html">主页面</a></li>
+        <li><a onclick="window.history.back();">返回上一页面</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    var urlSearchParams = new URLSearchParams(window.location.search);
+    var referrer = urlSearchParams.get("referrer");
+    function back() {
+        window.history.back();
+    }
+  </script>
+
+  <div class="container">
+
+    <div class="bg1" id="save1" onclick="Save(0);">
+      <div class="glass">
+        <h2 class="mapId">存档一</h2>
+        <p id="gamename0" class="message"></p>
+        <p id="time0" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save2" onclick="Save(1);">
+      <div class="glass">
+        <h2 class="mapId">存档二</h2>
+        <p id="gamename1" class="message"></p>
+        <p id="time1" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save3" onclick="Save(2);">
+      <div class="glass">
+        <h2 class="mapId">存档三</h2>
+        <p id="gamename2" class="message"></p>
+        <p id="time2" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save4" onclick="Save(3);">
+      <div class="glass">
+        <h2 class="mapId">存档四</h2>
+        <p id="gamename3" class="message"></p>
+        <p id="time3" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save5" onclick="Save(4);">
+      <div class="glass">
+        <h2 class="mapId">存档五</h2>
+        <p id="gamename4" class="message"></p>
+        <p id="time4" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save6" onclick="Save(5);">
+      <div class="glass">
+        <h2 class="mapId">存档六</h2>
+        <p id="gamename5" class="message"></p>
+        <p id="time5" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save7" onclick="Save(6);">
+      <div class="glass">
+        <h2 class="mapId">存档七</h2>
+        <p id="gamename6" class="message"></p>
+        <p id="time6" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save8" onclick="Save(7);">
+      <div class="glass">
+        <h2 class="mapId">存档八</h2>
+        <p id="gamename7" class="message"></p>
+        <p id="time7" class="message"></p>
+      </div>
+    </div>
+
+    <div class="bg1" id="save9" onclick="Save(8);">
+      <div class="glass">
+        <h2 class="mapId">存档九</h2>
+        <p id="gamename8" class="message"></p>
+        <p id="time8" class="message"></p>
+      </div>
+    </div>
+
+    <script>
+      var username = localStorage.username;
+      function back() {
+        window.location.replace(referrer);
+    }
+      function opt(situation) {
+
+        var savearea = JSON.parse(localStorage.getItem(username+'savearea')) || [];
+        
+        if(savearea){
+          var SIT = situation+1;
+          var statusElement = document.getElementById('save'+ SIT);
+          
+          var imageUrl = "img/savearea.png";
+          // 根据键值更新页面内容
+          var thissituation = JSON.parse(savearea[situation]);
+          if (savearea[situation]) {
+            /*statusElement.style.backgroundImage="url('"+imageUrl+"')";*/
+            document.getElementById('gamename'+situation).textContent = thissituation.MSYgamename;
+            document.getElementById('time'+situation).textContent = thissituation.currentDateTime;
+          }
+        }
+        
+      }
+      
+      setInterval(opt(0),100);
+      setInterval(opt(1),100);
+      setInterval(opt(2),100);
+      setInterval(opt(3),100);
+      setInterval(opt(4),100);
+      setInterval(opt(5),100);
+      setInterval(opt(6),100);
+      setInterval(opt(7),100);
+      setInterval(opt(8),100);
+    </script>
+    <!-- <script>
+      function changeImage(elementid, IMGURL) {
+        var container = document.getElementById(elementid);
+        if(IMGURL == "../images/2023-06-27_00.16.47.png"){
+          container.style.backgroundImage = 'url("../images/2023-07-07_20.00.57.png")';
+        }
+        else{
+          container.style.backgroundImage = 'url("../images/background/2023-07-06_16.30.02.png' + IMGURL + '")';
+        }
+      }
+
+      function resetImage(elementid) {
+        var container = document.getElementById(elementid);
+        container.style.backgroundImage = 'url("../images/2023-06-27_00.16.47.png")';
+      }
+    </script> -->
+
+  </body>
+
+</html>

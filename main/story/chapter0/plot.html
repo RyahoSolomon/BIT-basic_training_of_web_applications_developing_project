@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>序章</title>
+<link rel="stylesheet" type="text/css" href="plot.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../../index.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/005_huguo_Palace.png');">
+    <div id="text1" class="centered-text">某日上午 京城 人族皇宫 玄阳殿</div>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/002_huguo_palace.mp3" type="audio/mp3"></audio>
+    <div class="image-container">
+         <div class="topLeftText">
+            （左上角文本内容）
+        </div>
+		<div class="topLeftText">
+            [法海]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >（我是直属于轩辕皇室执行机密任务的特别小队的一名队长，颇受信任，今天突然收到护国法师密令面谈要事，发布任务）
+</div>
+         <div class="text" >（与护国法师相关，密级如此之高，究竟出什么大事了？我不禁冒了冷汗）</div>
+         <div class="text" >参见宗师殿下。</div>
+		<div class="text" >不必多礼，收到密令，想必你也清楚此次任务的重要性。我就直接说吧，我感到四圣兽所立下结界松动了。</div>
+		<div class="text" >产生这种现象的唯一解释就是，四圣兽离开祭坛有一段时间了。如果不能及时处理，接下来我们面临的问题恐怕就是怪物和妖族趁虚反扑。
+</div>
+		<div class="text" >目前宫廷仍决定将此消息保密，以防恐慌混乱，你的任务就是迅速赶往龙鳞森林深处，从青龙祭坛处取得那里从前供奉的青龙鳞片，以便我通过灵气定位青龙所在。
+</div>
+		<div class="text" >龙鳞森林已是结界之外，那里有怪物和妖族，恐怕不会一帆风顺，但以你们的实力，应该应付他们不成问题，听明白了吗？</div>
+		</div>
+		<div class="button-container">
+        <div class="button" onclick="window.location.href='plot_b.html';">
+            <span class="button-text">属下明白,我们立刻集结出发</span>
+        </div>
+        <div class="button" onclick="window.location.href='plot_a.html';">
+            <span class="button-text">回宗师殿下,为何非龙鳞森林不可?毕竟那附近有妖族领地...</span>
+        </div>
+    </div>
+    <div class="button-group">
+        <!-- <div class="button-return" onclick="ReturnToIndex()"><img src="../../img/return.jpg"></div> -->
+        <div class="button-music"><img title = "音乐开关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+        <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+    </div>
+		<script src = "plot.js"></script>
+        <script src="../../js/music_player.js"></script>
+        <script>
+
+            var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../map/map.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+
+        </script>
+</body>
+</html>

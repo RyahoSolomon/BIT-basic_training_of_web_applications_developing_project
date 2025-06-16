@@ -1,0 +1,150 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-01 17:11:33
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-06 16:44:47
+ * @FilePath: \ending text design\he.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Ending</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <!-- <style>
+        #introduction{
+            cursor: pointer;
+            position:absolute;
+            right:5%;
+            width:10%;
+            height:5%; 
+            top:3%; 
+            color: rgb(8, 8, 8);
+            background-color: rgb(109, 186, 234);
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            font-size: 5mm;
+            font-family:'genshin';
+        }
+        #introduction:hover{
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+    </style> -->
+    <style>
+        .button-group {
+            position: absolute;
+            right: 2vw;
+            top: 2vh;
+            z-index: 4;
+        }
+        .button-group div {
+            position: relative;
+            height: 7vh;
+            width: 7vh;
+        }
+        .button-group div:hover {
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+        .button-group img {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .button-save {
+            cursor: pointer;
+            top: 8vh;
+        }
+        .button-return {
+            cursor: pointer;
+            top: 2vh;
+        }
+        .button-music {
+            cursor: pointer;
+            top: 5vh;
+        }
+    </style>
+    <script>
+        
+        function ReturnToIndex(){
+            window.location.href = "../map/map.html";
+        }
+        function save_(){
+            window.location.href = "../../save.html"
+        }
+    </script>
+</head>
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/015.normal_ending.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img src="../../img/return.jpg"></div>
+        <div class="button-music"><img src="../../img/unmute.jpg"></div>
+    </div>
+    <div class="container">
+        <p class="text art-font1" id="text1">我们将太上老君的配方交了出来,举国上下颇为震惊,炼药配方迅速迭代,仙丹价格也确实被打了下来,人族与妖族举行了停战条约.然而,和平仅仅持续了三年,三年后一次惨烈的边境冲突再次激发了千年的民族矛盾,最终战争又爆发了...</p>
+        <p class="text art-font1" id="text2">假盘古事件一个月后,蓬莱岛莫名沉没,三个月后,遗存的结界彻底崩溃.此后我们小队便奋战在对抗怪物的第一线.</p>
+        <p class="text art-font1" id="text3">有些事情,我花了很久也没想通,我仍持续感到不安和迷茫,对人族,对未来...</p>
+        <p class="text art-font1" id="text4">人族最大的图书馆在涿鹿,还保存了大量的上古手迹,或许在那儿有什么线索...</p>
+        <p class="text art-font1" id="text5">如果在蓬莱,能问问太上老君关于丹药的事情就好了...</p>
+        <p class="text art-font1" id="text6">如果能知道的再多一点...就能解答我们的疑惑了...</p>
+        <p class="text art-font2 center-text" id="text7">HAPPY &nbsp ENDING &nbsp —— &nbsp 四圣兽之殇</p>
+    </div>
+
+    <!-- 这里加入Background Music -->
+    
+    <script src="script.js"></script>
+    <script>
+
+        function toggleAudio() {  
+            var audio = document.getElementById('audioPlayer');  
+            var musicButton = document.querySelector('.button-music');  
+            var img = musicButton.querySelector('img');
+            img.src = '../../img/unmute.jpg';  
+            audio.play(); 
+            // 移除监听器，确保它只触发一次  
+            this.removeEventListener('click', toggleAudio); // 注意这里的'this'指的是按钮元素  
+        }  
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var isMuted = window.localStorage.getItem('ismuted');
+            if(isMuted == 0){
+                document.addEventListener('click', toggleAudio);
+            }
+            else{
+                var musicButton = document.querySelector('.button-music');  
+                var img = musicButton.querySelector('img');
+                img.src = '../../img/mute.jpg';
+            }
+            var audioPlayer = document.getElementById('audioPlayer');  
+            var musicButton = document.querySelector('.button-music');  
+            var img = musicButton.querySelector('img');  
+      
+            /*let isMuted = 0; */
+      
+            musicButton.addEventListener('click', function(event) {  
+                if (isMuted) {  
+                    img.src = '../../img/unmute.jpg';  
+                    audioPlayer.play();
+                    window.localStorage.setItem('ismuted',0);
+                    isMuted = false;  
+                } else {  
+                    img.src = '../../img/mute.jpg';  
+                    audioPlayer.pause();  
+                    window.localStorage.setItem('ismuted',1);
+                    isMuted = true;  
+                }  
+            });    
+        });  
+    </script>
+</body>
+</html>

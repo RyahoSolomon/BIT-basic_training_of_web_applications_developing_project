@@ -1,0 +1,2548 @@
+#board
+{
+  width: 1280;
+  height: 576;
+  margin:auto;
+}
+.block
+{
+  width: 64;
+  height: 64;
+}
+  .block:hover
+  {
+    border:4px white;
+  }
+#block_0_0
+{
+  top: 0px;
+  left: 0px;
+}
+#block_0_0:hover
+{
+  border: 16px white;
+}
+#block_0_1
+{
+  top: 0px;
+  left: 64px;
+}
+#block_0_2
+{
+  top: 0px;
+  left: 128px;
+}
+#block_0_3
+{
+  top: 0px;
+  left: 192px;
+}
+#block_0_4
+{
+  top: 0px;
+  left: 256px;
+}
+#block_0_5
+{
+  top: 0px;
+  left: 320px;
+}
+#block_0_6
+{
+  top: 0px;
+  left: 384px;
+}
+#block_0_7
+{
+  top: 0px;
+  left: 448px;
+}
+#block_0_8
+{
+  top: 0px;
+  left: 512px;
+}
+#block_0_9
+{
+  top: 0px;
+  left: 576px;
+}
+#block_0_10
+{
+  top: 0px;
+  left: 640px;
+}
+#block_0_11
+{
+  top: 0px;
+  left: 704px;
+}
+#block_0_12
+{
+  top: 0px;
+  left: 768px;
+}
+#block_0_13
+{
+  top: 0px;
+  left: 832px;
+}
+#block_0_14
+{
+  top: 0px;
+  left: 896px;
+}
+#block_0_15
+{
+  top: 0px;
+  left: 960px;
+}
+#block_0_16
+{
+  top: 0px;
+  left: 1024px;
+}
+#block_0_17
+{
+  top: 0px;
+  left: 1088px;
+}
+#block_0_18
+{
+  top: 0px;
+  left: 1152px;
+}
+#block_0_19
+{
+  top: 0px;
+  left: 1216px;
+}
+#block_1_0
+{
+  top: 64px;
+  left: 0px;
+}
+#block_1_1
+{
+  top: 64px;
+  left: 64px;
+}
+#block_1_2
+{
+  top: 64px;
+  left: 128px;
+}
+#block_1_3
+{
+  top: 64px;
+  left: 192px;
+}
+#block_1_4
+{
+  top: 64px;
+  left: 256px;
+}
+#block_1_5
+{
+  top: 64px;
+  left: 320px;
+}
+#block_1_6
+{
+  top: 64px;
+  left: 384px;
+}
+#block_1_7
+{
+  top: 64px;
+  left: 448px;
+}
+#block_1_8
+{
+  top: 64px;
+  left: 512px;
+}
+#block_1_9
+{
+  top: 64px;
+  left: 576px;
+}
+#block_1_10
+{
+  top: 64px;
+  left: 640px;
+}
+#block_1_11
+{
+  top: 64px;
+  left: 704px;
+}
+#block_1_12
+{
+  top: 64px;
+  left: 768px;
+}
+#block_1_13
+{
+  top: 64px;
+  left: 832px;
+}
+#block_1_14
+{
+  top: 64px;
+  left: 896px;
+}
+#block_1_15
+{
+  top: 64px;
+  left: 960px;
+}
+#block_1_16
+{
+  top: 64px;
+  left: 1024px;
+}
+#block_1_17
+{
+  top: 64px;
+  left: 1088px;
+}
+#block_1_18
+{
+  top: 64px;
+  left: 1152px;
+}
+#block_1_19
+{
+  top: 64px;
+  left: 1216px;
+}
+#block_2_0
+{
+  top: 128px;
+  left: 0px;
+}
+#block_2_1
+{
+  top: 128px;
+  left: 64px;
+}
+#block_2_2
+{
+  top: 128px;
+  left: 128px;
+}
+#block_2_3
+{
+  top: 128px;
+  left: 192px;
+}
+#block_2_4
+{
+  top: 128px;
+  left: 256px;
+}
+#block_2_5
+{
+  top: 128px;
+  left: 320px;
+}
+#block_2_6
+{
+  top: 128px;
+  left: 384px;
+}
+#block_2_7
+{
+  top: 128px;
+  left: 448px;
+}
+#block_2_8
+{
+  top: 128px;
+  left: 512px;
+}
+#block_2_9
+{
+  top: 128px;
+  left: 576px;
+}
+#block_2_10
+{
+  top: 128px;
+  left: 640px;
+}
+#block_2_11
+{
+  top: 128px;
+  left: 704px;
+}
+#block_2_12
+{
+  top: 128px;
+  left: 768px;
+}
+#block_2_13
+{
+  top: 128px;
+  left: 832px;
+}
+#block_2_14
+{
+  top: 128px;
+  left: 896px;
+}
+#block_2_15
+{
+  top: 128px;
+  left: 960px;
+}
+#block_2_16
+{
+  top: 128px;
+  left: 1024px;
+}
+#block_2_17
+{
+  top: 128px;
+  left: 1088px;
+}
+#block_2_18
+{
+  top: 128px;
+  left: 1152px;
+}
+#block_2_19
+{
+  top: 128px;
+  left: 1216px;
+}
+#block_3_0
+{
+  top: 192px;
+  left: 0px;
+}
+#block_3_1
+{
+  top: 192px;
+  left: 64px;
+}
+#block_3_2
+{
+  top: 192px;
+  left: 128px;
+}
+#block_3_3
+{
+  top: 192px;
+  left: 192px;
+}
+#block_3_4
+{
+  top: 192px;
+  left: 256px;
+}
+#block_3_5
+{
+  top: 192px;
+  left: 320px;
+}
+#block_3_6
+{
+  top: 192px;
+  left: 384px;
+}
+#block_3_7
+{
+  top: 192px;
+  left: 448px;
+}
+#block_3_8
+{
+  top: 192px;
+  left: 512px;
+}
+#block_3_9
+{
+  top: 192px;
+  left: 576px;
+}
+#block_3_10
+{
+  top: 192px;
+  left: 640px;
+}
+#block_3_11
+{
+  top: 192px;
+  left: 704px;
+}
+#block_3_12
+{
+  top: 192px;
+  left: 768px;
+}
+#block_3_13
+{
+  top: 192px;
+  left: 832px;
+}
+#block_3_14
+{
+  top: 192px;
+  left: 896px;
+}
+#block_3_15
+{
+  top: 192px;
+  left: 960px;
+}
+#block_3_16
+{
+  top: 192px;
+  left: 1024px;
+}
+#block_3_17
+{
+  top: 192px;
+  left: 1088px;
+}
+#block_3_18
+{
+  top: 192px;
+  left: 1152px;
+}
+#block_3_19
+{
+  top: 192px;
+  left: 1216px;
+}
+#block_4_0
+{
+  top: 256px;
+  left: 0px;
+}
+#block_4_1
+{
+  top: 256px;
+  left: 64px;
+}
+#block_4_2
+{
+  top: 256px;
+  left: 128px;
+}
+#block_4_3
+{
+  top: 256px;
+  left: 192px;
+}
+#block_4_4
+{
+  top: 256px;
+  left: 256px;
+}
+#block_4_5
+{
+  top: 256px;
+  left: 320px;
+}
+#block_4_6
+{
+  top: 256px;
+  left: 384px;
+}
+#block_4_7
+{
+  top: 256px;
+  left: 448px;
+}
+#block_4_8
+{
+  top: 256px;
+  left: 512px;
+}
+#block_4_9
+{
+  top: 256px;
+  left: 576px;
+}
+#block_4_10
+{
+  top: 256px;
+  left: 640px;
+}
+#block_4_11
+{
+  top: 256px;
+  left: 704px;
+}
+#block_4_12
+{
+  top: 256px;
+  left: 768px;
+}
+#block_4_13
+{
+  top: 256px;
+  left: 832px;
+}
+#block_4_14
+{
+  top: 256px;
+  left: 896px;
+}
+#block_4_15
+{
+  top: 256px;
+  left: 960px;
+}
+#block_4_16
+{
+  top: 256px;
+  left: 1024px;
+}
+#block_4_17
+{
+  top: 256px;
+  left: 1088px;
+}
+#block_4_18
+{
+  top: 256px;
+  left: 1152px;
+}
+#block_4_19
+{
+  top: 256px;
+  left: 1216px;
+}
+#block_5_0
+{
+  top: 320px;
+  left: 0px;
+}
+#block_5_1
+{
+  top: 320px;
+  left: 64px;
+}
+#block_5_2
+{
+  top: 320px;
+  left: 128px;
+}
+#block_5_3
+{
+  top: 320px;
+  left: 192px;
+}
+#block_5_4
+{
+  top: 320px;
+  left: 256px;
+}
+#block_5_5
+{
+  top: 320px;
+  left: 320px;
+}
+#block_5_6
+{
+  top: 320px;
+  left: 384px;
+}
+#block_5_7
+{
+  top: 320px;
+  left: 448px;
+}
+#block_5_8
+{
+  top: 320px;
+  left: 512px;
+}
+#block_5_9
+{
+  top: 320px;
+  left: 576px;
+}
+#block_5_10
+{
+  top: 320px;
+  left: 640px;
+}
+#block_5_11
+{
+  top: 320px;
+  left: 704px;
+}
+#block_5_12
+{
+  top: 320px;
+  left: 768px;
+}
+#block_5_13
+{
+  top: 320px;
+  left: 832px;
+}
+#block_5_14
+{
+  top: 320px;
+  left: 896px;
+}
+#block_5_15
+{
+  top: 320px;
+  left: 960px;
+}
+#block_5_16
+{
+  top: 320px;
+  left: 1024px;
+}
+#block_5_17
+{
+  top: 320px;
+  left: 1088px;
+}
+#block_5_18
+{
+  top: 320px;
+  left: 1152px;
+}
+#block_5_19
+{
+  top: 320px;
+  left: 1216px;
+}
+#block_6_0
+{
+  top: 384px;
+  left: 0px;
+}
+#block_6_1
+{
+  top: 384px;
+  left: 64px;
+}
+#block_6_2
+{
+  top: 384px;
+  left: 128px;
+}
+#block_6_3
+{
+  top: 384px;
+  left: 192px;
+}
+#block_6_4
+{
+  top: 384px;
+  left: 256px;
+}
+#block_6_5
+{
+  top: 384px;
+  left: 320px;
+}
+#block_6_6
+{
+  top: 384px;
+  left: 384px;
+}
+#block_6_7
+{
+  top: 384px;
+  left: 448px;
+}
+#block_6_8
+{
+  top: 384px;
+  left: 512px;
+}
+#block_6_9
+{
+  top: 384px;
+  left: 576px;
+}
+#block_6_10
+{
+  top: 384px;
+  left: 640px;
+}
+#block_6_11
+{
+  top: 384px;
+  left: 704px;
+}
+#block_6_12
+{
+  top: 384px;
+  left: 768px;
+}
+#block_6_13
+{
+  top: 384px;
+  left: 832px;
+}
+#block_6_14
+{
+  top: 384px;
+  left: 896px;
+}
+#block_6_15
+{
+  top: 384px;
+  left: 960px;
+}
+#block_6_16
+{
+  top: 384px;
+  left: 1024px;
+}
+#block_6_17
+{
+  top: 384px;
+  left: 1088px;
+}
+#block_6_18
+{
+  top: 384px;
+  left: 1152px;
+}
+#block_6_19
+{
+  top: 384px;
+  left: 1216px;
+}
+#block_7_0
+{
+  top: 448px;
+  left: 0px;
+}
+#block_7_1
+{
+  top: 448px;
+  left: 64px;
+}
+#block_7_2
+{
+  top: 448px;
+  left: 128px;
+}
+#block_7_3
+{
+  top: 448px;
+  left: 192px;
+}
+#block_7_4
+{
+  top: 448px;
+  left: 256px;
+}
+#block_7_5
+{
+  top: 448px;
+  left: 320px;
+}
+#block_7_6
+{
+  top: 448px;
+  left: 384px;
+}
+#block_7_7
+{
+  top: 448px;
+  left: 448px;
+}
+#block_7_8
+{
+  top: 448px;
+  left: 512px;
+}
+#block_7_9
+{
+  top: 448px;
+  left: 576px;
+}
+#block_7_10
+{
+  top: 448px;
+  left: 640px;
+}
+#block_7_11
+{
+  top: 448px;
+  left: 704px;
+}
+#block_7_12
+{
+  top: 448px;
+  left: 768px;
+}
+#block_7_13
+{
+  top: 448px;
+  left: 832px;
+}
+#block_7_14
+{
+  top: 448px;
+  left: 896px;
+}
+#block_7_15
+{
+  top: 448px;
+  left: 960px;
+}
+#block_7_16
+{
+  top: 448px;
+  left: 1024px;
+}
+#block_7_17
+{
+  top: 448px;
+  left: 1088px;
+}
+#block_7_18
+{
+  top: 448px;
+  left: 1152px;
+}
+#block_7_19
+{
+  top: 448px;
+  left: 1216px;
+}
+#block_8_0
+{
+  top: 512px;
+  left: 0px;
+}
+#block_8_1
+{
+  top: 512px;
+  left: 64px;
+}
+#block_8_2
+{
+  top: 512px;
+  left: 128px;
+}
+#block_8_3
+{
+  top: 512px;
+  left: 192px;
+}
+#block_8_4
+{
+  top: 512px;
+  left: 256px;
+}
+#block_8_5
+{
+  top: 512px;
+  left: 320px;
+}
+#block_8_6
+{
+  top: 512px;
+  left: 384px;
+}
+#block_8_7
+{
+  top: 512px;
+  left: 448px;
+}
+#block_8_8
+{
+  top: 512px;
+  left: 512px;
+}
+#block_8_9
+{
+  top: 512px;
+  left: 576px;
+}
+#block_8_10
+{
+  top: 512px;
+  left: 640px;
+}
+#block_8_11
+{
+  top: 512px;
+  left: 704px;
+}
+#block_8_12
+{
+  top: 512px;
+  left: 768px;
+}
+#block_8_13
+{
+  top: 512px;
+  left: 832px;
+}
+#block_8_14
+{
+  top: 512px;
+  left: 896px;
+}
+#block_8_15
+{
+  top: 512px;
+  left: 960px;
+}
+#block_8_16
+{
+  top: 512px;
+  left: 1024px;
+}
+#block_8_17
+{
+  top: 512px;
+  left: 1088px;
+}
+#block_8_18
+{
+  top: 512px;
+  left: 1152px;
+}
+#block_8_19
+{
+  top: 512px;
+  left: 1216px;
+}
+
+#hover_initial_mask_0_0
+{
+  top: -720px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_1
+{
+  top: -720px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_2
+{
+  top: -720px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_3
+{
+  top: -720px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_4
+{
+  top: -720px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_5
+{
+  top: -720px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_6
+{
+  top: -720px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_7
+{
+  top: -720px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_8
+{
+  top: -720px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_9
+{
+  top: -720px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_10
+{
+  top: -720px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_11
+{
+  top: -720px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_12
+{
+  top: -720px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_13
+{
+  top: -720px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_14
+{
+  top: -720px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_15
+{
+  top: -720px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_16
+{
+  top: -720px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_17
+{
+  top: -720px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_18
+{
+  top: -720px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_0_19
+{
+  top: -720px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_0
+{
+  top: -656px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_1
+{
+  top: -656px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_2
+{
+  top: -656px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_3
+{
+  top: -656px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_4
+{
+  top: -656px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_5
+{
+  top: -656px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_6
+{
+  top: -656px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_7
+{
+  top: -656px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_8
+{
+  top: -656px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_9
+{
+  top: -656px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_10
+{
+  top: -656px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_11
+{
+  top: -656px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_12
+{
+  top: -656px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_13
+{
+  top: -656px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_14
+{
+  top: -656px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_15
+{
+  top: -656px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_16
+{
+  top: -656px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_17
+{
+  top: -656px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_18
+{
+  top: -656px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_1_19
+{
+  top: -656px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_0
+{
+  top: -592px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_1
+{
+  top: -592px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_2
+{
+  top: -592px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_3
+{
+  top: -592px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_4
+{
+  top: -592px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_5
+{
+  top: -592px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_6
+{
+  top: -592px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_7
+{
+  top: -592px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_8
+{
+  top: -592px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_9
+{
+  top: -592px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_10
+{
+  top: -592px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_11
+{
+  top: -592px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_12
+{
+  top: -592px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_13
+{
+  top: -592px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_14
+{
+  top: -592px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_15
+{
+  top: -592px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_16
+{
+  top: -592px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_17
+{
+  top: -592px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_18
+{
+  top: -592px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_2_19
+{
+  top: -592px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_0
+{
+  top: -528px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_1
+{
+  top: -528px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_2
+{
+  top: -528px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_3
+{
+  top: -528px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_4
+{
+  top: -528px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_5
+{
+  top: -528px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_6
+{
+  top: -528px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_7
+{
+  top: -528px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_8
+{
+  top: -528px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_9
+{
+  top: -528px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_10
+{
+  top: -528px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_11
+{
+  top: -528px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_12
+{
+  top: -528px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_13
+{
+  top: -528px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_14
+{
+  top: -528px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_15
+{
+  top: -528px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_16
+{
+  top: -528px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_17
+{
+  top: -528px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_18
+{
+  top: -528px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_3_19
+{
+  top: -528px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_0
+{
+  top: -464px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_1
+{
+  top: -464px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_2
+{
+  top: -464px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_3
+{
+  top: -464px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_4
+{
+  top: -464px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_5
+{
+  top: -464px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_6
+{
+  top: -464px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_7
+{
+  top: -464px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_8
+{
+  top: -464px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_9
+{
+  top: -464px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_10
+{
+  top: -464px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_11
+{
+  top: -464px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_12
+{
+  top: -464px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_13
+{
+  top: -464px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_14
+{
+  top: -464px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_15
+{
+  top: -464px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_16
+{
+  top: -464px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_17
+{
+  top: -464px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_18
+{
+  top: -464px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_4_19
+{
+  top: -464px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_0
+{
+  top: -400px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_1
+{
+  top: -400px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_2
+{
+  top: -400px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_3
+{
+  top: -400px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_4
+{
+  top: -400px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_5
+{
+  top: -400px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_6
+{
+  top: -400px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_7
+{
+  top: -400px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_8
+{
+  top: -400px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_9
+{
+  top: -400px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_10
+{
+  top: -400px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_11
+{
+  top: -400px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_12
+{
+  top: -400px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_13
+{
+  top: -400px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_14
+{
+  top: -400px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_15
+{
+  top: -400px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_16
+{
+  top: -400px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_17
+{
+  top: -400px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_18
+{
+  top: -400px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_5_19
+{
+  top: -400px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_0
+{
+  top: -336px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_1
+{
+  top: -336px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_2
+{
+  top: -336px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_3
+{
+  top: -336px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_4
+{
+  top: -336px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_5
+{
+  top: -336px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_6
+{
+  top: -336px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_7
+{
+  top: -336px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_8
+{
+  top: -336px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_9
+{
+  top: -336px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_10
+{
+  top: -336px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_11
+{
+  top: -336px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_12
+{
+  top: -336px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_13
+{
+  top: -336px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_14
+{
+  top: -336px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_15
+{
+  top: -336px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_16
+{
+  top: -336px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_17
+{
+  top: -336px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_18
+{
+  top: -336px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_6_19
+{
+  top: -336px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_0
+{
+  top: -272px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_1
+{
+  top: -272px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_2
+{
+  top: -272px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_3
+{
+  top: -272px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_4
+{
+  top: -272px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_5
+{
+  top: -272px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_6
+{
+  top: -272px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_7
+{
+  top: -272px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_8
+{
+  top: -272px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_9
+{
+  top: -272px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_10
+{
+  top: -272px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_11
+{
+  top: -272px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_12
+{
+  top: -272px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_13
+{
+  top: -272px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_14
+{
+  top: -272px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_15
+{
+  top: -272px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_16
+{
+  top: -272px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_17
+{
+  top: -272px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_18
+{
+  top: -272px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_7_19
+{
+  top: -272px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_0
+{
+  top: -208px;
+  left: 0px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_1
+{
+  top: -208px;
+  left: 64px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_2
+{
+  top: -208px;
+  left: 128px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_3
+{
+  top: -208px;
+  left: 192px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_4
+{
+  top: -208px;
+  left: 256px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_5
+{
+  top: -208px;
+  left: 320px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_6
+{
+  top: -208px;
+  left: 384px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_7
+{
+  top: -208px;
+  left: 448px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_8
+{
+  top: -208px;
+  left: 512px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_9
+{
+  top: -208px;
+  left: 576px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_10
+{
+  top: -208px;
+  left: 640px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_11
+{
+  top: -208px;
+  left: 704px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_12
+{
+  top: -208px;
+  left: 768px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_13
+{
+  top: -208px;
+  left: 832px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_14
+{
+  top: -208px;
+  left: 896px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_15
+{
+  top: -208px;
+  left: 960px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_16
+{
+  top: -208px;
+  left: 1024px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_17
+{
+  top: -208px;
+  left: 1088px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_18
+{
+  top: -208px;
+  left: 1152px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask_8_19
+{
+  top: -208px;
+  left: 1216px;
+  height: 64px;
+  width: 64px;
+  position: absolute;
+}
+
+#hover_initial_mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: yellow;
+}

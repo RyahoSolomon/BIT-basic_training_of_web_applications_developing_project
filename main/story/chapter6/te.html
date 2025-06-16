@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Ending</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <!-- <style>
+        #introduction{
+            cursor: pointer;
+            position:absolute;
+            right:5%;
+            width:10%;
+            height:5%; 
+            top:3%; 
+            color: rgb(8, 8, 8);
+            background-color: rgb(109, 186, 234);
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            font-size: 5mm;
+            font-family:'genshin';
+        }
+        #introduction:hover{
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+    </style> -->
+    <style>
+        .button-group {
+            position: absolute;
+            right: 2vw;
+            top: 2vh;
+            z-index: 4;
+        }
+        .button-group div {
+            position: relative;
+            height: 7vh;
+            width: 7vh;
+        }
+        .button-group div:hover {
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+        .button-group img {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .button-save {
+            cursor: pointer;
+            top: 8vh;
+        }
+        .button-return {
+            cursor: pointer;
+            top: 2vh;
+        }
+        .button-music {
+            cursor: pointer;
+            top: 5vh;
+        }
+    </style>
+    <script>
+        
+        function ReturnToIndex(){
+            window.location.href = "../map/map.html";
+        }
+        function save_(){
+            window.location.href = "../../save.html"
+        }
+    </script>
+</head>
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/014.true_ending.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+    </div>
+    <div class="container">
+        <p class="text art-font1" id="text1">终于...盘古的元神被禁锢在五行灭神大阵的光束中,越来越小,逐渐燃烧殆尽...</p>
+        <p class="text art-font1" id="text2">一切都结束了...人类拜托了神族的束缚,通过自己的反抗,夺回了属于这个世界的自由</p>
+        <p class="text art-font1" id="text3">妖族,人族,和神族也放下隔阂,梓决,太上老君和妖族族长到处奔走,争取种族之间的和平,消弭种族矛盾</p>
+        <p class="text art-font1" id="text3">盘古事件三个月后,遗存的结界彻底崩溃.虽然人类还要面对怪物的侵袭——他们从世界的污秽和邪恶中诞生,或许永远无法彻底消灭,但是,我们很确信,这是我们为自己而战.</p>
+        <p class="text art-font2 center-text" id="text4">TRUE &nbsp ENDING &nbsp —— &nbsp 神所创造的世界 并非完美</p>
+    </div>
+
+    <!-- 这里加入Background Music -->
+    
+    <script src="script.js"></script>
+    <script src="../../js/music_player.js"></script>
+    <script>
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+    </script>
+</body>
+</html>

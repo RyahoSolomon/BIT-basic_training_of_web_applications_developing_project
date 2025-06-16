@@ -1,0 +1,134 @@
+#box{
+    text-align: center;
+    width: 80%;
+    margin: 0 auto;
+}
+body
+{
+  background-image: url("./map/background.jpg"); 
+  margin: 0;
+  padding: 0;
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
+  height: 100vh; 
+}
+
+.button {
+    display: block;
+    position: absolute;
+    width: 6em;
+    height: 6em;
+    padding: 0px 0px;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+  
+  .button:hover {
+    border: 3px solid hsl(0, 100%, 100%);
+  }
+
+  #level-1{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #level-2{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #level-3{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #level-4{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #level-5{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #level-6{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #Level1{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #Level2{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #Level3{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #Level4{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #Level5{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  #Level6{
+    width: 5vw;
+    height:5vw;
+    display: none;
+  }
+
+  .button-group {
+    position: absolute;
+    right: 2vw;
+    top: 2vh;
+    z-index: 4;
+  }
+  
+  .button-group div {
+    position: relative;
+    height: 7vh;
+    width: 7vh;
+  }
+  .button-group div:hover {
+    transform: translateX(2px) translateY(2px);
+    cursor: pointer;
+  }
+  .button-group img {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .button-save {
+    top: 2vh;
+  }
+  .button-return {
+    top: 5vh;
+  }
+  .button-music {
+    top: 8vh;
+  }

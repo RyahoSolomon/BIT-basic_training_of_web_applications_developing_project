@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BE</title>
+<link rel="stylesheet" type="text/css" href="be.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        var element = document.querySelectorAll(".topLeftText");
+		var secondElement = element[1];
+		secondElement.textContent = username;
+		$(secondElement).fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/016.badending.mp3" type="audio/mp3"></audio>
+    <div class="image-container">
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            (左上角内容)
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <div class="text" >可恶……我们已经……</div>
+        <div class="text" >盘古的元神已经和肉体融合了...我们已经没有机会了吗...</div>
+        <div class="text" >撤退!我们快回蓬莱,通知大家做好防御准备!</div>
+        <div class="text" >盘古灵肉合一,在盘古大陆上肆意毁灭、破坏.</div>
+         <div class="text" >人族迅速组织反击,企图用最终杀器——五行灭神大阵来灭杀盘古</div>
+         <div class="text" >然而可惜的是,最佳窗口期已经错过,五行灭神大阵在布置前便被盘古彻底破坏,面对元神归位的盘古,人族毫无抵抗之力.</div>
+		<div class="text" >可在这关键的时候,最强大的神族却开启昆仑护山大阵,隐世不出,任由人族和妖族被盘古屠戮.</div>
+		<div class="text" >我们不曾想过,庇护人族近千年的四圣兽,会炼化为盘古肉灵</div>
+		<div class="text" >我们不曾想过,自己信仰数千年的创世神盘古,会尝试毁灭屠戮这个世界</div>
+		<div class="text" >我们不曾想过,带领自己开创世界的神族,居然会在关键之时隐世不出,仗着昆仑护山大阵,坐收渔翁之利,残忍地看着人族和妖族灭亡...</div>
+		<div class="text" >我们不曾想过,和我们有着家国之仇,交战千年的妖族,会成为我们灭亡前,与盘古抗争的最后盟友...</div>
+		<div class="text" >直到最后,他们仍然没有放弃希望.</div>
+		<div class="text" >直到最后,他们仍然没有放弃希望.</div>
+        <div class="text" >Bad Ending 崩坍的信仰</div>
+	</div>
+        <div class="button-group">
+            <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+            <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+        </div>
+		<script src = "be.js"></script>
+		<script src="../../js/music_player.js"></script>
+		<script>
+
+		initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

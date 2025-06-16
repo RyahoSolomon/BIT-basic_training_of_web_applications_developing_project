@@ -1,0 +1,127 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-07 09:58:17
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:34:18
+ * @FilePath: \源神1.0.5.1\developing\main\story\chapter2\chapter2_short_difference.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第二章</title>
+<link rel="stylesheet" type="text/css" href="plot_after.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../Minesweeper/achievement.css">
+<script>
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save/save/save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/009_plain_out_of_forest.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/005_kill_nut.mp3" type="audio/mp3"></audio>
+	
+	<div id="text1" class="centered-text">次日寅时 森林外平原</div>
+
+    <div class="image-container">
+         <div class="topLeftText">
+             (左上角内容)
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            [叶岱]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >他们说的话...</div>
+         <div class="text" >战争的原因...其实也根本无可考究了,不要太放在心上...</div>
+         <div class="text" >真的能不用内丹就炼丹吗?妖族现在只盘踞在龙鳞森林里,内丹产出很少了...如果真能不用内丹炼丹,丹药的价格应该会比现在低不少吧...我父亲当年也不必...</div>
+		<div class="text" >可惜恐怕我们也没有机会问妖族了...</div>
+		<div class="text" >太上老君不是神族吗?神族的寿元我记得是无限的呀,不会自然死亡,如果有朝我们能问到他就好了!</div>
+		<div class="text" >可惜他在给出人族配方后就销声匿迹了...我们也不知道他在哪儿...</div>
+		<div class="text" >蓬莱</div>
+		<div class="text" >???你怎么知道?</div>
+		<div class="text" >...</br>...</br>...</div>
+		<div class="text" >昆仑一本古书里...</div>
+		<div class="text" >叶岱不想说的话就算了,毕竟蓬莱地处北海又设下结界,普通人族完全没有权限进入.</div>
+		<div class="text" >我更在意的是...太上老君为什么会这么做呢?为了挑起人妖之间的战争???</div>
+		<div class="text" >而且这么多年,妖族为了自保,难道没有向人族提供过他们的炼丹配方吗....</div>
+		<div class="text" >算啦!这些完全不是我们这些小卒能管了的啦!</div>
+		<div class="text" >不过有朝一日如果真能见到太上老君,我们还是问问配方吧!这样仙丹价格就不会那么高了,会救更多人的命...</div>
+		</div>
+		<div id="achievement_popup">
+			<div id="achievement_confirm_button_mask">
+				<p id="achievement_confirm_button_text">解锁成就</p>
+			</div>
+			<div class="achievement_title_container">
+				<p class="achievement_title">保护坚果</p>
+			</div>
+			<div class="achievement_content_container">
+				<p class="achievement_content">在第二关胜利后,选择放掉妖族监国</p>
+			</div>
+			<div id="achievement_confirm_button_mask">
+				<p id="achievement_confirm_button_text" onclick="Shutoff()">确认</p>
+			</div>
+		</div>
+		<div class="button-group">
+			<div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+			<div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+			<div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+		</div>
+		<script src = "chapter2_short_difference.js"></script>
+		<script src="../../js/music_player.js"></script>
+		
+		<script>
+
+			var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../map/map.html";
+        });
+			function Shutoff(){
+				var achievement_popup = document.getElementById("achievement_popup");
+				achievement_popup.style.display = "none";
+			}
+			function achieve(){
+				var achievement_popup = document.getElementById("achievement_popup");
+				achievement_popup.style.display = "flex";
+			}
+			window.onload = function (){
+				console.log(localStorage.username);
+        		var username = localStorage.username;
+        		var element = document.querySelectorAll(".topLeftText");
+				var secondElement = element[0];
+				secondElement.textContent = username;
+				//var username = window.localStorage.username;
+				var achievement = window.localStorage.getItem(username + 'achievement');
+				achievement = JSON.parse(achievement);
+				
+				var flag = localStorage.getItem(username + 'flag');
+				if(achievement['ach2'] == 0 && flag == 1){
+					setTimeout(achieve,100);
+				}
+				achievement['ach2'] = 1;
+				localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
+			}
+
+			initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

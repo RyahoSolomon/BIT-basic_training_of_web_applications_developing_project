@@ -1,0 +1,94 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-07 09:58:17
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:35:47
+ * @FilePath: \源神1.0.5.1\developing\main\story\chapter2\plot.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第二章</title>
+<link rel="stylesheet" type="text/css" href="plot.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        var element = document.querySelectorAll(".topLeftText");
+		var secondElement = element[3];
+		secondElement.textContent = username;
+		$(secondElement).fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/008_forest_periphery.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/004_yaozu.mp3" type="audio/mp3"></audio>
+    <div id="text1" class="centered-text">当日深夜 森林外围</div>
+
+    <div class="image-container">
+         <div class="topLeftText">
+            [???]
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            [妖族监国]
+        </div>
+		<div class="topLeftText">
+            (左上角内容)
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >该死的人族!都站住!你们怎么敢闯入我们的领地?!你们杀妖取丹,把我们从平原上赶进来还不够吗?!</div>
+         <div class="text" >(小声)是妖族吧...我们这下遇到麻烦了...看这人着装应该是妖族监国吧?虽然只是先锋队,但我们恐怕遇上硬茬了...</div>
+         <div class="text" >十分抱歉!我们只是森林迷路,误闯贵族领土,可否高抬贵手,让我们离开?</div>
+		<div class="text" >(冷笑)迷路是吗?我们怎么有斥候在青龙祭坛附近看到过和你们很相似的小队呢?</div>
+		<div class="text" >大人,我们只是前往祭拜而已...</div>
+		<div class="text" >呵呵,别以为我不知道感受不到青龙灵气,你们拿走了鳞片对吧?!</div>
+		<div class="text" >你们仗着四圣兽之势,夺我族国土,把我们赶到森林之中,屠杀我族族民, 只为了取丹炼丹.反过来污蔑是我们侵占你们,真是可恶</div>
+		<div class="text" >你们炼丹配方都是所谓的仙丹之祖-太上老君给你们吧?实话告诉你们, 他是篡改了我族丹方,按他的配方,妖族内丹居然成了必须材料!就靠这个便挑起战争,你们全族上下真是龌龊之极!</div>
+		<div class="text" >不管你们拿走青龙鳞片想干什么,妖族绝对不许你们再用四圣兽行龌龊之事了!开战吧!</div>
+		<div class="text">
+    <a href="../war_chess/war_chess.html">
+        <button id="button1" >【可恶...只能这样了吗?!准备战斗!】</button>
+    </a>
+		</div>
+		</div>
+        <div class="button-group">
+            <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+            <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+			<div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+        </div>
+		<script src = "plot.js"></script>
+		<script src="../../js/music_player.js"></script>
+		<script>
+
+			var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../war_chess/war_chess.html";
+        });
+
+		initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

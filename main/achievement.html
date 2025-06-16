@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>成就</title>
+    <script>
+        function Next(URL) {
+            window.location.assign(URL);
+        }
+    </script>
+    <style>
+        #introduction{
+            position:absolute;
+            right:5%;
+            width:10%;
+            height:5%;
+            top:3%; 
+            color: rgb(8, 8, 8);
+            background-color: rgb(109, 186, 234);
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            font-size: 5mm;
+            font-family:'genshin';
+        }
+        #introduction:hover{
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+        @font-face {
+            font-family: "genshin";
+            src: url(fonts/Genshin.ttf);
+        }
+        html, body {  
+            height: 100%;  
+            margin: 0;  
+            padding: 0;  
+            width: 100%;  
+            overflow: hidden;
+        }
+        /*body{
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }*/
+        video{
+			height:100%;
+            width:100%;
+            position: absolute;  
+            right: 0px;  
+            bottom: 0px;  
+            z-index:-1;
+		}
+        .index-video {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            object-fit: initial;
+            z-index: -2;
+        }
+        .ach_bar{
+            position: absolute;
+            top: 50%;  
+            left: 50%;  
+            transform: translate(-50%, -50%);
+            justify-content: center;
+            align-items: center;
+            width: 85vw;  
+            height: 85vh;
+            padding: 2%;
+            box-sizing: border-box;
+            display: flex;
+            flex-wrap: wrap;
+            /*background-size: cover;*/
+        }
+
+        
+
+        .ach_container {
+            width: 21%;
+            margin: 2%;
+            float: none;
+            perspective: 1000px;
+            position: relative; 
+        }
+        
+        .exh_border {
+            position: relative; 
+            background-image: url(./img/ach_back.png);
+            background-position: center;
+            background-size: 100% 100%; 
+            background-repeat: no-repeat;
+            opacity: 1;
+            transition: 0.6s;
+            transform-style: preserve-3d;
+            width: 65%; 
+            padding-top: 115.557%; 
+        }
+        
+        .exh, .exh_back {
+            backface-visibility: hidden;
+            text-align: center;
+            position: absolute; 
+            top: 50%;
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            color: #ffffff;
+            font-size: 2.5vh;
+            font-family: "genshin";
+        }
+        
+
+        .exh_back {
+            left:0;
+            top:40%;
+            transform: rotateY(180deg);
+            
+        }
+        
+        .ach_container:hover .exh_border {
+            transform: rotateY(180deg);  
+        }
+        
+        .text1 {
+            z-index: 10;
+        }
+
+        .text2{
+            z-index: -10;
+        }
+
+        .text3 {
+            z-index: 10;
+        }
+
+        .text4{
+            z-index: -10;
+        }
+
+        .text5 {
+            z-index: 10;
+        }
+
+        .text6{
+            z-index: -10;
+        }
+        
+        .button-group {
+            position: absolute;
+            right: 2vw;
+            top: 2vh;
+            z-index: 4;
+        }
+        
+        .button-group div {
+            position: relative;
+            height: 7vh;
+            width: 7vh;
+        }
+        .button-group div:hover {
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+        .button-group img {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .button-save {
+            top: 5vh;
+        }
+        .button-return {
+            top: 2vh;
+        }
+        .button-music {
+            top: 8vh;
+        }
+
+        @media screen and (max-width: 64rem) {
+            .ach_container {
+              width: calc(33.333333% - 1rem);
+              margin: 0.5rem;
+            }
+          }
+          
+        @media screen and (max-width: 48rem) {
+            .ach_container {
+              width: calc(50% - 1rem);
+              margin: 0.5rem;
+            }
+          }
+          
+          @media screen and (max-width: 32rem) {
+            .ach_container {
+              width: 100%;
+              margin: 0 0 1rem 0;
+            }
+          }
+    </style>
+    <script>
+        url="_INDEX.html";
+        var username = window.localStorage.username;
+        var achievement = window.localStorage.getItem(username + 'achievement');
+        achievement = JSON.parse(achievement);
+        window.onload = function() {
+            for(var i = 1; i <= 8; i++) {
+                var ach = document.getElementsByClassName("exh_border")[i-1];
+                var temp = 'ach' + i;
+                if(achievement[temp] === 0) continue;
+                ach.style.backgroundImage = "url(./img/ach_front.png)";
+                if(i == 3){
+                    var text5 = document.querySelector(".text5");
+                    var text6 = document.querySelector(".text6");
+                    text5.textContent = "铲除神族";
+                    text6.textContent = "用主角或者鸢阑击杀叶岱";
+                }
+                if(i == 5){
+                    var text3 = document.querySelector(".text3");
+                    var text4 = document.querySelector(".text4");
+                    text3.textContent = "正经人谁从左上角开始扫雷啊!";
+                    text4.textContent = "在躲避陷阱阵法的过程中,第一下翻开格子便踏入陷阱";
+                }
+             }
+        }
+    </script>
+  <script src="js/mainmenu_music_player.js"></script>
+</head>
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="bgm/example.mp3" type="audio/mp3"></audio>
+    <video src = "mov\background.mp4" class="index-video" autoplay="autoplay" loop="loop" muted="muted"></video>
+        <div class="ach_bar">
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text1">一个都不许少</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text2">所有关卡都至少在没有己方角色阵亡的情况下通关</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text1">保护坚果</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text2">在第二关胜利后,选择放掉妖族监国</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text5">隐藏成就</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text6">隐藏成就详情将在解锁后显示</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text1">向死则生</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text2">在只剩一名角色的情况下,通过一道关卡</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text3">隐藏成就</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text4">隐藏成就详情将在解锁后显示</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text1">神所创造的世界 并非完美</div>
+                    </div>
+                    <div class="exh_back" style="left:17%">
+                        <div class="text2">达成真结局</div>    
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text1">唯我独尊</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text2">所有角色升至满级</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ach_container">
+                <div class="exh_border">
+                    <div class="exh">
+                        <div class="text1">杀人如麻 以杀证道</div>
+                    </div>
+                    <div class="exh_back">
+                        <div class="text2">在第一关中,选择击杀全部敌方单位而非到达指定点</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="base">
+            <input type="button"  id='introduction' value="返回主界面" onclick="Next(url)">
+        </div>
+        <div class="button-group">
+			<div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="img/unmute.jpg"></div>
+		</div>
+        <script>  
+          initial_muisc_button_img();
+          function window_click_listener()
+          {
+            initial_music();
+            this.removeEventListener("click", window_click_listener);
+          }
+    
+          window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+body {
+    background-image: url("background.png");
+    margin: 0;
+    padding: 0;
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    height: 100vh; 
+}
+
+#p {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.span {
+    height: 25px;
+    width: 150px;
+    line-height: 25px;
+    display: inline-block;
+    margin-left: 20px;
+    margin-right: 20px;
+    background: burlywood;
+}
+
+#ground {
+    margin: auto;
+}
+
+.blocks {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    text-align: center;
+    border: solid 1px #fff;
+    user-select: none;
+    cursor: pointer;
+}
+
+
+
+.blocks:hover {
+    background: #0af;
+}
+
+
+@media (max-width: 768px) {
+    #p {
+        flex-direction: column; /* 在屏幕宽度小于 768px 时，控制面板垂直排列 */
+        gap: 15px; /* 增加元素之间的间距 */
+    }
+
+    .span, button, input {
+        width: 100%; /* 控制面板项宽度为 100% */
+        max-width: 200px; /* 最大宽度限制为 200px */
+    }
+
+    #ground {
+        width: 90vw; /* 调整表格宽度为视口宽度的 90% */
+    }
+
+    .blocks {
+        width: 5vw; /* 增大方块的大小，以保持可用性 */
+        height: 5vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .span, button, input {
+        max-width: 100px; /* 在屏幕宽度小于 480px 时，进一步调整最大宽度 */
+    }
+
+    #ground {
+        width: 95vw; /* 调整表格宽度为视口宽度的 95% */
+    }
+
+    .blocks {
+        width: 5vw; /* 进一步增大方块的大小 */
+        height: 5vw;
+    }
+}

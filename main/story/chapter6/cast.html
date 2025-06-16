@@ -1,0 +1,107 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-07 09:58:17
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:39:43
+ * @FilePath: \源神1.0.5.1\developing\main\story\chapter6\cast.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Ending</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            height: 100vh; 
+            background-image: none;
+            background-color:black;
+        }
+        .centered-text {
+            font-family: "Zhi Mang Xing", cursive;
+            font-weight: 400;
+            font-style: normal;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6vw; /* 使用vw单位 */
+            color: white;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-out; /* 1s 渐隐效果 */
+            transition: opacity 1s ease-in;
+            white-space: nowrap;
+        }
+
+    * {  
+        margin: 0;  
+        padding: 0;  
+        box-sizing: border-box;  
+    }  
+  
+ 
+    .video-container {  
+        position: absolute;
+	    height: 100%;
+	    width: 100%;
+	    top: 0%;
+	    left: 0%;
+	    object-fit: initial;
+	    z-index: -2;
+        opacity: 0;
+    }  
+
+    .video-container video {  
+        position: absolute;  
+        top: 0;  
+        left: 0;  
+        width: 100%;  
+        height: 100%;  
+        object-fit: cover; 
+    }
+    </style>
+    <script>
+        window.onload = function(){
+            text2.style.opacity = 1;
+        }
+        setTimeout(() => {
+            text2.style.opacity = 0;
+        }, 3000);
+
+        document.addEventListener('DOMContentLoaded', function() {  
+            var video = document.getElementById('cast');  
+            var container = document.querySelector('.video-container');
+
+            setTimeout(function() {
+                container.style.opacity = 1;
+                video.play().catch(function(error) {  
+                    console.error("视频自动播放失败:", error);  
+                });  
+            }, 4000);
+           
+            video.addEventListener('ended', function() {  
+                window.location.href = '../../_INDEX.html';
+            });  
+        });
+    </script>
+</head>
+<body>
+    <div id="text2" class="centered-text">神所创造的世界，并非完美</div>
+    <div class="video-container">  
+        <video id="cast" loop="loop" preload="preload" controls>  
+            <source src="../../mov/cast.mp4" type="video/mp4">  
+        </video>  
+    </div>  
+</body>
+</html>

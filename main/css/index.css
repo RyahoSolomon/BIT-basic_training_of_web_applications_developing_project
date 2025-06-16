@@ -1,0 +1,180 @@
+* {
+	margin: 0%;
+	padding: 0%;
+}
+body {
+    font-family: "genshin";
+	margin: 0%;
+    padding: 0%;
+    background-color: #f0f0f0;
+}
+a {
+	text-decoration: none;
+}
+.index-video {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0%;
+	left: 0%;
+	object-fit: initial;
+	z-index: -2;
+}
+.header {
+	text-align: center;
+	margin:0 auto;
+
+}
+  
+  .header img {
+	width: 18%;  
+  	height: 18%;
+	display: block;
+	margin: 0 auto;
+  }
+video{
+    height:100%;
+    width:100%;
+    position: absolute;  
+    right: 0%;  
+    bottom: 0%;  
+    z-index:-1;
+}
+@font-face {
+	font-family: "genshin";
+	src: url(../fonts/Genshin.ttf);
+}
+
+.index-button-group {
+	/*padding: 0 0 15%;*/
+	width: 70%;
+	margin-left: 40vw;
+}
+
+.index-button {
+	cursor: pointer;
+	position:relative;
+	border-radius: 0.1em;
+	padding: 0.45em 0 0.45em;
+	letter-spacing: 1vh;
+	font-family: 'genshin';
+	/* font-weight: bold; */
+	margin: 0.4em 0 0.4em;
+	text-align: center;
+	width: 20vw;
+	height: 10vh;
+}
+.index-button:hover {
+	transform: translateX(2px) translateY(2px);
+}
+.index-button a {
+	color: #f7f5f5;
+	height: 100%;
+	width: 100%;
+	display: block;
+	font-size: 5vh;
+	margin-top: 2vh;
+}
+.index-button>img {
+	display: block;
+	border-radius: 15px;
+	position: absolute;
+	width: 20vw;
+	height: 10vh;
+	z-index: -1;
+}
+
+.header {
+	text-align: center;
+	display: block;
+}
+
+.intro-button{
+	position:absolute;
+    right:60px;
+    top:60px;
+    width:150px;
+    height:40px;
+	margin-right: 4vw;
+	padding: 0.45em 0 0.45em;
+	letter-spacing: 1vh;
+	font-family: 'genshin';
+	/* font-weight: bold; */
+	margin: 0.4em 0 0.4em;
+	text-align: center;
+	width: 8vw;
+	height: 5vh;
+}
+.intro-button:hover {
+	transform: translateX(2px) translateY(2px);
+}
+.intro-button a {
+	color: #fdfbfb;
+	height: 100%;
+	width: 100%;
+	display: block;
+	font-size: 1vh;
+	margin-top: 1vh;
+}
+.intro-button>img {
+	display: block;
+	border-radius: 10px;
+	position: absolute;
+	width: 6vw;
+	height: 3vh;
+	z-index: -1;
+}
+.button-group {
+	position: absolute;
+	right: 2vw;
+	top: 2vh;
+	z-index: 4;
+}
+
+.button-group div {
+	position: relative;
+	height: 7vh;
+	width: 7vh;
+}
+.button-group div:hover {
+	transform: translateX(2px) translateY(2px);
+	cursor: pointer;
+}
+.button-group img {
+	height: 100%;
+	width: 100%;
+}
+
+.button-save {
+	cursor: pointer;
+	top: 5vh;
+}
+.button-return {
+	cursor: pointer;
+	top: 2vh;
+}
+.button-music {
+	cursor: pointer;
+	top: 8vh;
+}
+
+#introduction{
+	cursor: pointer;
+	position:absolute;
+	right:5%;
+	width:10%;
+	height:5%; 
+	top:3%; 
+	color: rgb(8, 8, 8);
+	background-color: rgb(109, 186, 234);
+	border-bottom-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-top-right-radius: 15px;
+	border-top-left-radius: 15px;
+	font-size: 5mm;
+	font-family:'genshin';
+}
+#introduction:hover{
+	transform: translateX(2px) translateY(2px);
+	cursor: pointer;
+}

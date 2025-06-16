@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>背景</title>
+    <link rel="stylesheet" type="text/css" href="background.css">
+</head>
+<body id="mainBody">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/001_story_background .mp3" type="audio/mp3"></audio>
+    <div id="flashBlack" class="hidden"></div>
+    <div class="image-container">
+        <img src="../../img/ui/text_box_no.png" id="slideImage">
+        <p id="overlayText" class="centered-text"></p>
+    </div>
+    <div class="button-group">
+        <!-- <div class="button-return" onclick="ReturnToIndex()"><img src="../../img/return.jpg"></div> -->
+        <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+        <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+    </div>
+    <script src="background.js"></script>
+    <script src="../../js/music_player.js"></script>
+    <script>
+
+        var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../map/map.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+        
+        // function toggleAudio() {  
+        //     var audio = document.getElementById('audioPlayer');  
+        //     var musicButton = document.querySelector('.button-music');  
+        //     var img = musicButton.querySelector('img');
+        //     img.src = '../../img/unmute.jpg';  
+        //     audio.play(); 
+        //     // 移除监听器，确保它只触发一次  
+        //     this.removeEventListener('click', toggleAudio); // 注意这里的'this'指的是按钮元素  
+        // }  
+        
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     let isMuted = get_music_state();
+        //     console.log("音乐状态" + get_music_state());
+        //     if(isMuted == true){
+        //         document.addEventListener('click', toggleAudio);
+        //     }
+        //     else{
+        //         var musicButton = document.querySelector('.button-music');  
+        //         var img = musicButton.querySelector('img');
+        //         img.src = '../../img/mute.jpg';
+        //     }
+        //     var audioPlayer = document.getElementById('audioPlayer');  
+        //     var musicButton = document.querySelector('.button-music');  
+        //     var img = musicButton.querySelector('img');  
+      
+        //     /*let isMuted = 0; */
+      
+        //     musicButton.addEventListener('click', function(event) {  
+        //         if (isMuted) { 
+        //             window.localStorage.setItem('ismuted',0);
+        //             isMuted = false;  
+        //         } else {  
+        //             img.src = '../../img/mute.jpg';  
+        //             audioPlayer.pause();  
+        //             window.localStorage.setItem('ismuted',1);
+        //             isMuted = true;  
+        //         }  
+        //     });    
+        // });  
+    </script>
+</body>
+</html>

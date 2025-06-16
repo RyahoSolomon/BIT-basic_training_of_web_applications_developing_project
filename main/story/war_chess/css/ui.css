@@ -1,0 +1,270 @@
+#UI
+{ 
+  margin:0 auto;
+  background-image: url("../assets/UI/bar.png"); 
+  background-repeat: no-repeat; 
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  width: 1280;
+  height: 144;
+}
+#operations
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: red;
+}
+#operation_buttons
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color:blue;
+}
+
+#mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: yellow;
+}
+
+#hover_mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: yellow;
+}
+
+#selected_box
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: green;
+}
+
+#round_info
+{
+  height: 32px;
+  width: 120px;
+  margin: 0;
+  position: absolute;
+  left: 1140px;
+  top: 24px;
+}
+
+#skip_game_button
+{
+  height: 32px;
+  width: 52px;
+  margin: 0;
+  position: absolute;
+  left: 1140px;
+  top: 60px;
+}
+
+#skip_game_hover_initial_mask
+{
+  height: 30px;
+  width: 50px;
+  margin: 0;
+  position: absolute;
+  left: 1140px;
+  top: -84px;
+  cursor: pointer;
+}
+
+#skip_game_hover_mask
+{
+  height: 30px;
+  width: 50px;
+  margin: 0;
+  position: absolute;
+  left: 1140px;
+  top: -84px;
+}
+
+#round_info_text
+{
+  font-size:14;
+  color:rgb(102, 63, 49);
+  left: 1212px;
+  top: 28px;
+  position: absolute;
+}
+
+#operation_hover_initial_mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: yellow;
+  cursor: pointer;
+}
+
+
+#other_buttons_hover_initial_mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: yellow;
+  cursor: pointer;
+}
+
+#other_buttons_hover_mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: yellow;
+}
+
+#announcement_board
+{
+  background-image: url("../assets/UI/announcement.png");
+  position: absolute;
+  height: 111;
+  width: 515;
+  left: 608;
+  top: 18;
+}
+
+#announcement
+{
+  background-color: transparent;
+  position: absolute;
+  height: 100;
+  width: 504;
+  left: 4;
+  top: 4;
+}
+
+#announcement_text
+{
+  font-size: 12;
+  font-family: "仿宋";
+  display: block;
+  font-weight: bold;
+  color: rgb(102, 63, 49);
+  margin: 0;
+}
+#guide_button
+{
+  height: 32px;
+  width: 52px;
+  margin: 0;
+  position: absolute;
+  left: 1206px;
+  top: 60px;
+}
+
+#guide_hover_initial_mask
+{
+  height: 30px;
+  width: 50px;
+  margin: 0;
+  position: absolute;
+  left: 1206px;
+  top: -84px;
+  cursor: pointer;
+}
+
+#guide_hover_mask
+{
+  height: 30px;
+  width: 50px;
+  margin: 0;
+  position: absolute;
+  left: 1206px;
+  top: -84px;
+}
+
+.control_button
+{
+  height: 32px;
+  width: 32px;
+  margin: 0;
+  /* position: absolute;
+  left: 1206px;
+  top: 55px; */
+}
+
+.control_hover_initial_mask
+{
+  height: 32px;
+  width: 32px;
+  margin: 0;
+  cursor: pointer;
+  /* position: absolute;
+  left: 1206px;
+  top: -89px; */
+}
+
+.control_hover_mask
+{
+  height: 32px;
+  width: 32px;
+  margin: 0;
+  /* position: absolute;
+  left: 1206px;
+  top: -89px; */
+}
+
+#back_to_map
+{
+  position: absolute;
+  left: 1140px;
+  top: 97px;
+}
+
+#back_to_map_mask
+{
+  position: absolute;
+  left: 1140px;
+  top: -47px;
+  cursor: pointer;
+}
+
+#check_mission_info
+{
+  position: absolute;
+  left: 1183px;
+  top: 97px;
+}
+
+#check_mission_info_mask
+{
+  position: absolute;
+  left: 1183px;
+  top: -47px;
+  cursor: pointer;
+}
+
+#switch_music_state
+{
+  position: absolute;
+  left: 1226px;
+  top: 97px;
+}
+
+#switch_music_state_mask
+{
+  position: absolute;
+  left: 1226px;
+  top: -47px;
+  cursor: pointer;
+}

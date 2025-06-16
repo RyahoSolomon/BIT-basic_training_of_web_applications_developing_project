@@ -1,0 +1,128 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+.index-video {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	object-fit: initial;
+	z-index: -2;
+}
+body {
+           	font-family: "Ma Shan Zheng", cursive;
+            font-weight: 400;
+            font-style: normal;
+            background-color: #f0f0f0; /* 背景图片 */
+            height: 100vh; /* 设置整个页面的高度为视口高度 */
+            margin: 0;
+            display: flex;
+			flex-direction: column; /* 将内容垂直排列 */
+            justify-content: center;
+            align-items: center;
+        }
+ .header {
+    text-align: center;
+    display: block;
+    position: relative; /* 使用相对定位 */
+    top: -20px; /* 使用负值将 header 向上移动 */
+}
+.header img {
+	width: 70%;  
+  	height: auto;
+	display: block;
+	margin: 0 auto;
+  }
+video{
+    height:100%;
+    width:100%;
+    position: absolute;  
+    right: 0px;  
+    bottom: 0px;  
+    z-index:-1;
+}
+       .register-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    position: relative; /* 使用相对定位 */
+    top: -20px; /* 使用负值将表单向上移动 */
+}
+
+        .register-box {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .input-group input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+.input-group a{
+	 text-decoration: none;
+	color: white;
+}
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: "Zhi Mang Xing", cursive!important;
+			font-weight: 400;
+            font-style: normal;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .password {
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .password a {
+            color: #007bff;
+            text-decoration: none;
+            font-family: 宋体!important;
+            font-size: 14px;
+        }
+
+        .password a:hover {
+            text-decoration: underline;
+        }

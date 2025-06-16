@@ -1,0 +1,90 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-07 09:58:17
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:36:17
+ * @FilePath: \源神1.0.5.1\developing\main\story\chapter3\plot_end.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第三章</title>
+<link rel="stylesheet" type="text/css" href="plot.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/013_official_road.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/007_after_zhuolu.mp3" type="audio/mp3"></audio>
+	<div id="text1" class="centered-text">片刻后 京城官道</div>
+
+    <div class="image-container">
+         <div class="topLeftText">
+             (左上角内容)
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            [叶岱]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >结界削弱的影响已经逐渐显现了....</div>
+        <div class="text" >希望能顺利解决吧.</div>
+        <div class="text" >万一...四圣兽无法归位呢...</div>
+		<div class="text" >那我们恐怕就要面临怪物的威胁了...高墙之内也不再安全...</div>
+		<div class="text" >那时候我会奋战在保卫人族的第一线的.</div>
+		<div class="text" >我也会!</div>
+		<div class="text" >(点了点头)</div>
+		<div class="text" >(我们都是没有牵挂的人,在一起共同战斗了很多年了,为皇族做过一些肮脏的事,也有一些正义的事)</div>
+		<div class="text" >(我不知道我们是不是好人,但是我很确信,我们相互之间都是彼此唯一的家人)</div>
+		<div class="text" >(我只擅长战斗,从小卒选拔进禁卫军,从禁卫军被选拔入特务机关, 再被选拔成为精英小队成员)</div>
+		<div class="text" >(但我不知道我想要什么,直到遇到了他们)</div>
+		<div class="text" >(我在龙须镇从怪物手中救下了这个在森民群体中也极具战斗天赋和弓术天赋的小姑娘)</div>
+		<div class="text" >(我从虎金镇的山脚下遇到了沉默寡言的叶岱,并一起清理了那里矿坑里的怪物)</div>
+		<div class="text" >(自那以后我们就并肩作战,我也知道了我想要什么)</div>
+		<div class="text" >(我会守护好他们的陪伴,守护好人族,即使结界崩溃后,面对无尽的怪物,我也不会退缩)</div>
+		</div>
+		<div class="button-group">
+            <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+            <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
+            <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+        </div>
+		<script src = "plot_end.js"></script>
+        <script src="../../js/music_player.js"></script>
+        <script>
+
+            var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../map/map.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+        </script>
+</body>
+</html>

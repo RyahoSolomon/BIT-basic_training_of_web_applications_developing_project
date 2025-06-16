@@ -1,0 +1,155 @@
+#plot
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: #e55959;
+}
+
+#plot_option_masks
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: #53bf10;
+}
+
+#plot_option_hover_masks
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: #59e5a8;
+}
+
+#plot_option
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: #1045bf;
+}
+
+
+.plot_container
+{
+  position: absolute;
+  width: 1280px;
+  height: 272px;
+  top: -272px;
+  background-image: url("../assets/plot/plot_box.png");
+  cursor: pointer;
+}
+
+.name_container
+{
+  position: relative;
+  height: 64px;
+  width: 388px;
+  margin:0;
+  cursor: pointer;
+}
+
+.name_content
+{
+  font-family: "隶书";
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  height: 64px;
+  font-size: 36px;
+  color:rgb(4, 4, 4)
+}
+
+.plot_text_container
+{
+  position: relative;
+  width: 1220px;
+  margin: 2% auto 0 auto;
+}
+
+.plot_text_content
+{
+  font-family:"华文新魏";
+  font-size: 32px;
+  color: rgb(4, 4, 4);
+}
+
+#plot_mask
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: #e55959;
+}
+
+
+#plot_mask_img
+{
+  position: absolute;
+  left: 0;
+  top: -272px;
+  cursor: pointer;
+}
+
+#dialogue_option_1
+{
+  position: absolute;
+  left: 215px;
+  top: -625px;
+}
+
+#dialogue_option_2
+{
+  position: absolute;
+  left: 215px;
+  top: -425px;
+}
+
+.dialogue_option
+{
+  background-image: url("../assets/plot/optional_dialogue.png");
+  width: 850px;
+  height: 72px;
+}
+
+.dialogue_option_text
+{
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  height: 72px;
+  color:rgb(4, 4, 4);
+  font-family: "华文新魏";
+  font-size: 32px;
+}
+
+#plot_option_hover_mask
+{
+  left: 215px;
+  position: absolute;
+}
+
+#diaglogue_option_mask_1
+{
+  position: absolute;
+  top: -625px;
+}
+
+#diaglogue_option_mask_2
+{
+  position: absolute;
+  top: -425px;
+}
+
+.diaglogue_option_mask
+{
+  position: absolute;
+  left: 215px;
+  cursor: pointer;
+}

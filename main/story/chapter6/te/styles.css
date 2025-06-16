@@ -1,0 +1,221 @@
+@font-face{
+    font-family: "汉仪书魂体";
+    src: url("../../../fonts/汉仪书魂体简.ttf");
+  }
+  @font-face{
+  font-family: "字神苏轼豪放体";
+  src: url("../../../fonts/字神苏轼豪放体.ttf");
+  }
+  @font-face{
+  font-family: "汉仪颜楷";
+  src: url("../../../fonts/汉仪颜楷简.ttf");
+  }
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-image: url('../../../img/background/023_ban_pangu.png'); /* 这里加入背景图片---Add your background image */
+    background-size: cover; /* Cover the entire viewport */
+    background-position: center; /* Center the background image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+    box-sizing: border-box;
+    background-color:black;
+    transition: opacity 1s ease-out;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    padding: 20px; /* Padding inside the container */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.text {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+    margin: 20px 0; /* Increased margin between paragraphs */
+    line-height: 1.8; /* Increased line spacing */
+}
+
+.art-font1 {
+    font-family: "Zhi Mang Xing", cursive;
+    font-weight: 400;
+    font-style: normal; /* Artistic font */
+    font-size: 2.5em; /* Larger font size for better readability */
+    text-indent: 2em; /* First-line indent */
+    color: white; /* Text color */
+    padding: 10px; /* Padding around text */
+    border-radius: 5px; /* Rounded corners */
+    text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, -1px 1px 2px #000, 1px -1px 2px #000;
+}
+
+.center-text {
+    text-align: center; /* Center text horizontally */
+    text-indent: 0; /* Remove text indent for centered text */
+    margin-top: 40px; /* Increase margin for better spacing */
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 95%; /* 调整小屏幕上的容器宽度 */
+    }
+
+    .art-font1 {
+        font-size: 1.2em; /* 调整较小屏幕上的字体大小 */
+    }
+    
+    .art-font2 {
+        font-size: 1.5em; /* 调整较小屏幕上的字体大小 */
+    }
+    
+    .text {
+        margin: 15px 0; /* 调整较小屏幕上的段落间距 */
+        line-height: 1.6; /* 调整较小屏幕上的行间距 */
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%; /* 在非常小的屏幕上容器宽度调整为100% */
+        padding: 10px; /* 减小内边距以适应较小的屏幕 */
+    }
+
+    .art-font1 {
+        font-size: 1em; /* 进一步调整非常小屏幕上的字体大小 */
+    }
+    
+    .art-font2 {
+        font-size: 1.2em; /* 进一步调整非常小屏幕上的字体大小 */
+    }
+    
+    .text {
+        margin: 10px 0; /* 进一步调整非常小屏幕上的段落间距 */
+        line-height: 1.4; /* 进一步调整非常小屏幕上的行间距 */
+    }
+}
+#achievement_popup {
+    width: 35%; /* 可以根据需要调整宽度百分比 */
+    aspect-ratio: 576 / 320; /* 保持宽高比 576:320 */
+    margin: 0 auto;
+    position: absolute;
+    left: 33%;
+    top: 12%;
+    background-image: url("../../../img/achievement_popup.png");
+    background-size: contain; /* 保持图片长宽比 */
+    background-repeat: no-repeat; /* 防止背景图片重复 */
+    background-position: center; /* 图片居中 */
+    color: rgb(130, 43, 216);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  .achievement_title_container {
+    width: 80%;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .achievement_title {
+    font-family: "字神苏轼豪放体";
+    font-size: 2.0vw;
+    color: rgb(96, 65, 51);
+    margin-bottom: 0%; /* 控制标题和内容之间的间距 */
+    overflow: hidden;
+  }
+  
+  .achievement_content_container {
+    width: 80%;
+    text-align: center;
+    overflow: hidden;
+  }
+  
+  .achievement_content {
+    font-family: "汉仪颜楷";
+    font-size: 1.5vw;
+    color: rgb(96, 65, 51);
+    margin-bottom: 0%; /* 控制内容和按钮之间的间距 */
+    overflow: hidden;
+  }
+  
+  /* #achievement_confirm_button_mask {
+    background-image: url("./confirm.png");
+    overflow: hidden;
+    text-align: center;
+  } */
+  
+  #achievement_confirm_button_mask {
+    /* background-image: url("./confirm.png"); */
+    background-size: cover; /* 使图片覆盖整个容器 */
+    background-position: center; /* 确保图片居中 */
+    background-repeat: no-repeat; /* 防止背景图片重复 */
+    overflow: hidden;
+    text-align: center;
+  }
+  
+  #achievement_confirm_button_text {
+    cursor: pointer;
+    font-family: "汉仪书魂体";
+    font-size: 2.0vw;
+    color: rgb(96, 65, 51);
+    overflow: hidden;
+    margin-bottom: 0%;
+  }
+
+
+  .centered-text {
+    font-family: "Zhi Mang Xing", cursive;
+    font-weight: 400;
+    font-style: normal;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 6vw; /* 使用vw单位 */
+    color: white;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 1s ease-out; /* 1s 渐隐效果 */
+    transition: opacity 1s ease-in;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+* {  
+margin: 0;  
+padding: 0;  
+box-sizing: border-box;  
+}  
+
+
+.video-container {  
+position: absolute;
+height: 100%;
+width: 100%;
+top: 0%;
+left: 0%;
+object-fit: initial;
+z-index: 0;
+display: none;
+}  
+
+.video-container video {  
+position: absolute;  
+top: 0;  
+left: 0;  
+width: 100%;  
+height: 100%;  
+object-fit: cover; 
+}
+
+#text114{
+  z-index: 1000;
+  opacity: 0;
+}

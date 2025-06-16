@@ -1,0 +1,125 @@
+/* 设置页面全局样式 */
+
+@font-face {
+    font-family: 'xingshu';
+    src: url("../fonts/中华民国.ttf");}
+*{margin: 0;padding: 0;}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: url("../img/save_background.png");
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 40px;
+  max-width: 1200px;
+  max-height: 1000px;
+  margin: 0 auto;
+  padding-top: 15px;
+}
+
+.glass {
+  border-radius: 10px;
+  padding: 60px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.glass:hover {
+  transform: scale(1.02);
+}
+
+.mapId {
+  margin-top: 0;
+  text-align: center;
+  font-size: 40px;
+  font-family: 'xingshu';
+  color:#DED1D1;
+	letter-spacing: 3px;
+}
+
+.message {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 15px;
+  font-family: 'xingshu';
+  color: #333;
+	letter-spacing: 3px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.button-container button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #fff;
+  background-color:#1F2C8A;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-container button:hover {
+  background-color: #0056b3;
+}
+
+.bg1 {
+  background-image: url("../img/savearea.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 20px;
+  width: 320px;
+  height: 200px;
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
+}
+.bg1:hover{
+  opacity: 10%;
+}
+
+/* 设置头部导航栏样式 */
+.header {
+  background-color: transparent;
+  padding: 10px;
+}
+
+.logo {
+  margin: 0;
+  color: #fff;
+  font-size: 24px;
+}
+
+nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+nav ul li {
+  margin-right: 10px;
+}
+
+nav ul li a {
+  color:#C4C3C3;
+  text-decoration: none;
+	font-family: 'xingshu';
+	font-size: 20px;
+}
+
+nav ul li a:hover {color:#43557A;
+    transform: translateY(-5px);
+    font-weight: bold;
+	font-size: 20px;
+}
+

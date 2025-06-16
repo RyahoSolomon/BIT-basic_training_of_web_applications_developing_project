@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第四章</title>
+<link rel="stylesheet" type="text/css" href="plot1.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/014_penglai_north.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/008_before_penglai.mp3" type="audio/mp3"></audio>
+	<div id="text1" class="centered-text">数日后 北海上 蓬莱南约数公里处</div>
+    <div class="image-container">
+         <div class="topLeftText">
+             (左上角内容)
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            [叶岱]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >眼前就是蓬莱了啊...</div>
+		<div class="text" >(几天前,我们把鳞片拿给了法海大宗师,他通过灵气定位到了四圣兽的所在-它们的铸造地:圣山)</div>
+		<div class="text" >(为此大宗师殿下派遣我们作为先遣队,先赶往圣山查看情况,因此, 我们才有机会来到这个我们从前从来没有权力来到的地方-蓬莱仙岛)</div>
+		<div class="text" >(虽然嘴上说着算了,但我心里却没有放下妖族监国的话)</div>
+		<div class="text" >(面对大宗师时,我我数次想把心中的疑惑问出口,但最后还是没有说出来,我只是一个战士,一个棋子罢了,如果我表达自己的怀疑,或许会被抛弃甚至灭口吧)</div>
+		<div class="text" >(皇帝和护国大法师,知不知道和妖族开战以及内丹炼丹的真相呢?如果他们知道,那这战争背后也太残忍恐怖了吧...)</div>
+		<div class="text" >(不过最后我们还是把轩辕关于造神计划的笔记交给了法海,我从来没想到逼格很高的法海大宗师会露出那般错愕的神态)</div>
+		<div class="text" >嘿!{username},想什么呢?我们快到蓬莱了呀!当时只是随便说说,没想到真有机会来这儿!咋们问问太上老君那仙丹配方的问题吧!</div>
+		<div class="text" >(我们说到底,也不过是个厉害点儿的底层罢了,以我们的地位,真的有资格问这个问题吗?但我还是微笑着点了点头)</div>
+		<div class="text" >不对劲...</div>
+		<div class="text" >(从船上往过看去...蓬莱居然死气沉沉,似乎有法术爆炸过的痕迹)</div>
+		<div class="text" >该死!我们快点儿!</div>
+		</div>
+		<div class="button-group">
+			<div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+			<div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+            <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+		</div>
+		<script src = "plot1.js"></script>
+        <script src="../../js/music_player.js"></script>
+        <script>
+
+            var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../war_chess/war_chess.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+        </script>
+</body>
+</html>

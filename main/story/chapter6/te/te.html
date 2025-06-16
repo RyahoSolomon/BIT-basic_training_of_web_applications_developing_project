@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Ending</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+    <style>
+        .button-group {
+            position: absolute;
+            right: 2vw;
+            top: 2vh;
+            z-index: 4;
+        }
+        .button-group div {
+            position: relative;
+            height: 7vh;
+            width: 7vh;
+        }
+        .button-group div:hover {
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+        .button-group img {
+            height: 100%;
+            width: 100%;
+        }
+        
+        .button-save {
+            cursor: pointer;
+            top: 8vh;
+        }
+        .button-return {
+            cursor: pointer;
+            top: 2vh;
+        }
+        .button-music {
+            cursor: pointer;
+            top: 5vh;
+        }
+        
+    </style>
+    <script>
+        
+        function ReturnToIndex(){
+            window.location.href = "../../../_INDEX.html";
+        }
+        function save_(){
+            window.location.href = "../../../save/save/save.html"
+        }
+        function check(){
+            
+        }
+    </script>
+</head>
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../../bgm/014.true_ending.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../../img/unmute.jpg"></div>
+    </div>
+    <div id="achievement_popup">
+        <div id="achievement_confirm_button_mask">
+            <p id="achievement_confirm_button_text">解锁成就</p>
+        </div>
+        <div class="achievement_title_container">
+            <p class="achievement_title">神所创造的世界 并非完美</p>
+        </div>
+        <div class="achievement_content_container">
+            <p class="achievement_content">达成真结局</p>
+        </div>
+        <div id="achievement_confirm_button_mask">
+            <p id="achievement_confirm_button_text" onclick="Shutoff(),check()">确认</p>
+        </div>
+    </div>
+    <div class="container">
+        <p class="text art-font1" id="text1">终于...盘古的元神被禁锢在五行灭神大阵的光束中,越来越小,逐渐燃烧殆尽...</p>
+        <p class="text art-font1" id="text2">一切都结束了...人类摆脱了神族的束缚,通过自己的反抗,夺回了属于这个世界的自由</p>
+        <p class="text art-font1" id="text3">妖族,人族,和神族也放下隔阂,梓决,太上老君和妖族族长到处奔走,争取种族之间的和平,消弭种族矛盾</p>
+        <p class="text art-font1" id="text4">盘古事件三个月后,遗存的结界彻底崩溃.虽然人类还要面对怪物的侵袭——他们从世界的污秽和邪恶中诞生,或许永远无法彻底消灭,但是,我们很确信,这是我们为自己而战.</p>
+    </div>
+
+    <div id="text114" class="centered-text">神所创造的世界，并非完美</div>
+    <div class="video-container">  
+        <video id="cast" controls>  
+            <source src="../../../mov/cast.mp4" type="video/mp4">  
+        </video>  
+    </div>  
+
+    <script src="script.js"></script>
+    <script src="../../js/music_player.js"></script>
+    <script>
+        function Shutoff(){
+            var achievement_popup = document.getElementById("achievement_popup");
+            achievement_popup.style.display = "none";
+            setTimeout(()=>{
+                document.querySelector(".container").style.display = "none";
+                document.querySelector(".button-group").style.display = "none";
+                document.querySelector("body").style.backgroundImage = "none";
+                document.getElementById("text114").style.opacity = 1;
+                setTimeout(()=>{
+                    document.getElementById("text114").style.opacity = 0;
+                    console.log(document.getElementById("text114"));
+                    setTimeout(()=>{
+                        var video = document.getElementById('cast');
+                        document.querySelector('.video-container').style.display = "block";
+                        video.play().catch(function(error) {
+                            console.error("视频自动播放失败:", error);
+                        });
+                    },1000);
+                    video.addEventListener('ended', function() {  
+                        window.location.href = '../../../_INDEX.html';
+                    });
+                },3000);
+                
+                
+            },1000);
+        }
+        function achieve(){
+            var achievement_popup = document.getElementById("achievement_popup");
+            achievement_popup.style.display = "flex";
+        }
+        window.onload = function (){
+            var username = window.localStorage.username;
+            var achievement = window.localStorage.getItem(username + 'achievement');
+            achievement = JSON.parse(achievement);
+            achievement['ach6'] = 0;
+            if(achievement['ach6'] == 0){
+                setTimeout(achieve,10000);
+            }
+            achievement['ach6'] = 1;
+            localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
+        }
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener); 
+    </script>
+</body>
+</html>

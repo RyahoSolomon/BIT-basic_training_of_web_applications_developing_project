@@ -1,0 +1,75 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-09-07 09:58:17
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-07 19:37:10
+ * @FilePath: \源神1.0.5.1\developing\main\story\chapter4\plot2.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第四章</title>
+<link rel="stylesheet" type="text/css" href="plot2.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/015_penglai.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/008_before_penglai.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+        <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+    </div>
+    <div id="text1" class="centered-text">一刻钟后 北海 蓬莱</div>
+    <div class="image-container">
+         <div class="topLeftText">
+             (左上角内容)
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <!-- 添加左上角文本 -->
+        <div class="text" >(来到岛上,只见一群神秘黑衣人在袭击蓬莱岛民)</div>
+		<div class="text" >可恶,你们为何要进攻蓬莱!</div>
+		</div>
+	<div id="text2" class="centered-text2">听闻此言,黑衣人直接向三人杀了过来...</div>
+		<script src = "plot2.js"></script>
+        <script src="../../js/music_player.js"></script>
+        <script>
+
+            var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../war_chess/war_chess.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+        </script>
+</body>
+</html>

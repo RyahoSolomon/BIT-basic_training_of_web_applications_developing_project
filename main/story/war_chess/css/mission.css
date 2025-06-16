@@ -1,0 +1,130 @@
+@font-face{
+    font-family: "汉仪书魂体";
+    src: url("../fonts/hanyi_shuhun.ttf");
+}
+@font-face{
+  font-family: "字神苏轼豪放体";
+  src: url("../fonts/sushi.ttf");
+}
+@font-face{
+  font-family: "汉仪颜楷";
+  src: url("../fonts/hanyi_yankai.ttf");
+}
+
+#mission_icons
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: #a1ffaa;
+}
+
+#mission_confirm_masks
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: rgb(130, 43, 216);
+}
+
+#task_book
+{
+  position: absolute;
+  top: -620px;
+  left: 421px;
+  width: 438px;
+  height: 540px;
+  background-image: url("../assets/UI/task_book.png");
+}
+
+#mission_confirm_button
+{
+  position: absolute;
+  top: 400px;
+  left: 135px;
+  height: 72px;
+  width: 168px;
+}
+
+#mission_confirm_text
+{
+  font-family: "汉仪书魂体";
+  font-size: 32px;
+  color:rgb(117, 50, 30);
+}
+
+#mission_hover_mask
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: rgb(130, 43, 216);
+}
+
+#mission_confirm_hover_mask
+{
+  left: 556px;
+  top: -220px;
+  position: absolute;
+}
+
+#mission_confirm_mask
+{
+  left: 556px;
+  top: -220px;
+  height: 72px;
+  width: 168px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.level_title
+{
+  margin: auto;
+  font-size: 32px;
+  font-family: "字神苏轼豪放体";
+  color:rgb(117, 50, 30);
+  left: 11%;
+  position: relative;
+}
+
+.title_container
+{
+  margin: 10% auto 0% auto;
+}
+
+.mission_title
+{
+  margin: auto;
+  font-size: 28px;
+  font-family: "汉仪书魂体";
+  color:rgb(117, 50, 30);
+  left: 12%;
+  position: relative;
+}
+
+.subtitle_container
+{
+  margin: 3% auto;
+}
+
+.mission_info
+{
+  margin: auto;
+  font-size: 16px;
+  font-family: "汉仪颜楷";
+  color:rgb(117, 50, 30);
+  left: 6%;
+  position: relative;
+}
+
+
+.mission_info_container
+{
+  position: relative;
+  left: 6%;
+  width:360px;
+}

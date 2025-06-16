@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>register</title>
+	<link rel="stylesheet" href="css/styles_register.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<video src="mov/background.mp4" class="index-video" autoplay="autoplay" loop="loop" muted="muted"></video>
+    <div class="header">
+        <img src="img/logo.png" alt="Logo">
+    </div>
+	<div class="register-container">
+		<div class="register-box">
+            <h2><strong>注册</strong> &nbsp;</h2>
+            <form id="registerForm">
+                <div class="input-group">
+                    <label for="username">账号</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="input-group">
+                    <label for="confirm-password">再次确认密码</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
+                <div class="input-group">
+                    <button type="submit" class="btn">成功注册</button>
+                </div>
+                <div class="password">
+                    <a href="login.html">已有账号？请点击这里登录</a> 
+                </div>
+            </form>
+	    </div>
+    </div>
+
+    <script>
+        // 处理注册表单的提交事件
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 阻止表单默认提交
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirm-password').value;
+
+            /*if (window.localStorage.userArr != "undefined" && window.localStorage.userArr != undefined) {//判断是否存在
+                var array = JSON.parse(window.localStorage.userArr);
+            } else {
+                array = [];//创建一个新数组
+            }*/
+            
+            // 验证密码是否匹配
+            if (password !== confirmPassword) {
+                alert('两次输入的密码不匹配，请重新输入');
+                return;
+            }
+
+            /*for (var i = 0; i < array.length; i++) {
+                if (username == array[i].username) {//判断是否有相同账号
+                    alert("该账号已存在");
+                    return;
+                }
+            }
+            
+            var obj = { // 用户结构体
+                username: username,
+                password: password,
+                situation: 0,
+            }
+            
+            array.push(obj);
+			window.localStorage.userArr = JSON.stringify(array);
+			window.alert("注册成功！");
+			window.localStorage.nowarr = obj;*/
+            
+            
+            // 检查用户名是否已存在
+            if (localStorage.getItem(username)) {
+                alert('用户名已存在，请选择其他用户名');
+                return;
+            }
+
+            // 保存用户信息到LocalStorage
+            localStorage.setItem(username, JSON.stringify({ password: password }));
+            alert('注册成功！现在可以登录了');
+            var achievement = {
+                ach1:0,
+                ach2:0,
+                ach3:0,
+                ach4:0,
+                ach5:0,
+                ach6:0,
+                ach7:0,
+                ach8:0,
+            };
+            window.localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
+            var autosave = {
+                saveurl: 1, 
+                currentDateTime: 0,  
+                level1: 0,
+                level2: 0,
+                level3: 0,
+                level4: 0,
+                level5: 0,
+                level6: 0,  
+                MSYgamename: 0, 
+                current: 0, 
+            }
+            window.localStorage.setItem(username + 'flag',0);
+            window.localStorage.setItem(username + 'autosave',JSON.stringify(autosave));
+            // 注册成功后，跳转到登录页面
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html>

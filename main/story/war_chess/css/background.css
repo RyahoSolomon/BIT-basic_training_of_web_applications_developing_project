@@ -1,0 +1,7 @@
+body
+{ margin: 0; 
+  background-image: url("../assets/background/talion.png"); 
+  background-repeat: no-repeat; 
+  background-position: center;
+  background-size: cover;
+}

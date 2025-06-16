@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BE</title>
+<link rel="stylesheet" type="text/css" href="be.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        var element = document.querySelectorAll(".topLeftText");
+		var secondElement = element[1];
+		secondElement.textContent = username;
+		$(secondElement).fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/016.badending.mp3" type="audio/mp3"></audio>
+    <div class="image-container">
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+		<div class="topLeftText">
+            (左上角内容)
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
+        <div class="text" >随着怪物越来越多,木阵的防线逐渐崩溃...支持阵法的死士被袭来的怪物击杀了...</div>
+        <div class="text" >可恶!木阵要崩溃了!</div>
+        <div class="text" >随着死士的阵亡,木阵阵法逐渐崩溃,翻飞的火舌燃烧着木阵周围的森林,漫山遍野，尽绽红莲.</div>
+        <div class="text" >可恶....我们没能完成....任务..我们的责任...</div>
+         <div class="text" >我们...该死...对不起...天呐</div>
+         <div class="text" >在木阵崩溃的同时,其它四处阵眼处也因为防线崩溃而逐渐支撑不住...在五大阵眼同时崩溃的同时,人族打败盘古的希望与五行灭神大阵一同走向了灭亡</div>
+		<div class="text" >神族小部分人选择帮助长老,大部分人同妖族与人族一起对抗真盘古.</div>
+		<div class="text" >然而神族长老的强大却将众人的希望狠狠地塌在脚下.</div>
+		<div class="text" >苍穹终崩坍,孤镇倾残垣,阴影遮四野,哀号遍焦原.在神族长老的毁灭之力下,活下来的人也失去了任何抵抗的希望...</div>
+		<div class="text" >盘古创造这个世界,却只是为了将混沌开化、吞噬.我们完全接受不了,信仰的造物主盘古居然是灭世的邪神.</div>
+		<div class="text" >username、鸢阑和叶岱,在协防人族皇城的时候,直面盘古本尊的亲自进攻.</div>
+		<div class="text" >然而,尽管毫无恐惧,已经做好赴死精神,但三人却如同其它无名小卒般,被盘古的真火焚烧殆尽,没有阻挡盘古一刻.</div>
+        <div class="text" >Bad Ending 黑暗归厅堂，袍泽皆黄泉</div>
+	</div>
+        <div class="button-group">
+            <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+            <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+        </div>
+		<script src = "be.js"></script>
+		<script src="../../js/music_player.js"></script>
+		<script>
+
+		initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

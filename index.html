@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>开始页</title>
+	<!-- 总游戏版本 1.0.4.1 -->
+	<link rel="stylesheet" type="text/css" href="main/css/index.css">
+	<style>
+        .index-button-group {
+            margin-left: 40vw;
+        }
+    </style>
+	<script type="text/javascript" src="main/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="main/js/jquery.min.js"></script>
+  <script src="main/js/index_music_player.js"></script>
+
+</head>
+<body>
+	<audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="main/bgm/example.mp3" type="audio/mp3"></audio>
+	<script>
+		function Next(URL){
+			window.location.assign(URL);
+		}
+		
+	</script>
+	<video src = "main/mov/background.mp4" class="index-video" autoplay="autoplay" loop="loop" muted="muted"></video>
+	<div class="header">
+			<img src="main/img/logo.png">
+	</div>
+		<div class="index-button-group">
+			<div class="index-button">
+				<img src="main/img/button.png">
+				<a href="main/login.html">登          录</a>
+			</div>
+            <div class="index-button">
+				<img src="main/img/button.png">
+				<a href="main/register.html">注          册</a>
+			</div>
+		</div>
+
+        <div class="button-group">
+			<div class="button-music"><img onclick="switch_music_state()" src="main/img/unmute.jpg"></div>
+		</div>
+		<!-- <script>
+			var audioPlayer = $('#audioPlayer')[0];
+			var img = document.querySelector('.music-button img');
+			var musicbutton=document.getElementById('music-button');
+		let musicPlayer = {
+			
+        	mute : function(){
+				this.onclick = musicPlayer.unmute;
+				img.src = 'img/mute.jpg';
+				audioPlayer.pause();
+				event.stopPropagation()
+			},
+			unmute : function(){
+				this.onclick = musicPlayer.mute;
+				img.src = 'img/unmute.jpg';
+				audioPlayer.play();
+				event.stopPropagation()
+			},
+		}
+		
+		</script> -->
+		<script>  
+      initial_muisc_button_img();
+      function window_click_listener()
+      {
+        initial_music();
+        this.removeEventListener("click", window_click_listener);
+      }
+
+      window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<html>
+    <head>
+        <style>
+            .flip-container {
+                perspective: 1000px;
+                width: 300px;
+                height: 400px;
+            }
+            
+            .flipper {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                transform-style: preserve-3d;
+                transition: transform 0.6s;
+            }
+            
+            .flip-container:hover .flipper {
+                transform: rotateY(180deg);
+            }
+            
+            .front, .back {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                backface-visibility: hidden;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                text-align: center;
+                font-size: 20px;
+            }
+            
+            .front {
+                background-color: #fff;
+            }
+            
+            .back {
+                background-color: #f0f0f0;
+                transform: rotateY(180deg);
+            }
+            
+            .text {
+                padding: 10px;
+                word-break: keep-all;
+                white-space: nowrap;
+            }
+            
+        </style>
+    </head>
+    <body>
+        <div class="flip-container">
+            <div class="flipper">
+                <div class="front">
+                    <img src="../../../img/ach_back.png" alt="Front Image">
+                    <div class="text">正面文字</div>
+                </div>
+                <div class="back">
+                    <img src="../../../img/ach_front.png" alt="Back Image">
+                    <div class="text">反面文字</div>
+                </div>
+            </div>
+        </div>
+        
+    </body>
+</html>

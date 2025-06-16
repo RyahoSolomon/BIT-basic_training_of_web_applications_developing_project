@@ -1,0 +1,150 @@
+@font-face{
+  font-family: "汉仪书魂体";
+  src: url("../fonts/hanyi_shuhun.ttf");
+}
+@font-face{
+font-family: "字神苏轼豪放体";
+src: url("../fonts/sushi.ttf");
+}
+@font-face{
+font-family: "汉仪颜楷";
+src: url("../fonts/hanyi_yankai.ttf");
+}
+
+#achievement_popup
+{
+  height: 0;
+  width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  color: rgb(130, 43, 216);
+}
+
+#achievement_confirm_hover_mask
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: rgb(123, 52, 146);
+}
+
+#achievement_confirm_mask
+{
+  height: 0px;
+  width: 1280px;
+  margin:0 auto;
+  position: relative;
+  color: rgb(123, 52, 146);
+  cursor: pointer;
+}
+
+#achievement_popup_board
+{
+  position: absolute;
+  left: 352px;
+  top: -592px;
+  background-image: url("../assets/UI/achievement_popup.png");
+  width: 576px;
+  height: 320px;
+}
+
+#achievement_confirm_button
+{
+  position: absolute;
+  left: 175px;
+  top: 190px;
+}
+
+#achievement_confirm_button
+{
+  position: absolute;
+  left: 175px;
+  top: 190px;
+}
+
+#achievement_confirm_button
+{
+  position: absolute;
+  left: 175px;
+  top: 200px;
+}
+
+#achievement_confirm_button_hover_mask
+{
+  position: absolute;
+  left: 529px;
+  top: -392px;
+}
+
+#achievement_confirm_button_mask
+{
+  position: absolute;
+  left: 529px;
+  top: -392px;
+  cursor: pointer;
+}
+
+#achievement_confirm_button_text
+{
+  position: absolute;
+  left: 254.5px;
+  top: 214px;
+  font-family:  "汉仪书魂体";
+  width: 64;
+  font-size: 28px;
+  color:rgb(96, 65, 51);
+}
+
+.achievement_title_container
+{
+  position: relative;
+  margin: 0% auto 0% auto;
+  width: 80%;
+}
+
+.achievement_title
+{
+  font-family:  "字神苏轼豪放体";
+  font-size: 32px;
+  color:rgb(96, 65, 51);
+  text-align: center;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  margin: auto;
+}
+
+
+.achievement_display_container
+{
+  position: relative;
+  margin: 8% auto 0% auto;
+  width: 80%;
+}
+
+.achievement_display
+{
+  font-family:  "汉仪书魂体";
+  font-size: 30px;
+  color:rgb(96, 65, 51);
+  text-align: center;
+  display: flex;
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  margin: auto;
+}
+
+.achievement_content_container
+{
+  position: relative;
+  margin: 0% auto;
+  width: 80%;
+}
+
+.achievement_content
+{
+  font-family:  "汉仪颜楷";
+  font-size: 24px;
+  color: rgb(96, 65, 51);
+}

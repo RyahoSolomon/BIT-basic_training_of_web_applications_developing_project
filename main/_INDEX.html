@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>主页</title>
+	<!-- <link rel="stylesheet" type="text/css" href="css\bootstrap.min.css"> -->
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+	<style>
+        
+    </style>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script>
+		function construct(){
+			window.localStorage.setItem('level1',0);
+            window.localStorage.setItem('level2',0);
+            window.localStorage.setItem('level3',0);
+        	window.localStorage.setItem('level4',0);
+            window.localStorage.setItem('level5',0);
+            window.localStorage.setItem('level6',0);
+			window.localStorage.setItem('MSYgamename','序章');
+			window.localStorage.setItem('IsFirstPlay', "true");
+			window.localStorage.setItem('ismuted',0);
+			var current = {
+				      level: 0,
+              is_plot_music_on: true,
+              is_inwar_music_on: true,
+          		hidden_clue_god: false,
+          		hidden_clue_poison: false,
+          		yuanlan_level:
+          		{
+            		level: 1,
+            		exp: 0,
+          		},
+          		user_level:
+          		{
+            		level: 1,
+            		exp: 0,
+          		},
+          		yedai_level:
+          		{
+            		level: 1,
+            		exp: 0,
+          		},
+				perfect_level_complete:[false,false,false,false,false,false],
+			}
+			current = JSON.stringify(current);
+			window.localStorage.setItem('current',current);
+		}
+		function load(){
+			var username = window.localStorage.getItem('username');
+			var autosave = window.localStorage.getItem(username + 'autosave');
+			autosave = JSON.parse(autosave);
+			if(autosave.saveurl == 1){
+
+			}else{
+        		window.localStorage.level1 = autosave.level1;
+        		window.localStorage.level2 = autosave.level2;
+        		window.localStorage.level3 = autosave.level3;
+        		window.localStorage.level4 = autosave.level4;
+        		window.localStorage.level5 = autosave.level5;
+        		window.localStorage.level6 = autosave.level6;
+        		window.localStorage.MSYgamename = autosave.MSYgamename;
+    			window.localStorage.current = autosave.current;
+        		window.location.href = "story/map/map.html";
+			}
+		}
+	</script>
+  <script src="js/mainmenu_music_player.js"></script>
+</head>
+<body>
+	<audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="bgm/example.mp3" type="audio/mp3"></audio>
+	<script>
+		function Next(URL){
+			window.location.assign(URL);
+		}
+		
+	</script>
+	<video src = "mov\background.mp4" class="index-video" autoplay="autoplay" loop="loop" muted="muted"></video>
+	
+		<div class="header">
+			<img src="img\logo.png">
+		</div>
+		<div class="index-button-group">
+			<div class="index-button">
+				<img src="img\button.png">
+				<a href="story/chapter0/background.html" onclick="construct()">开          始</a>
+			</div>
+            
+			<div class="index-button">
+				<img src="img\button.png">
+				<a href="#" onclick="load()">继          续</a>
+			</div>
+            <div class="index-button">
+				<img src="img\button.png">
+				<a href="load.html">加          载</a>
+			</div>
+            <div class="index-button">
+				<img src="img\button.png">
+				<a href="achievement.html">成          就</a>
+			</div>
+		</div>
+
+    <div class="button-group">
+			<div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="img/unmute.jpg"></div>
+		</div>
+		<!-- <script>
+			var audioPlayer = $('#audioPlayer')[0];
+			var img = document.querySelector('.music-button img');
+			var musicbutton=document.getElementById('music-button');
+		let musicPlayer = {
+			
+        	mute : function(){
+				this.onclick = musicPlayer.unmute;
+				img.src = 'img/mute.jpg';
+				audioPlayer.pause();
+				event.stopPropagation()
+			},
+			unmute : function(){
+				this.onclick = musicPlayer.mute;
+				img.src = 'img/unmute.jpg';
+				audioPlayer.play();
+				event.stopPropagation()
+			},
+		}
+		
+		</script> -->
+		<script>  
+      initial_muisc_button_img();
+      function window_click_listener()
+      {
+        initial_music();
+        this.removeEventListener("click", window_click_listener);
+      }
+
+      window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

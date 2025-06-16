@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第五章</title>
+<link rel="stylesheet" type="text/css" href="plotb.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<script>
+    window.onload = function(){
+        var username = localStorage.username;
+        document.querySelector(".topLeftText").textContent = username;
+        $("#name").fadeIn();
+    }
+    function ReturnToIndex(){
+        window.location.href = "../map/map.html";
+    }
+    function save_(){
+        window.location.href = "../../save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../img/background/017_holly_moutain.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/011.confrontation.mp3" type="audio/mp3"></audio>
+    <div id="text1" class="centered-text">盘古的元神遭到重创后,身体仍然屹立不倒...</div>
+    <div class="centered-text1">霎那间,火焰与闪电腾飞,眼前的盘古被不知何处而来的法术给攻击了</div>
+    <div class="centered-text1">在炸裂的法术轰鸣过后,盘古的身体崩解了...</div>
+    <div class="centered-text1">神族长老冷冷地看了我们一眼正要离开,此时恰逢法海率领的护国盟主力赶到</div>
+	<div class="centered-text1">神族长老冷冷地回头看了脚下的人群一眼,而法海却也缓缓张口质问起了盘古</div>
+	<div class="centered-text1">随后盘古发出了咆哮,我们三个因为此前与假盘古的战斗,此时再也撑不住了,昏了过去...</div>
+    <div class="image-container">
+         <div class="topLeftText">
+             (左上角文本内容)
+        </div>
+        <div class="topLeftText">
+            [轩辕氏]
+        </div>
+        <div class="topLeftText">
+            [神族长老]
+        </div>
+		<div class="topLeftText">
+            [法海]
+        </div>
+		<div class="topLeftText">
+            [妖族族长]
+        </div>
+		<div class="topLeftText">
+            [梓决]
+        </div>
+		<div class="topLeftText">
+            [叶岱]
+        </div>
+		<div class="topLeftText">
+            [鸢阑]
+        </div>
+        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image" >
+        <!-- 添加左上角文本 -->
+		<div class="text">该死!它的肉体太强大了,如果不毁灭他的肉体,他恐怕还是会出世...</div>
+        <div class="text">可我们已经....</div>
+        <div class="text">可恶...即使是未完全出世,元神暴露的盘古,我们恐怕也只能到这个地步了...希望其他人能有所防备!</div>
+		<div class="text">三昧真火!出!</div>
+		<div class="text">你这冒牌货,还敢在神族眼皮子下现身?!</div>
+		<div class="text">神族长老,恕我冒犯,我有些问题想问您....</div>
+		<div class="text">(此刻我再已无法掩盖自己内心的疑惑,真相逐渐在我脑中成型)</div>
+		<div class="text">长老!请问人族的丹药配方是您修改的吗?为何要挑起人族和妖族的争斗?</div>
+		<div class="text">我从轩辕笔记中读到...女娲之所以不再守护人类,是因为一个更强的神族把她杀死了...而唯一能强过女娲的,不正是您吗?</div>
+		<div class="text">而且...四圣兽所化假盘古,也应该是模仿盘古行为才对,为何要攻击人类?难道盘古本身就要攻击我们?!</div>
+		<div class="text">我族第一代族长蚩尤,当年率领不满你神族暴政的各族人员讨伐, 被你镇压后你篡改丹方,挑起人妖两族千年战争,是何用意啊?</div>
+		<div class="text">长老殿下,您以神族身份伤害人妖两族...得给个交代吧...</div>
+		<div class="text">你...你骗了我们...原来我们也只是你的棋子罢了...什么神族...都是谎言!我们原来也不过是你实现自己目的的棋子罢了.!!!!</div>
+		<div class="text">(我和鸢阑都是一惊...原来叶岱他是神族吗...)</div>
+		<div class="text">(不过突然想想,又合理多了,他自称去昆仑学过法术,那里就是神族的所在地...而且叶岱知道很多只有神族才知道的事...)</div>
+		<div class="text">(其实心中也隐隐有着猜测,但是我们从来没有直说罢了)</div>
+		<div class="text">哈,哈,哈,哈,交代?你们想要一个交代?那我就给你一个交代!事情的真相,你们受的住吗?</div>
+		<div class="text">人族是吧?你们一直觉得自己是在保家卫国是吧?告诉你们,妖族才是这个世界的原住民,你们才是屠杀原住民的侵略者!</div>
+		<div class="text">之所以要除掉你们妖族,因为你们是这个世界天道的化身,阻止我吞噬你们这个世界的.我之所以让女娲创造你们人族,也正是这个目的,所以我才为了灭口杀了她!</div>
+		<div class="text">呵呵,你们反倒反抗起我来了,不过你们真是可笑,给你们制造点矛盾,就不会想起来反抗我的”暴政”了</div>
+		<div class="text">盘古开天辟地,身体化作山川日月?这都是人们编出来的狗屁传说而已!盘古从来没有死!</div>
+		<div class="text">我!就是盘古!!</div>
+    </div>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
+        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+        <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
+    </div>
+    <script src="plotb.js"></script>
+    <script src="../../js/music_player.js"></script>
+    <script>
+
+        var skipbutton = document.querySelector('.button-save');
+        skipbutton.addEventListener('click', function(){
+            window.location.href = "../map/map.html";
+        });
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+    </script>
+</body>
+</html>

@@ -1,0 +1,96 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+  background-color: #f0f0f0;
+  background-image: url('../../img/background/023_ban_pangu.png'); /* 这里加入背景图片---Add your background image */
+  background-size: cover; /* Cover the entire viewport */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  height: 100vh; /* Full viewport height */
+  box-sizing: border-box;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  padding: 20px; /* Padding inside the container */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.text {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 1s ease, transform 1s ease;
+  margin: 20px 0; /* Increased margin between paragraphs */
+  line-height: 1.8; /* Increased line spacing */
+}
+
+.art-font1 {
+  font-family: "Zhi Mang Xing", cursive;
+  font-weight: 400;
+  font-style: normal; /* Artistic font */
+  font-size: 2.2em; /* Larger font size for better readability */
+  text-indent: 2em; /* First-line indent */
+  color: white; /* Text color */
+  padding: 10px; /* Padding around text */
+  border-radius: 5px; /* Rounded corners */
+  text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, -1px 1px 2px #000, 1px -1px 2px #000;
+}
+
+.art-font2 {
+  font-family: 'Rochester', cursive; /* Artistic font for emphasis */
+  font-size: 2.2em; /* Larger font size for emphasis */
+  color: #D0021B; /* Text color */
+  padding: 15px; /* Padding around text */
+  border-radius: 10px; /* More rounded corners */
+  text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4); /* More pronounced shadow effect */
+}
+
+.center-text {
+  text-align: center; /* Center text horizontally */
+  text-indent: 0; /* Remove text indent for centered text */
+  margin-top: 40px; /* Increase margin for better spacing */
+}
+
+@media (max-width: 768px) {
+  .container {
+      width: 95%; /* 调整小屏幕上的容器宽度 */
+  }
+
+  .art-font1 {
+      font-size: 1.2em; /* 调整较小屏幕上的字体大小 */
+  }
+  
+  .art-font2 {
+      font-size: 1.5em; /* 调整较小屏幕上的字体大小 */
+  }
+  
+  .text {
+      margin: 15px 0; /* 调整较小屏幕上的段落间距 */
+      line-height: 1.6; /* 调整较小屏幕上的行间距 */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+      width: 100%; /* 在非常小的屏幕上容器宽度调整为100% */
+      padding: 10px; /* 减小内边距以适应较小的屏幕 */
+  }
+
+  .art-font1 {
+      font-size: 1em; /* 进一步调整非常小屏幕上的字体大小 */
+  }
+  
+  .art-font2 {
+      font-size: 1.2em; /* 进一步调整非常小屏幕上的字体大小 */
+  }
+  
+  .text {
+      margin: 10px 0; /* 进一步调整非常小屏幕上的段落间距 */
+      line-height: 1.4; /* 进一步调整非常小屏幕上的行间距 */
+  }
+}

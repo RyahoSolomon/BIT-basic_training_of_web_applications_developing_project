@@ -1,0 +1,110 @@
+<!--
+ * @Author: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @Date: 2024-08-22 17:47:00
+ * @LastEditors: error: error: git config user.name & please set dead value or install git && error: git config user.email & please set dead value or install git & please set dead value or install git
+ * @LastEditTime: 2024-09-01 20:49:23
+ * @FilePath: \Sweep-master\Sweep.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>小游戏-找出护山大阵阵眼(扫雷)</title>
+    <link rel="stylesheet" type="text/css" href="ground.css">
+    <link rel="stylesheet" type="text/css" href="./achievement.css">
+    <link rel="stylesheet" type="text/css" href="customize_Alert.css">
+    <script type="text/javascript" src="initial_Ground.js"></script>
+    <script type="text/javascript" src="block_Click.js"></script>
+    <script type="text/javascript" src="block_Open.js"></script>
+    <script type="text/javascript" src="customize_Alert.js"></script>
+    <style>
+        #introduction{
+            position:absolute;
+            right:5%;
+            width:10%;
+            height:5%; 
+            top:3%; color: rgb(8, 8, 8);
+            background-color: rgb(109, 186, 234);
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            font-size: 5mm;
+            font-family:'genshin';
+        }
+        #introduction:hover{
+            transform: translateX(2px) translateY(2px);
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function Next(URL){
+			window.location.assign(URL);
+		}
+    </script>
+</head>
+
+<!-- ondragstart:防拖拽生成新页面 oncontextmenu:屏蔽右键菜单-->
+<body ondragstart='return false' oncontextmenu='self.event.returnValue=false' id="body">
+<p id='p'>
+    <span class='span'>剩余阵眼: <label id='count'>0</label></span>
+    <span class='span'>用时: <label id='time'>0</label>s</span>
+    <button onclick="start()">点我开始</button>
+    <input type="button" value="点我重新开始" onclick="restart()">
+</p>
+
+<table id='ground'></table>
+
+<input type="button"  id='introduction' value="跳过" onclick="Next('../map/map.html')">
+
+<div id="achievement_popup">
+    <div id="achievement_confirm_button_mask">
+        <p id="achievement_confirm_button_text">解锁成就</p>
+    </div>
+    <div class="achievement_title_container">
+        <p class="achievement_title">正经人谁从左上角开始扫雷啊!</p>
+    </div>
+    <div class="achievement_content_container">
+        <p class="achievement_content">在躲避陷阱阵法的过程中,第一下翻开格子便踏入陷阱</p>
+    </div>
+    <div id="achievement_confirm_button_mask">
+        <p id="achievement_confirm_button_text" onclick="Shutoff()">确认</p>
+    </div>
+</div>
+
+
+<script>
+    var row; // 数组行数
+    var col; // 数组列数
+    var maxCount; // 最大地雷数量
+    var isFirstOpen = true; // 第一次打开方格
+    var count; // 剩余雷数
+    var ground; // 初始化，得到二维数组
+    var time; // 计时
+    var timer; // 定时器 100ms执行一次
+
+    function start() {
+        // 设置高难度参数
+        row = 15; // 数组行数
+        col = 15; // 数组列数
+        maxCount = 15; // 最大地雷数量
+        isFirstOpen = true; // 第一次打开方格
+        count = document.getElementById('count'); // 剩余雷数
+        ground = initial_ground(); // 初始化，得到二维数组
+        time = document.getElementById('time'); // 计时
+        
+        // 启动计时器
+        timer = setInterval(function () {
+            let seconds = (parseFloat(time.innerHTML) + 0.1).toFixed(1); // 保留一位小数
+            time.innerHTML = seconds;
+        }, 100); // 定时器 100ms执行一次
+    }
+
+    function restart() {
+        window.location.reload();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+#items
+{
+  margin:0 auto;
+  width:1280;
+  height: 0;
+  background-color: transparent;
+  position: relative;
+  left: 0;
+  top: 0;
+}
+
+.item_info
+{
+  font-family: "楷体";
+  font-size: 9;
+  position: relative;
+  color: white;
+}

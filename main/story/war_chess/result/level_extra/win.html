@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>胜利</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../css/gameover_display.css">
+
+    <script type="text/javascript" src="../../js/gameover.js"></script>
+    <script>
+      function leave(){
+        window.localStorage.setItem('level6',1);
+        var username = window.localStorage.username;
+        var achievement = window.localStorage.getItem(username + 'achievement');
+        achievement = JSON.parse(achievement);
+
+        if(achievement['ach6'] == 0)window.location.href = "../../../chapter6/te/te.html";
+        else window.location.href = "../../../chapter6/te.html";
+      }
+    </script>
+  </head>
+
+  <body ondragstart='return false' oncontextmenu='self.event.returnValue=false'>
+    <div class="container">
+      <img src = "../../assets/UI/game_over_box.png" id = "gameover_box">
+      <a class = "result_inform" onclick = "leave()">游戏胜利!</a>
+      <img src = "../../assets/UI/confirm.png" id = "confirm" onclick = "leave()">
+      <a class = "button_text">确定</a>
+    </div>
+  </body>
+</html>

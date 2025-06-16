@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <title>map</title>
+        <link type="text/css" rel="stylesheet" href="css.css">
+        <style>
+            #level-1{
+                top: 55%;
+                left: 75%;
+            }
+            #level-2{
+                top: 65%;
+                left: 64%;
+            }
+            #level-3{
+                top: 52%;
+                left:54%;
+            }
+            #level-4{
+                top: 2%;
+                left:60%;
+            }
+            #level-5{
+                top:-1%;
+                left: 42%;
+            }
+            #level-6{
+                top:32%;
+                left:38%
+            }
+            #level-1:hover {
+                border: 3px solid hsl(0, 100%, 100%);
+            }
+            #level-2:hover {
+                border: 3px solid hsl(0, 100%, 100%);
+            }
+            #level-3:hover {
+                border: 3px solid hsl(0, 100%, 100%);
+            }
+            #level-4:hover {
+                border: 3px solid hsl(0, 100%, 100%);
+            }
+            #level-5:hover {
+                border: 3px solid hsl(0, 100%, 100%);
+            }
+            #level-6:hover {
+                border: 3px solid hsl(0, 100%, 100%);
+            }
+            
+        </style>
+        <script>
+            function save(){
+                var username = window.localStorage.username;
+                var saveurl = 0;
+                var currentDateTime = 114514;
+                var level1 = window.localStorage.getItem('level1');
+                var level2 = window.localStorage.getItem('level2');
+                var level3 = window.localStorage.getItem('level3');
+                var level4 = window.localStorage.getItem('level4');
+                var level5 = window.localStorage.getItem('level5');
+                var level6 = window.localStorage.getItem('level6');
+                var MSYgamename = window.localStorage.MSYgamename;
+                var current = window.localStorage.getItem('current');
+                var autosave = {  
+                    saveurl: saveurl, 
+                    currentDateTime: currentDateTime,  
+                    level1: level1,
+                    level2: level2,
+                    level3: level3,
+                    level4: level4,
+                    level5: level5,
+                    level6: level6,  
+                    MSYgamename: MSYgamename,
+                    current:current,
+                };  
+                window.localStorage.setItem(username + 'autosave',JSON.stringify(autosave));
+            }
+        </script>
+        <script>
+            window.onload = function(){
+                
+                var username = localStorage.username;
+                document.querySelector(".topLeftText").textContent = username;
+                $("#name").fadeIn();
+            }
+            function ReturnToIndex(){
+                window.location.href = "../../_INDEX.html";
+            }
+            function save_(){
+                window.location.href = "../../save.html"
+            }
+            function change(situation){
+                var current = JSON.parse(window.localStorage.getItem("current"));
+                current.level = situation-1;
+                window.localStorage.setItem("current",JSON.stringify(current));
+                if(situation == 1)window.localStorage.setItem('MSYgamename','第一章');
+                if(situation == 2)window.localStorage.setItem('MSYgamename','第二章');
+                if(situation == 3)window.localStorage.setItem('MSYgamename','第三章');
+                if(situation == 4)window.localStorage.setItem('MSYgamename','第四章');
+                if(situation == 5)window.localStorage.setItem('MSYgamename','第五章');
+                if(situation == 6)window.localStorage.setItem('MSYgamename','最终章');
+            }
+        </script>
+    <script src="../../js/music_player.js"></script>
+    </head>
+    <body>
+        <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/000.map.mp3" type="audio/mp3"></audio>
+        <div id="box">
+        <img src="map/map.png" width=80% height=100%>
+
+        <a href = "../chapter1/plot.html" class = "button" id="level-1"><img id="Level1" src = "map/uncaptured_level.png" alt = "第一关" onclick="change(1)"></a>
+        <a href = "../chapter2/plot.html" class = "button" id="level-2"><img id="Level2" src = "map/uncaptured_level.png" alt = "第二关" onclick="change(2)"></a>
+        <a href = "../chapter3/plot.html" class = "button" id="level-3"><img id="Level3" src = "map/uncaptured_level.png" alt = "第三关" onclick="change(3)"></a>
+        <a href = "../chapter4/plot1.html" class = "button" id="level-4"><img id="Level4" src = "map/uncaptured_level.png" alt = "第四关" onclick="change(4)"></a>
+        <a href = "../chapter5/plot1.html" class = "button" id="level-5"><img id="Level5" src = "map/uncaptured_level.png" alt = "第五关" onclick="change(5)"></a>
+        <a href = "../chapter6/plot1.html" class = "button" id="level-6"><img id="Level6" src = "map/uncaptured_level.png" alt = "第六关" onclick="change(6)"></a>
+        
+        <div class="button-group">
+            <div class="button-save" onclick="save_()"><img tilte = "存档" src="../../img/save.jpg"></div>
+            <div class="button-return" onclick="ReturnToIndex()"><img title = "返回主界面" src="../../img/return.jpg"></div>
+            <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../img/unmute.jpg"></div>
+        </div>
+        <script>
+          initial_muisc_button_img();
+          function window_click_listener()
+          {
+            console.log("点击了");
+            initial_music();
+            this.removeEventListener("click", window_click_listener);
+          }
+  
+          window.addEventListener('click', window_click_listener);
+            document.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', jumpToPage);
+              });
+            
+              function jumpToPage(event) {
+                const targetUrl = event.target.getAttribute('data-url');
+                window.location.href = targetUrl;
+              }
+
+              window.onload = function(){
+                save();
+                
+                for(let i = 1;i <= 5; ++i){
+                    var flag = localStorage.getItem('level'+i);
+                    if(flag == 1){
+                        document.getElementById('Level'+i).src = 'map/captured_level.png';
+                        document.getElementById('Level'+i).style.display = 'block';
+                        document.getElementById('level-'+i).style.display = 'block';
+                    }else{
+                        document.getElementById('Level'+i).style.display = 'block';
+                        document.getElementById('level-'+i).style.display = 'block';
+                        break;
+                    }
+                    
+                }
+                var keyvalue = window.localStorage.getItem('level6');
+                if(keyvalue == 114){
+                    document.getElementById('Level6').style.display = 'block';
+                    document.getElementById('level-6').style.display = 'block';
+                }else if(key == 1){
+                    document.getElementById('Level6').src = 'map/captured_level.png';
+                    document.getElementById('Level6').style.display = 'block';
+                    document.getElementById('level-6').style.display = 'block';
+                }
+                alert("已自动保存");
+              }
+        </script>
+        </div>
+    </body>
+</html>

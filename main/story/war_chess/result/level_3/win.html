@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>胜利</title>
+    
+    <link rel="stylesheet" type="text/css" href="../../css/gameover_display.css">
+
+    <script type="text/javascript" src="../../js/gameover.js"></script>
+    <script>
+      function leave(){
+        window.localStorage.setItem('level3',1);
+        window.location.href = "../../../chapter3/plot_after.html";
+      }
+    </script>
+  </head>
+
+  <body ondragstart='return false' oncontextmenu='self.event.returnValue=false'>
+    <div class="container">
+      <img src = "../../assets/UI/game_over_box.png" id = "gameover_box">
+      <a class = "result_inform" style = "cursor: pointer;" onclick = "leave()">游戏胜利!</a>
+      <img src = "../../assets/UI/confirm.png" style = "cursor: pointer;" id = "confirm" onclick = "leave()">
+      <a class = "button_text">确定</a>
+    </div>
+  </body>
+</html>
