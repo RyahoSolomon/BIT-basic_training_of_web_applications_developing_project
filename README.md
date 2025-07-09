@@ -16,7 +16,7 @@
 * Patrisam
 
     组长, 剧情模块开发与实装 等
-* Ryaho·Solomon·Solomon
+* Ryaho·Escall·Solomon
 
     制作人, 战棋开发, 编剧(实际上只是改编, 原作剧情足够震撼), 项目文档 等
 * 🌈🏔🌇
