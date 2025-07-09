@@ -1,7 +1,7 @@
 #### 北京理工大学(Beijing Institute of Technology) 互联网应用开发基础训练(实践周/赵丰年)课程设计
 # 源神 The Origin Of God
 ### 开始冒险
-拉取项目后直接用浏览器(最好是较新版)打开位于根目录下的index即可.
+拉取项目后直接用浏览器(最好是较新版)打开位于根目录下的index.html即可.
 
 ### 项目基本介绍
 该项目为基于前端三件套(html, CSS, JavaScript)开发的简单的战棋类策略游戏,玩法改编自Worldwalker Games LLC开发的游戏**Wildermyth**,剧情改编自由Minecraft游戏中由水狼阳介企划，MTW和红石口袋联手制作的大型东方幻想RPG地图(社区内容)**盘灵古域**.
