@@ -1,156 +1,110 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container');
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-    const buttonContainer = document.querySelector('.button-container');
-    const text2 = document.querySelectorAll('.centered-text1');
-    let currentTextIndex = 0;
-    let buttonsShown = false;
+const lastHope = {
+  "speaker": "{player}",
+  "text": "可恶...即使是未完全出世,元神暴露的盘古,我们恐怕也只能到这个地步了...希望其他人能有所防备!"
+};
 
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
+const elderSpell = {
+  "speaker": "[神族长老]",
+  "text": "三昧真火!出!"
+};
 
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex === 0) {
-            topLeftTexts[0].style.opacity = '1';
-			texts[0].style.opacity = '1';
-        } else if (currentTextIndex === 1) {
-            topLeftTexts[0].style.opacity = '0';
-			texts[0].style.opacity = '0';
-			topLeftTexts[6].style.opacity = '1';
-			texts[1].style.opacity = '1';
-        } else if (currentTextIndex === 2) {
-            topLeftTexts[6].style.opacity = '0';
-			texts[1].style.opacity = '0';
-			topLeftTexts[0].style.opacity = '1';
-			texts[2].style.opacity = '1';
-        } else if (currentTextIndex === 3) {
-            text2[0].style.opacity = '1';
-        } else if (currentTextIndex === 4) {
-            text2[0].style.opacity = '0';
-            topLeftTexts[0].style.opacity = '0'; 
-			texts[2].style.opacity = '0';
-			topLeftTexts[2].style.opacity = '1';
-			texts[3].style.opacity = '1';
-        } else if (currentTextIndex === 5) {
-            text2[1].style.opacity = '1';
-  
-        } else if (currentTextIndex === 6) {
-            text2[1].style.opacity = '0';
-			texts[3].style.opacity = '0';
-			texts[4].style.opacity = '1';
-        } else if (currentTextIndex === 7) {
-            texts[4].style.opacity = '0';
-			texts[5].style.opacity = '1';
-			topLeftTexts[2].style.opacity = '0';
-			topLeftTexts[0].style.opacity = '1';
-        } else if (currentTextIndex === 8) {
-            text2[2].style.opacity = '1';
-        } else if (currentTextIndex === 9) {
-            text2[2].style.opacity = '0';
-			texts[5].style.opacity = '0';
-			texts[6].style.opacity = '1';
-        } else if (currentTextIndex === 10) {
-            texts[6].style.opacity = '0';
-			texts[7].style.opacity = '1';
-        } else if (currentTextIndex === 11) {
-			text2[3].style.opacity = '1';
-        } else if (currentTextIndex === 12) {
-           text2[3].style.opacity = '0';
-			texts[7].style.opacity = '0';
-			texts[8].style.opacity = '1';
-			topLeftTexts[0].style.opacity = '0';
-			topLeftTexts[3].style.opacity = '1';
-        }else if (currentTextIndex === 13) {
-           texts[8].style.opacity = '0';
-			texts[9].style.opacity = '1';
-			topLeftTexts[3].style.opacity = '0';
-			topLeftTexts[1].style.opacity = '1';
-        }else if (currentTextIndex === 14) {
-            texts[9].style.opacity = '0';
-			texts[10].style.opacity = '1';
-			topLeftTexts[1].style.opacity = '0';
-			topLeftTexts[4].style.opacity = '1';
-        }else if (currentTextIndex === 15) {
-            texts[10].style.opacity = '0';
-			texts[11].style.opacity = '1';
-			topLeftTexts[4].style.opacity = '0';
-			topLeftTexts[5].style.opacity = '1';
-        }else if (currentTextIndex === 16) {
-            texts[11].style.opacity = '0';
-			texts[12].style.opacity = '1';
-			topLeftTexts[5].style.opacity = '0';
-			topLeftTexts[6].style.opacity = '1';
-        }else if (currentTextIndex === 17) {
-            texts[12].style.opacity = '0';
-			texts[13].style.opacity = '1';
-			topLeftTexts[6].style.opacity = '0';
-			topLeftTexts[0].style.opacity = '1';
-        }else if (currentTextIndex === 18) {
-            texts[13].style.opacity = '0';
-			texts[14].style.opacity = '1';
-        }else if (currentTextIndex === 19) {
-           texts[14].style.opacity = '0';
-			texts[15].style.opacity = '1';
-        }else if (currentTextIndex === 20) {
-            texts[15].style.opacity = '0';
-			texts[16].style.opacity = '1';
-			topLeftTexts[0].style.opacity = '0';
-			topLeftTexts[2].style.opacity = '1';
-        }else if (currentTextIndex === 21) {
-            texts[16].style.opacity = '0';
-			texts[17].style.opacity = '1';
-        }else if (currentTextIndex === 22) {
-           texts[17].style.opacity = '0';
-			texts[18].style.opacity = '1';
-        }else if (currentTextIndex === 23) {
-           texts[18].style.opacity = '0';
-			texts[19].style.opacity = '1';
-        }else if (currentTextIndex === 24) {
-           texts[19].style.opacity = '0';
-			texts[20].style.opacity = '1';
-        }else if (currentTextIndex === 25) {
-           texts[20].style.opacity = '0';
-			texts[21].style.opacity = '1';
-        }else if (currentTextIndex === 26) {
-           text2[4].style.opacity = '1';
-        }else{
-            window.location.href = "../map/map.html";
-        }
+const questionForElder = {
+  "speaker": "{player}",
+  "text": "神族长老,恕我冒犯,我有些问题想问您...."
+};
 
-        currentTextIndex++;
+const accusation = {
+  "speaker": "{player}",
+  "text": "长老!请问人族的丹药配方是您修改的吗?为何要挑起人族和妖族的争斗?"
+};
 
-    }
+const panguRevelation = {
+  "speaker": "[神族长老]",
+  "text": "我!就是盘古!!"
+};
 
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-		topLeftTexts[0].style.opacity = '1';
-		texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function () {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh'; // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+  lines: [
+    {
+      "speaker": "{player}",
+      "text": "该死!它的肉体太强大了,如果不毁灭他的肉体,他恐怕还是会出世..."
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "可我们已经...."
+    },
+    lastHope,
+    { ...lastHope, caption: "霎那间,火焰与闪电腾飞,眼前的盘古被不知何处而来的法术给攻击了" },
+    elderSpell,
+    { ...elderSpell, caption: "在炸裂的法术轰鸣过后,盘古的身体崩解了..." },
+    {
+      "speaker": "[神族长老]",
+      "text": "你这冒牌货,还敢在神族眼皮子下现身?!"
+    },
+    questionForElder,
+    { ...questionForElder, caption: "神族长老冷冷地看了我们一眼正要离开,此时恰逢法海率领的护国盟主力赶到" },
+    {
+      "speaker": "{player}",
+      "text": "(此刻我再已无法掩盖自己内心的疑惑,真相逐渐在我脑中成型)"
+    },
+    accusation,
+    { ...accusation, caption: "神族长老冷冷地回头看了脚下的人群一眼,而法海却也缓缓张口质问起了盘古" },
+    {
+      "speaker": "[法海]",
+      "text": "我从轩辕笔记中读到...女娲之所以不再守护人类,是因为一个更强的神族把她杀死了...而唯一能强过女娲的,不正是您吗?"
+    },
+    {
+      "speaker": "[轩辕氏]",
+      "text": "而且...四圣兽所化假盘古,也应该是模仿盘古行为才对,为何要攻击人类?难道盘古本身就要攻击我们?!"
+    },
+    {
+      "speaker": "[妖族族长]",
+      "text": "我族第一代族长蚩尤,当年率领不满你神族暴政的各族人员讨伐, 被你镇压后你篡改丹方,挑起人妖两族千年战争,是何用意啊?"
+    },
+    {
+      "speaker": "[梓决]",
+      "text": "长老殿下,您以神族身份伤害人妖两族...得给个交代吧..."
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "你...你骗了我们...原来我们也只是你的棋子罢了...什么神族...都是谎言!我们原来也不过是你实现自己目的的棋子罢了.!!!!"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(我和鸢阑都是一惊...原来叶岱他是神族吗...)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(不过突然想想,又合理多了,他自称去昆仑学过法术,那里就是神族的所在地...而且叶岱知道很多只有神族才知道的事...)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(其实心中也隐隐有着猜测,但是我们从来没有直说罢了)"
+    },
+    {
+      "speaker": "[神族长老]",
+      "text": "哈,哈,哈,哈,交代?你们想要一个交代?那我就给你一个交代!事情的真相,你们受的住吗?"
+    },
+    {
+      "speaker": "[神族长老]",
+      "text": "人族是吧?你们一直觉得自己是在保家卫国是吧?告诉你们,妖族才是这个世界的原住民,你们才是屠杀原住民的侵略者!"
+    },
+    {
+      "speaker": "[神族长老]",
+      "text": "之所以要除掉你们妖族,因为你们是这个世界天道的化身,阻止我吞噬你们这个世界的.我之所以让女娲创造你们人族,也正是这个目的,所以我才为了灭口杀了她!"
+    },
+    {
+      "speaker": "[神族长老]",
+      "text": "呵呵,你们反倒反抗起我来了,不过你们真是可笑,给你们制造点矛盾,就不会想起来反抗我的”暴政”了"
+    },
+    {
+      "speaker": "[神族长老]",
+      "text": "盘古开天辟地,身体化作山川日月?这都是人们编出来的狗屁传说而已!盘古从来没有死!"
+    },
+    panguRevelation,
+    { ...panguRevelation, caption: "随后盘古发出了咆哮,我们三个因为此前与假盘古的战斗,此时再也撑不住了,昏了过去..." }
+  ],
+  "next": "../map/map.html",
+  "skip": "../map/map.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

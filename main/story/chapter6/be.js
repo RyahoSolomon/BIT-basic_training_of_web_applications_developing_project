@@ -1,75 +1,58 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if(currentTextIndex == 10){
-            var username = window.localStorage.username;
-            texts[currentTextIndex].textContent = username + "、鸢阑和叶岱,在协防人族皇城的时候,直面盘古本尊的亲自进攻."
-        }
-        if(currentTextIndex == texts.length){
-            window.location.href = "../map/map.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 1){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 2){
-				 topLeftTexts[0].style.opacity = '0';
-			}
-			if(currentTextIndex === 3){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-            if(currentTextIndex === 4){
-                topLeftTexts[0].style.opacity = '1';
-                topLeftTexts[1].style.opacity = '0';
-            }
-            if(currentTextIndex === 5){
-                topLeftTexts[0].style.opacity = '0';
-            }
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
+window.storyScene = {
+  "lines": [
+    {
+      "speaker": "[鸢阑]",
+      "text": "随着怪物越来越多,木阵的防线逐渐崩溃...支持阵法的死士被袭来的怪物击杀了..."
+    },
+    {
+      "speaker": "{player}",
+      "text": "可恶!木阵要崩溃了!"
+    },
+    {
+      "speaker": "{player}",
+      "text": "随着死士的阵亡,木阵阵法逐渐崩溃,翻飞的火舌燃烧着木阵周围的森林,漫山遍野，尽绽红莲."
+    },
+    {
+      "speaker": "{player}",
+      "text": "可恶....我们没能完成....任务..我们的责任..."
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "我们...该死...对不起...天呐"
+    },
+    {
+      "speaker": "",
+      "text": "在木阵崩溃的同时,其它四处阵眼处也因为防线崩溃而逐渐支撑不住...在五大阵眼同时崩溃的同时,人族打败盘古的希望与五行灭神大阵一同走向了灭亡"
+    },
+    {
+      "speaker": "",
+      "text": "神族小部分人选择帮助长老,大部分人同妖族与人族一起对抗真盘古."
+    },
+    {
+      "speaker": "",
+      "text": "然而神族长老的强大却将众人的希望狠狠地塌在脚下."
+    },
+    {
+      "speaker": "",
+      "text": "苍穹终崩坍,孤镇倾残垣,阴影遮四野,哀号遍焦原.在神族长老的毁灭之力下,活下来的人也失去了任何抵抗的希望..."
+    },
+    {
+      "speaker": "",
+      "text": "盘古创造这个世界,却只是为了将混沌开化、吞噬.我们完全接受不了,信仰的造物主盘古居然是灭世的邪神."
+    },
+    {
+      "speaker": "",
+      "text": "{player}、鸢阑和叶岱,在协防人族皇城的时候,直面盘古本尊的亲自进攻."
+    },
+    {
+      "speaker": "",
+      "text": "然而,尽管毫无恐惧,已经做好赴死精神,但三人却如同其它无名小卒般,被盘古的真火焚烧殆尽,没有阻挡盘古一刻."
+    },
+    {
+      "speaker": "",
+      "text": "Bad Ending 黑暗归厅堂，袍泽皆黄泉"
     }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[0].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-       
-            slideImage.style.bottom = '1vh';  
-        
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "../map/map.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

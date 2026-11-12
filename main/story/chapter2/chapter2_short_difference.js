@@ -1,99 +1,21 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex === texts.length){
-            window.location.href = "../map/map.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 1){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 2){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 3){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 4){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 5){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 6){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-			if(currentTextIndex === 7){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 8){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-			if(currentTextIndex === 10){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 13){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
-    }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[1].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';  // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+    lines: [
+        { speaker: "[鸢阑]", text: "他们说的话..." },
+        { speaker: "{player}", text: "战争的原因...其实也根本无可考究了,不要太放在心上..." },
+        { speaker: "[鸢阑]", text: "真的能不用内丹就炼丹吗?妖族现在只盘踞在龙鳞森林里,内丹产出很少了...如果真能不用内丹炼丹,丹药的价格应该会比现在低不少吧...我父亲当年也不必..." },
+        { speaker: "{player}", text: "可惜恐怕我们也没有机会问妖族了..." },
+        { speaker: "[鸢阑]", text: "太上老君不是神族吗?神族的寿元我记得是无限的呀,不会自然死亡,如果有朝我们能问到他就好了!" },
+        { speaker: "{player}", text: "可惜他在给出人族配方后就销声匿迹了...我们也不知道他在哪儿..." },
+        { speaker: "[叶岱]", text: "蓬莱" },
+        { speaker: "[鸢阑]", text: "???你怎么知道?" },
+        { speaker: "[叶岱]", text: "...\n...\n..." },
+        { speaker: "[叶岱]", text: "昆仑一本古书里..." },
+        { speaker: "{player}", text: "叶岱不想说的话就算了,毕竟蓬莱地处北海又设下结界,普通人族完全没有权限进入." },
+        { speaker: "{player}", text: "我更在意的是...太上老君为什么会这么做呢?为了挑起人妖之间的战争???" },
+        { speaker: "{player}", text: "而且这么多年,妖族为了自保,难道没有向人族提供过他们的炼丹配方吗...." },
+        { speaker: "[鸢阑]", text: "算啦!这些完全不是我们这些小卒能管了的啦!" },
+        { speaker: "[鸢阑]", text: "不过有朝一日如果真能见到太上老君,我们还是问问配方吧!这样仙丹价格就不会那么高了,会救更多人的命..." },
+    ],
+    next: "../map/map.html",
+    skip: "../map/map.html",
+};

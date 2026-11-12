@@ -1,104 +1,56 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container');
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-    const buttonContainer = document.querySelector('.button-container');
-    const text2 = document.querySelectorAll('.centered-text1');
-    let currentTextIndex = 0;
-    let buttonsShown = false;
+const lastHope = {
+  "speaker": "{player}",
+  "text": "可恶...即使是未完全出世,元神暴露的盘古,我们恐怕也只能到这个地步了...希望其他人能有所防备!"
+};
 
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
+const elderSpell = {
+  "speaker": "[神族长老]",
+  "text": "三昧真火!出!"
+};
 
-    // 显示下一个文本
-    function showNextText() {
+const elderAccusation = {
+  "speaker": "[神族长老]",
+  "text": "你这冒牌货,还敢在神族眼皮子下现身?!"
+};
 
-        if (currentTextIndex === 0) {
-            topLeftTexts[0].style.opacity = '1';
-			texts[0].style.opacity = '1';
-        } else if (currentTextIndex === 1) {
-            topLeftTexts[0].style.opacity = '0';
-			texts[0].style.opacity = '0';
-			topLeftTexts[1].style.opacity = '1';
-			texts[1].style.opacity = '1';
-        } else if (currentTextIndex === 2) {
-            topLeftTexts[1].style.opacity = '0';
-			texts[1].style.opacity = '0';
-			topLeftTexts[0].style.opacity = '1';
-			texts[2].style.opacity = '1';
-        } else if (currentTextIndex === 3) {
-            text2[0].style.opacity = '1';
-        } else if (currentTextIndex === 4) {
-            text2[0].style.opacity = '0';
-            topLeftTexts[0].style.opacity = '0';
-			texts[2].style.opacity = '0';
-			topLeftTexts[2].style.opacity = '1';
-			texts[3].style.opacity = '1';
-        } else if (currentTextIndex === 5) {
-            text2[1].style.opacity = '1';
-  
-        } else if (currentTextIndex === 6) {
-            text2[1].style.opacity = '0';
-			texts[3].style.opacity = '0';
-			texts[4].style.opacity = '1';
-        } else if (currentTextIndex === 7) {
-            text2[2].style.opacity = '1';
-        } else if (currentTextIndex === 8) {
-            text2[2].style.opacity = '0';
-			texts[4].style.opacity = '0';
-			texts[5].style.opacity = '1';
-			topLeftTexts[2].style.opacity = '0';
-			topLeftTexts[0].style.opacity = '1';
-        } else if (currentTextIndex === 9) {
-            texts[5].style.opacity = '0';
-			texts[6].style.opacity = '1';
-			topLeftTexts[0].style.opacity = '0';
-			topLeftTexts[3].style.opacity = '1';
-        } else if (currentTextIndex === 10) {
-            texts[6].style.opacity = '0';
-			texts[7].style.opacity = '1';
-        } else if (currentTextIndex === 11) {
-           texts[7].style.opacity = '0';
-			texts[8].style.opacity = '1';
-        } else if (currentTextIndex === 12) {
-           texts[8].style.opacity = '0';
-			texts[9].style.opacity = '1';
-        } else {
-            window.location.href = "./he.html";
-        }
-
-        currentTextIndex++;
-
+window.storyScene = {
+  lines: [
+    {
+      "speaker": "{player}",
+      "text": "该死!它的肉体太强大了,如果不毁灭他的肉体,他恐怕还是会出世..."
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "可我们已经...."
+    },
+    lastHope,
+    { ...lastHope, caption: "霎那间,火焰与闪电腾飞,眼前的盘古被不知何处而来的法术给攻击了" },
+    elderSpell,
+    { ...elderSpell, caption: "在炸裂的法术轰鸣过后,盘古的身体崩解了..." },
+    elderAccusation,
+    { ...elderAccusation, caption: "神族长老冷冷地撇了地上的三人一眼,便御风离开了." },
+    {
+      "speaker": "{player}",
+      "text": "接着,我们回到皇城,我们如实向法海他们禀告了这一切.法海居然像朋友一样,向我诉出了他的苦恼."
+    },
+    {
+      "speaker": "[法海]",
+      "text": "轩辕引以为傲的计划居然在神族长老面前如此不堪一击...听你们说的, 像是盘古方出世就被他感知到了,趁其实力未觉醒,赶来将假盘古杀死了."
+    },
+    {
+      "speaker": "[法海]",
+      "text": "看到轩辕的笔记时,我和陛下竟真有一丝能推翻神族统治的想法.如今, 幻想破灭事小,如果神族长老追究起来,我们恐怕难承其罪."
+    },
+    {
+      "speaker": "[法海]",
+      "text": "不过所幸,神族长老目前还没有要追究我们的意思,如此,我们便更需要担心结界消失以后,怪物会卷土重来的问题了...我们人族虽然千年没有经历与怪物的大规模战争,但也不是一点长进都没有的!"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "不过有一点很奇怪,按照造神计划所述,假盘古也只是会模仿真盘古的行为而已...为什么会攻击你们呢..."
     }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-		topLeftTexts[0].style.opacity = '1';
-		texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function () {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh'; // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "./he.html",
+  "skip": "../map/map.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

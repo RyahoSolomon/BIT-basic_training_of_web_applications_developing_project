@@ -1,90 +1,33 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container');
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-    const buttonContainer = document.querySelector('.button-container');
-    const text2 = document.querySelectorAll('.centered-text1');
-    let currentTextIndex = 0;
-    let buttonsShown = false;
+const arrival = {
+  "speaker": "{player}",
+  "text": "..."
+};
 
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
+const unease = {
+  "speaker": "[鸢阑]",
+  "text": "不对劲..."
+};
 
-    // 显示下一个文本
-    function showNextText() {
-        texts[3].style.opacity = 'none';
-        
-        if (currentTextIndex === 0) {
-            text2[0].style.opacity = '1';
-        } else if (currentTextIndex === 1) {
-            text2[0].style.opacity = '0';
-            text2[1].style.opacity = '1';
-        } else if (currentTextIndex === 2) {
-            text2[1].style.opacity = '0';
-			texts[0].style.opacity = '0';
-        	topLeftTexts[0].style.opacity = '0';
-            texts[1].style.opacity = '1';
-            topLeftTexts[1].style.opacity = '1';
-        } else if (currentTextIndex === 3) {
-            text2[2].style.opacity = '1';
-        } else if (currentTextIndex === 4) {
-            text2[2].style.opacity = '0';
-            text2[3].style.opacity = '1';
-        } else if (currentTextIndex === 5) {
-            text2[3].style.opacity = '0';
-            texts[1].style.opacity = '0';
-            topLeftTexts[1].style.opacity = '0';
-            texts[2].style.opacity = '1';
-            topLeftTexts[2].style.opacity = '1';
-        } else if (currentTextIndex === 6) {
-            text2[4].style.opacity = '1';
-        } else if (currentTextIndex === 7) {
-            text2[4].style.opacity = '0';
-            texts[2].style.opacity = '0';
-            topLeftTexts[2].style.opacity = '0';
-            texts[3].style.display = 'block';
-            texts[3].style.opacity = '1';
-            topLeftTexts[0].style.opacity = '1';
-        }
+const panguAppears = {
+  "speaker": "[叶岱]",
+  "text": "是盘古!"
+};
 
-        currentTextIndex++;
-
-        // 检查是否达到最后一个文本并显示按钮
-        if (currentTextIndex >= text2.length && !buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
-    }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-		topLeftTexts[0].style.opacity = '1';
-		texts[0].style.opacity = '1';
-        text2[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function () {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh'; // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+  lines: [
+    { ...arrival, caption: "三人来到圣山,眼前的景象缺十分奇怪" },
+    { ...arrival, caption: "四圣兽化作四颗巨蛋,分散在圣山谷地四周" },
+    unease,
+    { ...unease, caption: "忽然间,山体开始崩裂四颗巨蛋破裂,凝聚,在中间形成了一颗巨大的暗色的蛋" },
+    { ...unease, caption: "蛋壳破裂,从里面伸出来一直大手...随后是胳膊,然后整个人形的上半身都出现了..." },
+    panguAppears,
+    { ...panguAppears, caption: "还没等到众人反应些什么,盘古突然开始咆哮,随后混沌向三人袭来,天崩地裂!" }
+  ],
+  "skip": "../war_chess/war_chess.html",
+  "boxImage": "../../img/ui/text_box.png",
+  "inlineChoice": {
+    "label": "【该死!准备战斗!】",
+    "to": "../war_chess/war_chess.html",
+    "speaker": "{player}"
+  }
+};

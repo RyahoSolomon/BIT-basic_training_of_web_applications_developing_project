@@ -14,6 +14,28 @@ node scripts/smoke-game.cjs
 
 第一条检查 HTML 中声明的本地脚本、样式、页面和媒体路径，失效时报告文件名和行号。第二条使用已安装的 Chrome 或 Edge，在独立的临时浏览器档案中直接打开 `index.html`，检查注册、登录、新游戏、地图自动存档和首战入口，最后通过游戏自带的跳过按钮进入胜利页。任一检查失败会返回非零退出码。如浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定其可执行文件。
 
+### 编辑章节对话
+
+第 0–6 章的 24 个对话页面共用 React 播放器。每个页面原来的同名 JS 文件现在定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 与 `skip` 分别定义读完和跳过后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+
+例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效。
+
+```js
+{ speaker: "[鸢阑]", text: "我们继续出发吧。" },
+```
+
+共用播放逻辑位于 `src/story-player.jsx`。修改该文件后，在根目录执行以下命令，并将重新生成的 `main/js/story-player.js` 一起提交。仓库附带已打包的播放器，可以直接打开游戏。
+
+```sh
+npm ci
+npm run build:story
+node scripts/check-pages.cjs
+node scripts/smoke-game.cjs
+node scripts/smoke-story.cjs
+```
+
+剧情检查会逐句核对说话人，走过序章和第二章的分支、第一章的战斗入口，以及第五章的字幕切换。它还会临时增删第一章的台词，验证后续说话人和进入战斗的按钮仍然正确。
+
 ### 项目基本介绍
 该项目为基于前端三件套(html，CSS，JavaScript)开发的简单的战棋类策略游戏，玩法改编自Worldwalker Games LLC开发的游戏**Wildermyth**，剧情改编自由Minecraft游戏中由水狼阳介企划，MTW和红石口袋联手制作的大型东方幻想RPG地图(社区内容)**盘灵古域**。
 目前该项目已停止更新，但是如果有bug issue可能会修。之后会更新打码的发布视频等内容。

@@ -18,10 +18,6 @@
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
 <script>
-    window.onload = function(){
-        var username = localStorage.username;
-        document.querySelector(".topLeftText").textContent = username;
-    }
     function ReturnToIndex(){
         window.location.href = "../map/map.html";
     }
@@ -39,27 +35,13 @@
         <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
     </div>
     <div id="text1" class="centered-text">一刻钟后 北海 蓬莱</div>
-    <div class="image-container">
-         <div class="topLeftText">
-             (左上角内容)
-        </div>
-		<div class="topLeftText">
-            [鸢阑]
-        </div>
-        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
-        <!-- 添加左上角文本 -->
-        <div class="text" >(来到岛上,只见一群神秘黑衣人在袭击蓬莱岛民)</div>
-		<div class="text" >可恶,你们为何要进攻蓬莱!</div>
-		</div>
+    <div id="story-player"></div>
 	<div id="text2" class="centered-text2">听闻此言,黑衣人直接向三人杀了过来...</div>
 		<script src = "plot2.js"></script>
+    <script src="../../js/story-player.js"></script>
         <script src="../../js/music_player.js"></script>
         <script>
 
-            var skipbutton = document.querySelector('.button-save');
-        skipbutton.addEventListener('click', function(){
-            window.location.href = "../war_chess/war_chess.html";
-        });
 
         initial_muisc_button_img();
         function window_click_listener()

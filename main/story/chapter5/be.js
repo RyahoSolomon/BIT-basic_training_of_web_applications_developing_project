@@ -1,72 +1,64 @@
-document.addEventListener('DOMContentLoaded', function() {
-    
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if(currentTextIndex == 9){
-            var username = window.localStorage.username;
-            texts[currentTextIndex].textContent = "盘古觉醒 3 个月后," + username + "、鸢阑、叶岱在保卫人族皇城的战斗中,为数千怪物围攻而陨落."
-        }
-        if(currentTextIndex == texts.length){
-            window.location.href = "../map/map.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 0){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 1){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 2){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-            if(currentTextIndex === 3){
-                topLeftTexts[1].style.opacity = '0';
-            }
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
+// 原稿第 10 句会被下方带玩家名的战死叙述替换，保留其原文。
+// 我们不曾想过,带领自己开创世界的神族,居然会在关键之时隐世不出,仗着昆仑护山大阵,坐收渔翁之利,残忍地看着人族和妖族灭亡...
+window.storyScene = {
+  "lines": [
+    {
+      "speaker": "{player}",
+      "text": "可恶……我们已经……"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "盘古的元神已经和肉体融合了...我们已经没有机会了吗..."
+    },
+    {
+      "speaker": "{player}",
+      "text": "撤退!我们快回蓬莱,通知大家做好防御准备!"
+    },
+    {
+      "speaker": "",
+      "text": "盘古灵肉合一,在盘古大陆上肆意毁灭、破坏."
+    },
+    {
+      "speaker": "",
+      "text": "人族迅速组织反击,企图用最终杀器——五行灭神大阵来灭杀盘古"
+    },
+    {
+      "speaker": "",
+      "text": "然而可惜的是,最佳窗口期已经错过,五行灭神大阵在布置前便被盘古彻底破坏,面对元神归位的盘古,人族毫无抵抗之力."
+    },
+    {
+      "speaker": "",
+      "text": "可在这关键的时候,最强大的神族却开启昆仑护山大阵,隐世不出,任由人族和妖族被盘古屠戮."
+    },
+    {
+      "speaker": "",
+      "text": "我们不曾想过,庇护人族近千年的四圣兽,会炼化为盘古肉灵"
+    },
+    {
+      "speaker": "",
+      "text": "我们不曾想过,自己信仰数千年的创世神盘古,会尝试毁灭屠戮这个世界"
+    },
+    {
+      "speaker": "",
+      "text": "盘古觉醒 3 个月后,{player}、鸢阑、叶岱在保卫人族皇城的战斗中,为数千怪物围攻而陨落."
+    },
+    {
+      "speaker": "",
+      "text": "我们不曾想过,和我们有着家国之仇,交战千年的妖族,会成为我们灭亡前,与盘古抗争的最后盟友..."
+    },
+    {
+      "speaker": "",
+      "text": "直到最后,他们仍然没有放弃希望."
+    },
+    {
+      "speaker": "",
+      "text": "直到最后,他们仍然没有放弃希望."
+    },
+    {
+      "speaker": "",
+      "text": "Bad Ending 崩坍的信仰"
     }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[0].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-       
-            slideImage.style.bottom = '1vh';  
-        
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "../map/map.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

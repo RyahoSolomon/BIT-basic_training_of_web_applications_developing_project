@@ -1,60 +1,16 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 3){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
-    }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[0].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';  // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+    lines: [
+        { speaker: "{player}", text: "（我是直属于轩辕皇室执行机密任务的特别小队的一名队长，颇受信任，今天突然收到护国法师密令面谈要事，发布任务）" },
+        { speaker: "{player}", text: "（与护国法师相关，密级如此之高，究竟出什么大事了？我不禁冒了冷汗）" },
+        { speaker: "{player}", text: "参见宗师殿下。" },
+        { speaker: "[法海]", text: "不必多礼，收到密令，想必你也清楚此次任务的重要性。我就直接说吧，我感到四圣兽所立下结界松动了。" },
+        { speaker: "[法海]", text: "产生这种现象的唯一解释就是，四圣兽离开祭坛有一段时间了。如果不能及时处理，接下来我们面临的问题恐怕就是怪物和妖族趁虚反扑。" },
+        { speaker: "[法海]", text: "目前宫廷仍决定将此消息保密，以防恐慌混乱，你的任务就是迅速赶往龙鳞森林深处，从青龙祭坛处取得那里从前供奉的青龙鳞片，以便我通过灵气定位青龙所在。" },
+        { speaker: "[法海]", text: "龙鳞森林已是结界之外，那里有怪物和妖族，恐怕不会一帆风顺，但以你们的实力，应该应付他们不成问题，听明白了吗？" },
+    ],
+    choices: [
+        { label: "属下明白,我们立刻集结出发", to: "plot_b.html" },
+        { label: "回宗师殿下,为何非龙鳞森林不可?毕竟那附近有妖族领地...", to: "plot_a.html" },
+    ],
+    skip: "../map/map.html",
+};

@@ -1,62 +1,39 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const text2 = document.getElementById('text2');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container');
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-    const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-    let buttonsShown = false;
-
-    // text2 1秒后淡出
-    setTimeout(() => {
-        text2.style.opacity = 0;
-        // text2消失后触发背景和slideImage动画
-        setTimeout(() => {
-            document.body.style.backgroundImage = "url('../../img/background/021_rest.png')"; // 替换为您的背景图片
-            slideImage.style.bottom = '1vh';  // 开始slideImage动画
-        }, 1000);
-    }, 1000);
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        topLeftTexts[1].style.opacity = '1'; // 显示左上角文本
-        texts[0].style.opacity = '1'; // 显示第一个正文
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
+window.storyScene = {
+  "lines": [
+    {
+      "speaker": "[鸢阑]",
+      "text": "你可算醒了啊!!!担心死我们了!"
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "..."
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "对不起,我一直瞒着我的身份...因为我担心人族和神族之间的矛盾...我知道你们虽然表面上服从神族,但是对每年数量惊人的贡品感到不满...只是迫于长老压力才表现出服从.."
+    },
+    {
+      "speaker": "{player}",
+      "text": "其实...没关系....."
+    },
+    {
+      "speaker": "{player}",
+      "text": "话说,你为什么离开神族了呢..."
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "其实...我是神族内部反抗长老的一员...即使不算上他对你们做的事情,我们神族内部对他也是颇有微词的...然而事情还是败露,和我们一伙的,包括我的亲哥哥,大多都被杀了,我和一些其它罪状不是很重的人也被流放..."
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "真的对不起...."
     }
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex === texts.length) {
-            window.location.href = "plot2.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex ===1){
-				 topLeftTexts[1].style.opacity = '0'; 
-				 topLeftTexts[2].style.opacity = '1'; 
-			}
-			if(currentTextIndex ===3){
-				 topLeftTexts[2].style.opacity = '0'; 
-				 topLeftTexts[0].style.opacity = '1'; 
-			}
-			if(currentTextIndex ===5){
-				 topLeftTexts[0].style.opacity = '0'; 
-				 topLeftTexts[2].style.opacity = '1'; 
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        } else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "plot2.html",
+  "skip": "../war_chess/war_chess.html",
+  "boxImage": "../../img/ui/text_box.png",
+  "intro": {
+    "selector": "#text2",
+    "background": "../../img/background/021_rest.png"
+  }
+};

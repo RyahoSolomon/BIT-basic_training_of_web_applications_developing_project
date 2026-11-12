@@ -17,10 +17,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <script>
-    window.onload = function(){
-        var username = localStorage.username;
-        document.querySelector(".topLeftText").textContent = username;
-    }
     function ReturnToIndex(){
         window.location.href = "../map/map.html";
     }
@@ -39,49 +35,11 @@
     </div>
     <div id="text1" class="centered-text">第二天下午 龙鳞森林深处</div>
 
-    <div class="image-container">
-         <div class="topLeftText">
-            （左上角文本内容）
-        </div>
-		<div class="topLeftText">
-            [鸢阑]
-        </div>
-		<div class="topLeftText">
-            [叶岱]
-        </div>
-        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
-        <!-- 添加左上角文本 -->
-        <div class="text" >(我的小队一共三名成员,我是从禁卫军中选拔出来的先锋战士)</div>
-         <div class="text" >（父母都是森民的鸢阑,继承了森民的特质,弓术超凡）</div>
-         <div class="text" >(来自昆仑,十分沉默的叶岱,修行过昆仑法术)</div>
-		<div class="text" >(到如今,我们已经合作了数年了,给皇室解决了不少麻烦,我们都是互相可以交付后背的战友...)</div>
-		<div class="text" >看地图的话前面不远处就是青龙祭坛了耶!说起来一路上居然没遇到什么大麻烦呢,不过是些零散的怪物.</div>
-		<div class="text" >哈,你父亲就是森林入口那个龙须镇的吧,你居然还不知道路。</div>
-		<div class="text" >什么嘛,毕竟我们也很少进入森林深处啦.</div>
-		<div class="text" >据说最早刚修建祭坛的时候,祖先们还经常去森林里面朝拜,但毕竟离开结界,多少会遇到一些危险,后来就很少有人去了,现在祭坛想必很破败了</div>
-		<div class="text" >说起来真是讽刺啊,我们总把四圣兽在上挂在嘴边,可是我们却连基本的供奉也做不到.</div>
-		<div class="text" >毕竟有危险呀,结界只能维持在四大祭坛围起来的范围里生效..</div>
-		<div class="text" >说起来这个,在四圣兽被创造出来前,外围的村镇还要面临这些怪物的无穷骚扰啊,我们有这样安定的环境还真是好啊...</div>
-		<div class="text" >是呀!四圣兽在上!</div>
-		<div class="text" >...</div>
-		<div class="text">
-    <a>
-        <button id="button1" onclick="go()" >【到祭坛了!居然有这么多怪物!恐怕是被里面的灵力吸引的吧!准备战斗!】</button>
-    </a>
-	</div>
-	
-		<script src = "plot.js"></script>
+    <div id="story-player"></div>
+    <script src="plot.js"></script>
+    <script src="../../js/story-player.js"></script>
 		<script src="../../js/music_player.js"></script>
 		<script>
-
-			function go(){
-				window.location.href = "../war_chess/war_chess.html";
-			}
-			var skipbutton = document.querySelector('.button-save');
-        skipbutton.addEventListener('click', function(){
-            window.location.href = "../war_chess/war_chess.html";
-        });
-
 		initial_muisc_button_img();
         function window_click_listener()
         {

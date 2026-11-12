@@ -1,82 +1,51 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex === 2) {
-            var username = localStorage.username;
-            texts[currentTextIndex].textContent = username + ",你们还好吧,现在怎么样了";
-        }
-        if(currentTextIndex === texts.length){
-            window.location.href = "../war_chess/war_chess.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 1){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 2){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 3){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-			if(currentTextIndex === 4){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 10){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		if (currentTextIndex === texts.length) {
-        document.querySelector('.button-container').style.display = 'flex'; // 显示按钮
+window.storyScene = {
+  "lines": [
+    {
+      "speaker": "{player}",
+      "text": "(不大的区域居然坐着好些个熟面孔:第五十六代轩辕——当今人族帝王,护国法师法海,妖族族长,梓决,太上老君还有几个其它人)"
+    },
+    {
+      "speaker": "[轩辕]",
+      "text": "不必行礼,法海,说一下情况吧"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "{player},你们还好吧,现在怎么样了"
+    },
+    {
+      "speaker": "{player}",
+      "text": "回禀大宗师殿下,身体已经恢复大半,目前已可继续战斗!"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "盘古那家伙...开天辟地居然是骗人的.那家伙是游离于世界之间的一个种族.他们寻找混沌的世界,然后打破混沌,再克服世界的天道意志,便能吞噬这个世界...盘古一族,就是这样形式的生命存在"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "这样的过程,或许他本人也经历过无数次,但是这都不重要了,我们要保护自己所爱的世界,他给了我们强大的武器:阵法、丹药和创造力.我们会用这些东西彻底击溃盘古!"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "我们各组已经制定作战方针!太上老君统帅炼丹师协会,为我们提供丹药供给,仙盟派出数名死士,准备在盘古处布下”五行灭神大阵”彻底诛杀盘古!"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "我们需要在结阵完成前保护死士!时间紧张,我们必须在这个阶段——他的真身出现,实力尚不完全的的时候才有机会杀死他!"
+    },
+    {
+      "speaker": "[法海]",
+      "text": "如今大部队还难集结,但是各种族和组织的精英已经聚集,我本人和妖族族长也会参战."
+    },
+    {
+      "speaker": "[法海]",
+      "text": "我们需要你保护东方木阵,能否杀死盘古,在此一举!此后恐再无机会."
+    },
+    {
+      "speaker": "{player}",
+      "text": "属下领命!定会用生命保护木阵安危!"
     }
-    }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[2].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';  // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "../war_chess/war_chess.html",
+  "skip": "../war_chess/war_chess.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

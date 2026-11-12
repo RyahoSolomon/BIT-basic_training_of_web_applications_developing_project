@@ -1,79 +1,55 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex == 7){
-            var username = localStorage.username;
-            texts[currentTextIndex].textContent = "嘿!" + username + ",想什么呢?我们快到蓬莱了呀!当时只是随便说说,没想到真有机会来这儿!咋们问问太上老君那仙丹配方的问题吧!"
-        }
-        if (currentTextIndex === texts.length){
-            window.location.href = "plot2.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 7){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 8){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 9){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-			if(currentTextIndex === 10){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
+window.storyScene = {
+  "lines": [
+    {
+      "speaker": "{player}",
+      "text": "眼前就是蓬莱了啊..."
+    },
+    {
+      "speaker": "{player}",
+      "text": "(几天前,我们把鳞片拿给了法海大宗师,他通过灵气定位到了四圣兽的所在-它们的铸造地:圣山)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(为此大宗师殿下派遣我们作为先遣队,先赶往圣山查看情况,因此, 我们才有机会来到这个我们从前从来没有权力来到的地方-蓬莱仙岛)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(虽然嘴上说着算了,但我心里却没有放下妖族监国的话)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(面对大宗师时,我我数次想把心中的疑惑问出口,但最后还是没有说出来,我只是一个战士,一个棋子罢了,如果我表达自己的怀疑,或许会被抛弃甚至灭口吧)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(皇帝和护国大法师,知不知道和妖族开战以及内丹炼丹的真相呢?如果他们知道,那这战争背后也太残忍恐怖了吧...)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(不过最后我们还是把轩辕关于造神计划的笔记交给了法海,我从来没想到逼格很高的法海大宗师会露出那般错愕的神态)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "嘿!{player},想什么呢?我们快到蓬莱了呀!当时只是随便说说,没想到真有机会来这儿!咋们问问太上老君那仙丹配方的问题吧!"
+    },
+    {
+      "speaker": "{player}",
+      "text": "(我们说到底,也不过是个厉害点儿的底层罢了,以我们的地位,真的有资格问这个问题吗?但我还是微笑着点了点头)"
+    },
+    {
+      "speaker": "[叶岱]",
+      "text": "不对劲..."
+    },
+    {
+      "speaker": "{player}",
+      "text": "(从船上往过看去...蓬莱居然死气沉沉,似乎有法术爆炸过的痕迹)"
+    },
+    {
+      "speaker": "{player}",
+      "text": "该死!我们快点儿!"
     }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[0].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';  // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "plot2.html",
+  "skip": "../war_chess/war_chess.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

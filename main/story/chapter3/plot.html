@@ -17,10 +17,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <script>
-    window.onload = function(){
-        var username = localStorage.username;
-        document.querySelector(".topLeftText").textContent = username;
-    }
     function ReturnToIndex(){
         window.location.href = "../map/map.html";
     }
@@ -34,37 +30,17 @@
     <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/006_before_zhuolu.mp3" type="audio/mp3"></audio>
     <div id="text1" class="centered-text">当日上午 涿鹿城东 官道</div>
 
-    <div class="image-container">
-         <div class="topLeftText">
-             (左上角内容)
-        </div>
-		<div class="topLeftText">
-            [鸢阑]
-        </div>
-		<div class="topLeftText">
-            [叶岱]
-        </div>
-        <img id="slideImage" src="../../img/ui/text_box.png" alt="Sliding Image">
-        <!-- 添加左上角文本 -->
-        <div class="text" >(远远看去涿鹿城附近冒着黑烟)</div>
-        <div class="text" >怎么回事!涿鹿城是被围攻了吗!昨天上午路过还好好的!</div>
-        <div class="text" >我们去看看吧...?</div>
-		<div class="text" >任务要紧</div>
-		<div class="text" >没错,不过我们还是看看什么情况吧,如果能帮得上就帮一下吧.</div>
-		</div>
+    <div id="story-player"></div>
         <div class="button-group">
             <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../img/return.jpg"></div>
             <div class="button-music"><img title = "音乐开/关" onclick = "switch_music_state()" src="../../img/unmute.jpg"></div>
             <div class="button-save"><img title = "跳过剧情" src="../../img/skip.png"></div>
         </div>
 		<script src = "plot.js"></script>
+    <script src="../../js/story-player.js"></script>
         <script src="../../js/music_player.js"></script>
         <script>
 
-            var skipbutton = document.querySelector('.button-save');
-        skipbutton.addEventListener('click', function(){
-            window.location.href = "../war_chess/war_chess.html";
-        });
 
         initial_muisc_button_img();
         function window_click_listener()

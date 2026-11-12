@@ -1,67 +1,67 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex === texts.length) {
-            window.location.href = "../map/map.html";
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 3){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 5){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
+window.storyScene = {
+  "lines": [
+    {
+      "speaker": "[鸢阑]",
+      "text": "结界削弱的影响已经逐渐显现了...."
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "希望能顺利解决吧."
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "万一...四圣兽无法归位呢..."
+    },
+    {
+      "speaker": "{player}",
+      "text": "那我们恐怕就要面临怪物的威胁了...高墙之内也不再安全..."
+    },
+    {
+      "speaker": "{player}",
+      "text": "那时候我会奋战在保卫人族的第一线的."
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "我也会!"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(点了点头)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(我们都是没有牵挂的人,在一起共同战斗了很多年了,为皇族做过一些肮脏的事,也有一些正义的事)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(我不知道我们是不是好人,但是我很确信,我们相互之间都是彼此唯一的家人)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(我只擅长战斗,从小卒选拔进禁卫军,从禁卫军被选拔入特务机关, 再被选拔成为精英小队成员)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(但我不知道我想要什么,直到遇到了他们)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(我在龙须镇从怪物手中救下了这个在森民群体中也极具战斗天赋和弓术天赋的小姑娘)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(我从虎金镇的山脚下遇到了沉默寡言的叶岱,并一起清理了那里矿坑里的怪物)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(自那以后我们就并肩作战,我也知道了我想要什么)"
+    },
+    {
+      "speaker": "[鸢阑]",
+      "text": "(我会守护好他们的陪伴,守护好人族,即使结界崩溃后,面对无尽的怪物,我也不会退缩)"
     }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[1].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';  // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+  ],
+  "next": "../map/map.html",
+  "skip": "../map/map.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

@@ -1,93 +1,62 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container');
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-    const buttonContainer = document.querySelector('.button-container');
-	let currentTextIndex=0;
-    let current_info = localStorage.getItem("current");
-    try {
-        current_info = JSON.parse(current_info);
-    } catch (error) {
-        console.error("Failed to parse current_info:", error);
-        current_info = {hidden_clue_poison: false}; // 设定一个默认值，避免后续错误
-    }
+// 原稿末句未播放，原流程在两个分支结束后直接进入护山大阵。
+// 前面就是梓决岛主所说的护山大阵了!做好准备吧!我们要找到所有阵眼!
+const sharedLines = [
+  {
+    "speaker": "[叶岱]",
+    "text": "那些黑衣人...是神族"
+  },
+  {
+    "speaker": "[鸢阑]",
+    "text": "你说什么?神族?!为什么神族要袭击蓬莱?"
+  }
+];
 
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
+const shortLines = [
+  {
+    "speaker": "{player}",
+    "text": "恐怕我们永远也不会知道了...圣山就在眼前,我们做好最后的准备吧,希望能够找回四圣兽"
+  }
+];
 
-    // 显示下一个文本
-    function showNextText() {
-    if (currentTextIndex === 0) {
-        // 显示第一条文本
-        texts[0].style.opacity = '1';
-        currentTextIndex++;
-    } else if (currentTextIndex === 1) {
-        // 显示第二条文本，并隐藏第一条文本
-        texts[1].style.opacity = '1';
-        texts[0].style.opacity = '0';
-		topLeftTexts[2].style.opacity = '0';
-		topLeftTexts[1].style.opacity = '1';
-        currentTextIndex++;
-    } else if (current_info?.hidden_clue_poison && currentTextIndex === 2) {
-        // 显示第三条文本，并结束
-        texts[2].style.opacity = '1';
-	    texts[1].style.opacity = '0';
-		topLeftTexts[1].style.opacity = '0';
-		topLeftTexts[0].style.opacity = '1';
-        currentTextIndex++;
-    } else if (!current_info?.hidden_clue_poison && currentTextIndex === 2) {
-        // 跳过第三条文本，直接增加 currentTextIndex，继续显示后面的文本
-	    texts[1].style.opacity = '0';
-		topLeftTexts[1].style.opacity = '0';
-		topLeftTexts[0].style.opacity = '1';
-        currentTextIndex++;
-        showNextText(); // 递归调用以继续下一个文本的显示
-    } else if (!current_info?.hidden_clue_poison && currentTextIndex > 2 && currentTextIndex < 9) {
-        // 显示第4到第9条文本
-        texts[currentTextIndex].style.opacity = '1';
-		texts[currentTextIndex-1].style.opacity = '0';
-		if(currentTextIndex === 6){
-			topLeftTexts[0].style.opacity = '0';
-			topLeftTexts[1].style.opacity = '1';   
-		}
-		if(currentTextIndex === 7){
-			topLeftTexts[1].style.opacity = '0';
-			topLeftTexts[0].style.opacity = '1';   
-		}
-        currentTextIndex++;
-    }else{
-        window.location.href = '../Minesweeper/Sweep.html'
-    }
+const longLines = [
+  {
+    "speaker": "{player}",
+    "text": "恐怕是因为岛主梓决曾经反抗过神族长老,如今被长老得知,神族长老才派人来暗杀梓决的..."
+  },
+  {
+    "speaker": "{player}",
+    "text": "毕竟从行为上来看,他们几乎是直奔梓决而去..."
+  },
+  {
+    "speaker": "{player}",
+    "text": "那些人都凶悍异常,恐怕在神族也是他们长老的亲信一脉"
+  },
+  {
+    "speaker": "[鸢阑]",
+    "text": "神族长老吗...那他不会找我们麻烦吧..."
+  },
+  {
+    "speaker": "{player}",
+    "text": "我想应该不会,我们毕竟只是小角色,但是如果长老真如太上老君所述一般,梓决恐怕今后难以善终...."
+  },
+  {
+    "speaker": "{player}",
+    "text": "圣山就在眼前,我们做好最后的准备吧,希望能够找回四圣兽"
+  }
+];
+
+let current;
+try {
+  current = JSON.parse(localStorage.getItem("current"));
+} catch {
+  current = null;
 }
-
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        topLeftTexts[2].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden');
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+  lines: [
+    ...sharedLines,
+    ...(current?.hidden_clue_poison ? shortLines : longLines)
+  ],
+  "next": "../Minesweeper/Sweep.html",
+  "skip": "../Minesweeper/Sweep.html",
+  "boxImage": "../../img/ui/text_box.png"
+};

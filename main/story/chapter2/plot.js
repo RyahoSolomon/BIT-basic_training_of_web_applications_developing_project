@@ -1,80 +1,15 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container'); // 修改为选择image-container
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-	const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-	let buttonsShown = false;
-    // 1s后text1淡出
-    setTimeout(() => {
-        textElement.style.opacity = 0;
-    }, 1000);
-
-    // 显示下一个文本
-    function showNextText() {
-        texts[9].style.display = 'none';
-        if(currentTextIndex == 9){
-            texts[9].style.display = 'block';
-        }
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-			if(currentTextIndex === 1){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 3){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-			if(currentTextIndex === 4){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 5){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[2].style.opacity = '1';
-			}
-			if(currentTextIndex === 9){
-				 topLeftTexts[2].style.opacity = '0';
-				 topLeftTexts[3].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }
-		else if (!buttonsShown) {
-            buttonContainer.style.display = 'flex'; // 显示按钮
-            buttonsShown = true; // 防止按钮重复显示
-        }
-    }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        // 显示左上角文本和第一个正文
-        topLeftTexts[0].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // text1在1.5秒后消失
-        setTimeout(() => {
-            textElement.classList.add('hidden'); // 添加消失动画
-        }, 1500);
-
-        // text1淡出动画结束后slideImage滑入
-        textElement.addEventListener('transitionend', () => {
-            slideImage.style.bottom = '1vh';  // 滑入到容器中
-        });
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 修改这里：点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+    lines: [
+        { speaker: "[???]", text: "该死的人族!都站住!你们怎么敢闯入我们的领地?!你们杀妖取丹,把我们从平原上赶进来还不够吗?!" },
+        { speaker: "[鸢阑]", text: "(小声)是妖族吧...我们这下遇到麻烦了...看这人着装应该是妖族监国吧?虽然只是先锋队,但我们恐怕遇上硬茬了..." },
+        { speaker: "[鸢阑]", text: "十分抱歉!我们只是森林迷路,误闯贵族领土,可否高抬贵手,让我们离开?" },
+        { speaker: "[妖族监国]", text: "(冷笑)迷路是吗?我们怎么有斥候在青龙祭坛附近看到过和你们很相似的小队呢?" },
+        { speaker: "[鸢阑]", text: "大人,我们只是前往祭拜而已..." },
+        { speaker: "[妖族监国]", text: "呵呵,别以为我不知道感受不到青龙灵气,你们拿走了鳞片对吧?!" },
+        { speaker: "[妖族监国]", text: "你们仗着四圣兽之势,夺我族国土,把我们赶到森林之中,屠杀我族族民, 只为了取丹炼丹.反过来污蔑是我们侵占你们,真是可恶" },
+        { speaker: "[妖族监国]", text: "你们炼丹配方都是所谓的仙丹之祖-太上老君给你们吧?实话告诉你们, 他是篡改了我族丹方,按他的配方,妖族内丹居然成了必须材料!就靠这个便挑起战争,你们全族上下真是龌龊之极!" },
+        { speaker: "[妖族监国]", text: "不管你们拿走青龙鳞片想干什么,妖族绝对不许你们再用四圣兽行龌龊之事了!开战吧!" },
+    ],
+    inlineChoice: { speaker: "{player}", label: "【可恶...只能这样了吗?!准备战斗!】", to: "../war_chess/war_chess.html" },
+    skip: "../war_chess/war_chess.html",
+};

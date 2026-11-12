@@ -1,53 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const textElement = document.getElementById('text1');
-    const slideImage = document.getElementById('slideImage');
-    const imageContainer = document.querySelector('.image-container');
-    const texts = document.querySelectorAll('.text');
-    const topLeftTexts = document.querySelectorAll('.topLeftText');
-    const buttonContainer = document.querySelector('.button-container');
-    let currentTextIndex = 0;
-
-    // 显示下一个文本
-    function showNextText() {
-        if (currentTextIndex < texts.length) {
-            if (currentTextIndex > 0) {
-                texts[currentTextIndex - 1].style.opacity = '0'; // 隐藏上一个文本
-            }
-           if(currentTextIndex === 1){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-			if(currentTextIndex === 2){
-				 topLeftTexts[0].style.opacity = '0';
-				 topLeftTexts[1].style.opacity = '1';
-			}
-			if(currentTextIndex === 4){
-				 topLeftTexts[1].style.opacity = '0';
-				 topLeftTexts[0].style.opacity = '1';
-			}
-            texts[currentTextIndex].style.opacity = '1'; // 显示当前文本
-            currentTextIndex++;
-        }else{
-            window.location.href = "../map/map.html";
-        }
-    }
-
-    // slideImage动画结束后显示文本
-    function onSlideImageTransitionEnd() {
-        topLeftTexts[1].style.opacity = '1';
-        texts[0].style.opacity = '1';
-        slideImage.removeEventListener('transitionend', onSlideImageTransitionEnd);
-    }
-
-    // 页面加载后动画顺序控制
-    window.addEventListener('load', function() {
-        // 直接显示 slideImage，没有与 text1 的动画关联
-        slideImage.style.bottom = '1vh';  // 滑入到容器中
-
-        // slideImage滑入动画结束后显示文本
-        slideImage.addEventListener('transitionend', onSlideImageTransitionEnd);
-
-        // 点击 image-container 切换文本
-        imageContainer.addEventListener('click', showNextText);
-    });
-});
+window.storyScene = {
+    lines: [
+        { speaker: "[法海]", text: "此事越快越好，玄武祭坛在北海，白虎祭坛位于西方虎爪山脉，朱雀祭坛虽然不远，但覆于火山之下，恐是无法到达。" },
+        { speaker: "{player}", text: "回宗师殿下,请问四圣兽是否可以替代重铸?" },
+        { speaker: "[法海]", text: "四圣兽乃是用补天之石才可铸成,如今世界上恐再无此等法宝了..." },
+        { speaker: "[法海]", text: "想当年是当今人族帝王的祖先,初代轩辕和神农合力所铸,他们是我人族技艺的巅峰,可惜最后他们为了铸就圣兽元神,献出了自己的生命,技艺也都失传了..." },
+        { speaker: "{player}", text: "(离开玄阳殿后,心中不由得感到震颤,四圣兽是人族的守护者,是我们的信仰,如今结界松动,往坏处想,恐怕已经陨落...)" },
+        { speaker: "{player}", text: "(不敢再想下去了,还是快些行动吧)" },
+    ],
+    next: "../map/map.html",
+    skip: "../map/map.html",
+};

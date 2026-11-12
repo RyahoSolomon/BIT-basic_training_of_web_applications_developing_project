@@ -1,0 +1,14 @@
+{
+  "name": "the-origin-of-god",
+  "private": true,
+  "scripts": {
+    "build:story": "esbuild src/story-player.jsx --bundle --minify --legal-comments=eof --outfile=main/js/story-player.js"
+  },
+  "dependencies": {
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}
