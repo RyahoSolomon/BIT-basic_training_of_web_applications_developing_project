@@ -31,30 +31,21 @@ function switch_music_state()
   localStorage.setItem("current", JSON.stringify(current_info));
   
   let audioPlayer = document.getElementById('audioPlayer');  
-  let musicButton = document.querySelector('.button-music');  
-  let img = musicButton.querySelector('img');  
+  initial_muisc_button_img(current_info.is_plot_music_on);
   if(current_info.is_plot_music_on)
   {
     audioPlayer.play();
-    img.src = "../../img/unmute.jpg";
   }
   else
   {
     audioPlayer.pause();
-    img.src = "../../img/mute.jpg";
   }
 }
 
-function initial_muisc_button_img()
+function initial_muisc_button_img(enabled = get_music_state())
 {
-  if(get_music_state())
-  {
-    document.querySelector('.button-music').querySelector('img').src = '../../img/unmute.jpg';
-  }
-  else
-  {
-    document.querySelector('.button-music').querySelector('img').src = '../../img/mute.jpg';
-  }
+  const img = document.querySelector('.button-music img');
+  img.src = new URL(enabled ? 'unmute.jpg' : 'mute.jpg', img.src).href;
 }
 
 function initial_music()
