@@ -8,6 +8,7 @@
   <title>load</title>
   <link rel="stylesheet" href="../shared/styles/saves.css">
   <link href="../assets/images/logo.png" type="image/png" rel="icon">
+  <script src="../shared/scripts/progress.js"></script>
   <script src="../shared/scripts/saves.js"></script>
 
 </head>
@@ -25,40 +26,7 @@
     </nav>
   </div>
 
-  <script>
-    
-    var username = window.localStorage.username;
-    var urlSearchParams = new URLSearchParams(window.location.search);
-    var referrer = urlSearchParams.get("referrer");
-    function back() {
-        window.history.back();
-    }
-    window.onload = function () {
-      var array = JSON.parse(localStorage.getItem(username+'savearea')) || [];
-      var temp = {
-        saveurl: 0, 
-        currentDateTime: 0,  
-        keyvalue: 0,  
-        level: 0,  
-        MSYGameName: 0,  
-      };
-      if(array){
 
-      }else{
-        for(let i=0;i<10;++i){
-            array.push(temp);
-        }
-      }
-      // 将值设置到对应的元素中
-      for(var i = 0; i < 9; i++){
-        if(array[i]){
-          document.getElementById('gamename' + i).textContent = array[i].MSYgamename;
-          document.getElementById('time' + i).textContent = array[i].currentDateTime;
-        }
-      }
-
-    };
-  </script>
 
   <div class="container">
 

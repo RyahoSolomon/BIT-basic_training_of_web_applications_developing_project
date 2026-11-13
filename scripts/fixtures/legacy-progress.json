@@ -1,0 +1,54 @@
+{
+  "source": {
+    "commit": "c1d9d4231b70bc0ae4893278157dbeed0b623be5",
+    "branch": "origin/archive/pre-agent",
+    "initializer": "main/_INDEX.html: construct()",
+    "autoSave": "main/story/map/map.html: save()",
+    "manualSave": "main/js/controll.js: Save(2)",
+    "note": "Original functions executed in a VM with in-memory localStorage and a fixed date. Progress values were set to a non-initial run before saving; the original serializers produced both snapshots."
+  },
+  "username": "legacy-progress-test",
+  "manualSlot": 2,
+  "activeStorage": {
+    "level1": "1",
+    "level2": "1",
+    "level3": "1",
+    "level4": "1",
+    "level5": "1",
+    "level6": "114",
+    "MSYgamename": "第五章",
+    "IsFirstPlay": "false",
+    "ismuted": "0",
+    "current": "{\"level\":4,\"is_plot_music_on\":false,\"is_inwar_music_on\":true,\"hidden_clue_god\":true,\"hidden_clue_poison\":true,\"yuanlan_level\":{\"level\":4,\"exp\":17},\"user_level\":{\"level\":5,\"exp\":23},\"yedai_level\":{\"level\":3,\"exp\":9},\"perfect_level_complete\":[true,false,true,true,false,false]}",
+    "username": "legacy-progress-test",
+    "legacy-progress-testflag": "1"
+  },
+  "autosave": {
+    "saveurl": 0,
+    "currentDateTime": 114514,
+    "level1": "1",
+    "level2": "1",
+    "level3": "1",
+    "level4": "1",
+    "level5": "1",
+    "level6": "114",
+    "MSYgamename": "第五章",
+    "current": "{\"level\":4,\"is_plot_music_on\":false,\"is_inwar_music_on\":true,\"hidden_clue_god\":true,\"hidden_clue_poison\":true,\"yuanlan_level\":{\"level\":4,\"exp\":17},\"user_level\":{\"level\":5,\"exp\":23},\"yedai_level\":{\"level\":3,\"exp\":9},\"perfect_level_complete\":[true,false,true,true,false,false]}"
+  },
+  "manualSlots": [
+    null,
+    null,
+    {
+      "saveurl": "file:///legacy-install/main/story/chapter5/plot1.html",
+      "currentDateTime": "2023/06/20 12:34",
+      "level1": "1",
+      "level2": "1",
+      "level3": "1",
+      "level4": "1",
+      "level5": "1",
+      "level6": "114",
+      "MSYgamename": "第五章",
+      "current": "{\"level\":4,\"is_plot_music_on\":false,\"is_inwar_music_on\":true,\"hidden_clue_god\":true,\"hidden_clue_poison\":true,\"yuanlan_level\":{\"level\":4,\"exp\":17},\"user_level\":{\"level\":5,\"exp\":23},\"yedai_level\":{\"level\":3,\"exp\":9},\"perfect_level_complete\":[true,false,true,true,false,false]}"
+    }
+  ]
+}

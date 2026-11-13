@@ -93,7 +93,7 @@ async function smoke({ evaluate, click, page, open, cdp, until }) {
   `);
   await click('#loginForm button[type="submit"]');
   await page('game/pages/menu.html');
-  await click('a[onclick="construct()"]');
+  await click('a[href="../story/chapter-0/background.html"]');
   await page('game/story/chapter-0/background.html');
   await click('.button-save');
   await page(mapPage);
@@ -119,20 +119,15 @@ async function smoke({ evaluate, click, page, open, cdp, until }) {
   await open('game/pages/save.html');
   await click('#save1');
   const saved = await evaluate('JSON.parse(localStorage.getItem(localStorage.username + "savearea"))[0]');
-  assert.equal(saved.MSYgamename, fixture.MSYgamename);
-  assert.equal(saved.current, fixture.current);
-  // Restoring the slot must still work if an older save contains an obsolete URL.
-  await evaluate(`(() => {
-    const slots = JSON.parse(localStorage.getItem(localStorage.username + 'savearea'));
-    slots[0].saveurl = 'file:///old-install/main/story/chapter1/plot.html';
-    localStorage.setItem(localStorage.username + 'savearea', JSON.stringify(slots));
-    localStorage.level1 = '999';
-  })()`);
+  assert.equal(saved.version, 1);
+  assert.equal(saved.progress.chapterName, fixture.MSYgamename);
+  assert.deepEqual(saved.progress.current, JSON.parse(fixture.current));
+  await evaluate("localStorage.level1 = '999'");
   await open('game/pages/load.html');
   await click('#save1');
   await page(mapPage);
   assert.equal(await evaluate('localStorage.level1'), fixture.level1);
-  console.log('PASS  manual save/load and legacy saved URLs');
+  console.log('PASS  manual save/load with the shared progress format');
 
   await reset();
   await open('game/minesweeper/index.html');

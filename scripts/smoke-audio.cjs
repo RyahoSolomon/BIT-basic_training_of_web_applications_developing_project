@@ -77,7 +77,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   `);
   await click('#loginForm button[type="submit"]');
   await page('game/pages/menu.html');
-  await click('a[onclick="construct()"]');
+  await click('a[href="../story/chapter-0/background.html"]');
   await page('game/story/chapter-0/background.html');
   await click('.button-save');
   await page(mapPage);

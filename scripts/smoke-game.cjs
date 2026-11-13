@@ -25,10 +25,12 @@ async function smoke({ evaluate, click, page, open }) {
   await click('.button-save');
   await page('game/map/index.html');
   const save = await evaluate('JSON.parse(localStorage.getItem(localStorage.username + "autosave"))');
-  assert.equal(save.saveurl, 0);
-  assert.equal(save.MSYgamename, '序章');
-  for (let i = 1; i <= 6; i++) assert.equal(save['level' + i], '0');
-  const current = JSON.parse(save.current);
+  assert.equal(save.version, 1);
+  assert.ok(Number.isFinite(Date.parse(save.savedAt)));
+  assert.equal(save.progress.chapterName, '序章');
+  assert.deepEqual(save.progress.levels, Array(6).fill(0));
+  assert.equal(save.progress.isFirstPlay, true);
+  const current = save.progress.current;
   assert.equal(current.level, 0);
   assert.equal(current.user_level.level, 1);
   assert.deepEqual(current.perfect_level_complete, Array(6).fill(false));

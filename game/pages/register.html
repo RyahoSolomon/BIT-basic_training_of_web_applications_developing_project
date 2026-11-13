@@ -101,20 +101,8 @@
                 ach8:0,
             };
             window.localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
-            var autosave = {
-                saveurl: 1, 
-                currentDateTime: 0,  
-                level1: 0,
-                level2: 0,
-                level3: 0,
-                level4: 0,
-                level5: 0,
-                level6: 0,  
-                MSYgamename: 0, 
-                current: 0, 
-            }
+            // No auto-save exists until the player first reaches the map.
             window.localStorage.setItem(username + 'flag',0);
-            window.localStorage.setItem(username + 'autosave',JSON.stringify(autosave));
             // 注册成功后，跳转到登录页面
             window.location.href = 'login.html';
         });

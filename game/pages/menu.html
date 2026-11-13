@@ -10,62 +10,27 @@
         
     </style>
 	<script type="text/javascript" src="../vendor/jquery/jquery.min.js"></script>
-	<script>
-		function construct(){
-			window.localStorage.setItem('level1',0);
-            window.localStorage.setItem('level2',0);
-            window.localStorage.setItem('level3',0);
-        	window.localStorage.setItem('level4',0);
-            window.localStorage.setItem('level5',0);
-            window.localStorage.setItem('level6',0);
-			window.localStorage.setItem('MSYgamename','序章');
-			window.localStorage.setItem('IsFirstPlay', "true");
-			window.localStorage.setItem('ismuted',0);
-			var current = {
-				      level: 0,
-              is_plot_music_on: true,
-              is_inwar_music_on: true,
-          		hidden_clue_god: false,
-          		hidden_clue_poison: false,
-          		yuanlan_level:
-          		{
-            		level: 1,
-            		exp: 0,
-          		},
-          		user_level:
-          		{
-            		level: 1,
-            		exp: 0,
-          		},
-          		yedai_level:
-          		{
-            		level: 1,
-            		exp: 0,
-          		},
-				perfect_level_complete:[false,false,false,false,false,false],
-			}
-			current = JSON.stringify(current);
-			window.localStorage.setItem('current',current);
-		}
-		function load(){
-			var username = window.localStorage.getItem('username');
-			var autosave = window.localStorage.getItem(username + 'autosave');
-			autosave = JSON.parse(autosave);
-			if(autosave.saveurl == 1){
-
-			}else{
-        		window.localStorage.level1 = autosave.level1;
-        		window.localStorage.level2 = autosave.level2;
-        		window.localStorage.level3 = autosave.level3;
-        		window.localStorage.level4 = autosave.level4;
-        		window.localStorage.level5 = autosave.level5;
-        		window.localStorage.level6 = autosave.level6;
-        		window.localStorage.MSYgamename = autosave.MSYgamename;
-    			window.localStorage.current = autosave.current;
-        		window.location.href = "../map/index.html";
-			}
-		}
-	</script>
+    <script src="../shared/scripts/progress.js"></script>
+    <script>
+        function construct() {
+            try {
+                GameProgress.newGame();
+                return true;
+            } catch (error) {
+                alert(error.message);
+                return false;
+            }
+        }
+        function load() {
+            try {
+                GameProgress.restoreAuto();
+                window.location.href = "../map/index.html";
+            } catch (error) {
+                alert(error.message);
+            }
+            return false;
+        }
+    </script>
   <script src="../shared/scripts/audio.js"></script>
 </head>
 <body>
@@ -84,12 +49,12 @@
 		<div class="index-button-group">
 			<div class="index-button">
 				<img src="../assets/images/button.png">
-				<a href="../story/chapter-0/background.html" onclick="construct()">开          始</a>
+				<a href="../story/chapter-0/background.html" onclick="return construct()">开          始</a>
 			</div>
             
 			<div class="index-button">
 				<img src="../assets/images/button.png">
-				<a href="#" onclick="load()">继          续</a>
+				<a href="#" onclick="return load()">继          续</a>
 			</div>
             <div class="index-button">
 				<img src="../assets/images/button.png">

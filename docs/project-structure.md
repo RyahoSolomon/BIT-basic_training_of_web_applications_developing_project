@@ -37,7 +37,8 @@ design/                            可编辑的美术源稿
 | 第一章场景 | [game/story/chapter-1/plot.js](../game/story/chapter-1/plot.js) |
 | 剧情播放器源码 | [src/story/player.jsx](../src/story/player.jsx) |
 | 公共音频控制 | [game/shared/scripts/audio.js](../game/shared/scripts/audio.js) |
-| 手动存读档 | [game/shared/scripts/saves.js](../game/shared/scripts/saves.js) |
+| 进度定义与存档读写 | [game/shared/scripts/progress.js](../game/shared/scripts/progress.js) |
+| 存读档页面交互 | [game/shared/scripts/saves.js](../game/shared/scripts/saves.js) |
 | 游戏指南 | [game-guide.pdf](game-guide.pdf) |
 
 地图、剧情和战棋依赖游戏进度。日常游玩请从根入口注册或登录，再开始游戏。
@@ -58,7 +59,7 @@ design/                            可编辑的美术源稿
 
 本项目使用相对 URL，路径分隔符统一为 `/`。HTML 的资源和跳转路径相对于该 HTML；外部 CSS 的 `url(...)` 相对于 CSS 文件；脚本中写入页面的图片地址和跳转地址通常相对于引用它的 HTML，而非脚本自身。因此移动脚本或共用 CSS 时，需要按实际使用位置核对引用。
 
-修改路径后运行 `npm run check`，再运行 `npm test`。前者检查 HTML、CSS、可静态识别的 JavaScript 路径和检查器自身；后者继续执行开局、剧情、页面导航和音频四个浏览器回归。动态生成的图片与跳转仍需要浏览器检查。修改播放器源码时，先运行 `npm ci` 和 `npm run build:story`。详细要求见 [开发说明](../README.md#开发时检查页面依赖)。
+修改路径后运行 `npm run check`，再运行 `npm test`。前者检查 HTML、CSS、可静态识别的 JavaScript 路径和检查器自身；后者继续执行存档单元测试及存档、开局、剧情、页面导航和音频五个浏览器回归。动态生成的图片与跳转仍需要浏览器检查。修改播放器源码时，先运行 `npm ci` 和 `npm run build:story`。详细要求见 [开发说明](../README.md#开发时检查页面依赖)。
 
 ## 已合并的共用内容
 
@@ -66,6 +67,6 @@ design/                            可编辑的美术源稿
 - 开始页、主菜单与剧情页的三份通用音乐脚本合并为 `game/shared/scripts/audio.js`。战棋使用自身的音乐列表与控制逻辑，保留在 `game/battle/scripts/audio.js`。
 - 第一至第三章相同的剧情样式统一为 `game/story/styles/dialogue.css`；各章有差异的样式继续就近维护。
 - 三份结局字幕脚本共用 `game/story/scripts/ending.js`。
-- 手动存读档从旧剧情控制文件提取到 `game/shared/scripts/saves.js`，原存档字段和键名保持不变。
+- 新游戏、自动保存、手动保存和两种恢复入口共用 `game/shared/scripts/progress.js` 的版本化进度定义；`saves.js` 负责存读档页交互。账号存档键保持兼容，原版格式通过统一转换读取，详见 [存档格式](save-format.md)。
 
-战棋目前完成了路径整理和文件拼写修正，其全局状态、回合结算与规则实现仍有后续拆分工作。存档格式统一等未完成事项见 [架构问题清单](TODO.md)。
+战棋目前完成了路径整理和文件拼写修正，其全局状态、回合结算与规则实现仍有后续拆分工作，见 [架构问题清单](TODO.md)。

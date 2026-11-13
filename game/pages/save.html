@@ -8,42 +8,10 @@
   <title>save</title>
   <link rel="stylesheet" href="../shared/styles/saves.css">
   <link href="../assets/images/logo.png" type="image/png" rel="icon">
+  <script src="../shared/scripts/progress.js"></script>
   <script src="../shared/scripts/saves.js"></script>
 
-  <script>
-    
-    window.onload = function () {
-      var username = localStorage.username;
-      var array = JSON.parse(localStorage.getItem(username+'savearea')) || [];
-      var temp = {
-        saveurl: 0, 
-        currentDateTime: 0,  
-        level1: 0,
-        level2: 0,
-        level3: 0,
-        level4: 0,
-        level5: 0,
-        level6: 0,  
-        MSYgamename: 0, 
-        current: 0, 
-    };
-    temp = JSON.stringify(temp);
-    if(array){
 
-    }else{
-        for(let i=0;i<10;++i){
-            array.push(temp);
-        }
-    }
-      for(var i = 0; i < 9; i++){
-        if(array[i]){
-          document.getElementById('gamename' + i).textContent = array[i].MSYgamename;
-          document.getElementById('time' + i).textContent = array[i].currentDateTime;
-        }
-      }
-
-    };
-  </script>
 
 </head>
 

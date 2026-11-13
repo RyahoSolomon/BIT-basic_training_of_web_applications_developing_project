@@ -41,29 +41,7 @@ function initial_current_info()
   if(current_info == null)
   {
     console.log("current读取失败");
-    current_info = 
-    {
-      level: 0,
-      is_inwar_music_on: true,
-      hidden_clue_god: false,
-      hidden_clue_poison: false,
-      yuanlan_level:
-      {
-        level: 1,
-        exp: 0,
-      },
-      user_level:
-      {
-        level: 1,
-        exp: 0,
-      },
-      yedai_level:
-      {
-        level: 1,
-        exp: 0,
-      },
-      perfect_level_complete: [false, false, false, false, false, false],
-    }
+    current_info = GameProgress.createNewProgress().current;
   }
   else
   {
@@ -73,32 +51,21 @@ function initial_current_info()
 
 function initial_game_info()
 {
+  const defaults = GameProgress.createNewProgress().current;
   if(user_level == null)
   {
     console.log("user等级读取失败");
-    user_level = 
-    {
-      level: 1,
-      exp: 0,
-    };
+    user_level = defaults.user_level;
   }
   if(yuanlan_level == null)
   {
     console.log("鸟等级读取失败");
-    yuanlan_level =
-    {
-      level: 1,
-      exp: 0,
-    }
+    yuanlan_level = defaults.yuanlan_level;
   }
   if(yedai_level == null)
   {
     console.log("山等级读取失败");
-    yedai_level =
-    {
-      level: 1,
-      exp: 0,
-    }
+    yedai_level = defaults.yedai_level;
   }
   if(level == null)
   {

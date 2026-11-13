@@ -47,32 +47,16 @@
             }
             
         </style>
+        <script src="../shared/scripts/progress.js"></script>
         <script>
-            function save(){
-                var username = window.localStorage.username;
-                var saveurl = 0;
-                var currentDateTime = 114514;
-                var level1 = window.localStorage.getItem('level1');
-                var level2 = window.localStorage.getItem('level2');
-                var level3 = window.localStorage.getItem('level3');
-                var level4 = window.localStorage.getItem('level4');
-                var level5 = window.localStorage.getItem('level5');
-                var level6 = window.localStorage.getItem('level6');
-                var MSYgamename = window.localStorage.MSYgamename;
-                var current = window.localStorage.getItem('current');
-                var autosave = {  
-                    saveurl: saveurl, 
-                    currentDateTime: currentDateTime,  
-                    level1: level1,
-                    level2: level2,
-                    level3: level3,
-                    level4: level4,
-                    level5: level5,
-                    level6: level6,  
-                    MSYgamename: MSYgamename,
-                    current:current,
-                };  
-                window.localStorage.setItem(username + 'autosave',JSON.stringify(autosave));
+            function save() {
+                try {
+                    GameProgress.saveAuto();
+                    return true;
+                } catch (error) {
+                    alert('自动保存失败：' + error.message);
+                    return false;
+                }
             }
         </script>
         <script>
@@ -125,7 +109,7 @@
               }
 
               window.onload = function(){
-                save();
+                var saved = save();
                 
                 for(let i = 1;i <= 5; ++i){
                     var flag = localStorage.getItem('level'+i);
@@ -149,7 +133,7 @@
                     document.getElementById('Level6').style.display = 'block';
                     document.getElementById('level-6').style.display = 'block';
                 }
-                alert("已自动保存");
+                if (saved) alert("已自动保存");
               }
         </script>
         </div>
