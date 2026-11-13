@@ -30,16 +30,7 @@ function switch_music_state()
     localStorage.setItem("current", JSON.stringify(current_info));
   }
   
-  let audioPlayer = document.getElementById('audioPlayer');  
-  initial_muisc_button_img(enabled);
-  if(enabled)
-  {
-    audioPlayer.play();
-  }
-  else
-  {
-    audioPlayer.pause();
-  }
+  initial_music();
 }
 
 function initial_muisc_button_img(enabled = get_music_state())
@@ -50,12 +41,44 @@ function initial_muisc_button_img(enabled = get_music_state())
 
 function initial_music()
 {
-  if(get_music_state())
+  const audioPlayer = document.getElementById("audioPlayer");
+  if (!audioPlayer) return;
+
+  // Read the preference before starting playback, including after navigation.
+  const enabled = get_music_state();
+  initial_muisc_button_img(enabled);
+  window.removeEventListener("click", retry_music_after_interaction);
+  if (!enabled)
   {
-    document.getElementById("audioPlayer").play();
+    audioPlayer.pause();
+    return;
   }
-  else
+
+  const playback = audioPlayer.play();
+  if (playback)
   {
-    document.getElementById("audioPlayer").pause();
+    playback.catch(error => {
+      if (error.name === "NotAllowedError") {
+        // Autoplay may be blocked on a fresh visit. A later mute must still win.
+        if (get_music_state() && audioPlayer.paused) {
+          window.addEventListener("click", retry_music_after_interaction, { once: true });
+        }
+      } else if (error.name !== "AbortError") {
+        console.warn("背景音乐播放失败", error);
+      }
+    });
   }
+}
+
+function retry_music_after_interaction()
+{
+  initial_music();
+}
+
+// Pages omit audio autoplay so a stored "off" preference never briefly sounds.
+// Some pages load this script in the head, others after the audio element.
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initial_music, { once: true });
+} else {
+  initial_music();
 }

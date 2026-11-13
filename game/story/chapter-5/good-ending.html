@@ -77,10 +77,10 @@
     </script>
 </head>
 <body>
-    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/015-normal-ending.mp3" type="audio/mp3"></audio>
+    <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/015-normal-ending.mp3" type="audio/mp3"></audio>
     <div class="button-group">
         <div class="button-return" onclick="ReturnToIndex()"><img src="../../assets/images/return.jpg"></div>
-        <div class="button-music"><img src="../../assets/images/unmute.jpg"></div>
+        <div class="button-music" onclick="switch_music_state()"><img src="../../assets/images/unmute.jpg"></div>
     </div>
     <div class="container">
         <p class="text art-font1" id="text1">我们将太上老君的配方交了出来,举国上下颇为震惊,炼药配方迅速迭代,仙丹价格也确实被打了下来,人族与妖族举行了停战条约.然而,和平仅仅持续了三年,三年后一次惨烈的边境冲突再次激发了千年的民族矛盾,最终战争又爆发了...</p>
@@ -95,48 +95,6 @@
     <!-- 这里加入Background Music -->
     
     <script src="../scripts/ending.js"></script>
-    <script>
-
-        function toggleAudio() {  
-            var audio = document.getElementById('audioPlayer');  
-            var musicButton = document.querySelector('.button-music');  
-            var img = musicButton.querySelector('img');
-            img.src = '../../assets/images/unmute.jpg';  
-            audio.play(); 
-            // 移除监听器，确保它只触发一次  
-            this.removeEventListener('click', toggleAudio); // 注意这里的'this'指的是按钮元素  
-        }  
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var isMuted = window.localStorage.getItem('ismuted');
-            if(isMuted == 0){
-                document.addEventListener('click', toggleAudio);
-            }
-            else{
-                var musicButton = document.querySelector('.button-music');  
-                var img = musicButton.querySelector('img');
-                img.src = '../../assets/images/mute.jpg';
-            }
-            var audioPlayer = document.getElementById('audioPlayer');  
-            var musicButton = document.querySelector('.button-music');  
-            var img = musicButton.querySelector('img');  
-      
-            /*let isMuted = 0; */
-      
-            musicButton.addEventListener('click', function(event) {  
-                if (isMuted) {  
-                    img.src = '../../assets/images/unmute.jpg';  
-                    audioPlayer.play();
-                    window.localStorage.setItem('ismuted',0);
-                    isMuted = false;  
-                } else {  
-                    img.src = '../../assets/images/mute.jpg';  
-                    audioPlayer.pause();  
-                    window.localStorage.setItem('ismuted',1);
-                    isMuted = true;  
-                }  
-            });    
-        });  
-    </script>
+    <script src="../../shared/scripts/audio.js"></script>
 </body>
 </html>

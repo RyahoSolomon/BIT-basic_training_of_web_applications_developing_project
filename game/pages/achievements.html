@@ -229,7 +229,7 @@
   <script src="../shared/scripts/audio.js"></script>
 </head>
 <body>
-    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../assets/audio/example.mp3" type="audio/mp3"></audio>
+    <audio id="audioPlayer" loop="loop" preload="preload" src="../assets/audio/example.mp3" type="audio/mp3"></audio>
     <video src = "../assets/video/background.mp4" class="index-video" autoplay="autoplay" loop="loop" muted="muted"></video>
         <div class="ach_bar">
             <div class="ach_container">
@@ -326,15 +326,5 @@
         <div class="button-group">
 			<div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../assets/images/unmute.jpg"></div>
 		</div>
-        <script>  
-          initial_muisc_button_img();
-          function window_click_listener()
-          {
-            initial_music();
-            this.removeEventListener("click", window_click_listener);
-          }
-    
-          window.addEventListener('click', window_click_listener);
-		</script>
 </body>
 </html>

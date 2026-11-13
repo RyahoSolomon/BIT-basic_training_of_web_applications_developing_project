@@ -58,7 +58,7 @@
     </script>
 </head>
 <body>
-    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/014-true-ending.mp3" type="audio/mp3"></audio>
+    <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/014-true-ending.mp3" type="audio/mp3"></audio>
     <div class="button-group">
         <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../assets/images/unmute.jpg"></div>
     </div>
@@ -135,14 +135,7 @@
             localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
         }
 
-        initial_muisc_button_img();
-        function window_click_listener()
-        {
-          initial_music();
-          this.removeEventListener("click", window_click_listener);
-        }
 
-        window.addEventListener('click', window_click_listener); 
     </script>
 </body>
 </html>

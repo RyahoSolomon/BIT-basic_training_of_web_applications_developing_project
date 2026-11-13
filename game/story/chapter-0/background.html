@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="background.css">
 </head>
 <body id="mainBody">
-    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/001-story-background.mp3" type="audio/mp3"></audio>
+    <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/001-story-background.mp3" type="audio/mp3"></audio>
     <div id="flashBlack" class="hidden"></div>
     <div class="image-container">
         <img src="../../assets/images/ui/text-box-no.png" id="slideImage">
@@ -27,14 +27,7 @@
             window.location.href = "../../map/index.html";
         });
 
-        initial_muisc_button_img();
-        function window_click_listener()
-        {
-          initial_music();
-          this.removeEventListener("click", window_click_listener);
-        }
 
-        window.addEventListener('click', window_click_listener);
         
         // function toggleAudio() {  
         //     var audio = document.getElementById('audioPlayer');  

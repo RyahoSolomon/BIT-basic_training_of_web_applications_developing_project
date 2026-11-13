@@ -20,7 +20,7 @@
 </head>
 
 <body style="background-image: url('../../assets/images/background/009-plain-out-of-forest.png');">
-    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/005-kill-nut.mp3" type="audio/mp3"></audio>
+    <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/005-kill-nut.mp3" type="audio/mp3"></audio>
 	
 	<div id="text1" class="centered-text">次日寅时 森林外平原</div>
 
@@ -72,14 +72,7 @@
 				localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
 			}
 
-			initial_muisc_button_img();
-        function window_click_listener()
-        {
-          initial_music();
-          this.removeEventListener("click", window_click_listener);
-        }
 
-        window.addEventListener('click', window_click_listener);
 		</script>
 </body>
 </html>

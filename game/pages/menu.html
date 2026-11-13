@@ -69,7 +69,7 @@
   <script src="../shared/scripts/audio.js"></script>
 </head>
 <body>
-	<audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../assets/audio/example.mp3" type="audio/mp3"></audio>
+	<audio id="audioPlayer" loop="loop" preload="preload" src="../assets/audio/example.mp3" type="audio/mp3"></audio>
 	<script>
 		function Next(URL){
 			window.location.assign(URL);
@@ -125,15 +125,5 @@
 		}
 		
 		</script> -->
-		<script>  
-      initial_muisc_button_img();
-      function window_click_listener()
-      {
-        initial_music();
-        this.removeEventListener("click", window_click_listener);
-      }
-
-      window.addEventListener('click', window_click_listener);
-		</script>
 </body>
 </html>

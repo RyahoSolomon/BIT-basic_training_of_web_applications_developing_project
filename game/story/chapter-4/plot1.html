@@ -19,7 +19,7 @@
 </head>
 
 <body style="background-image: url('../../assets/images/background/014-penglai-north.png');">
-    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/006-before-zhuolu.mp3" type="audio/mp3"></audio>
+    <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/006-before-zhuolu.mp3" type="audio/mp3"></audio>
 	<div id="text1" class="centered-text">数日后 北海上 蓬莱南约数公里处</div>
     <div id="story-player"></div>
 		<div class="button-group">
@@ -30,17 +30,5 @@
 		<script src = "plot1.js"></script>
     <script src="../../generated/story-player.js"></script>
         <script src="../../shared/scripts/audio.js"></script>
-        <script>
-
-
-        initial_muisc_button_img();
-        function window_click_listener()
-        {
-          initial_music();
-          this.removeEventListener("click", window_click_listener);
-        }
-
-        window.addEventListener('click', window_click_listener);
-        </script>
 </body>
 </html>
