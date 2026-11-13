@@ -42,7 +42,9 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       for (let id = 0; id < units.length; id++) {
         if (!units[id].is_alive) continue;
         current_act_unit = id;
-        have_moved = false;
+        const isPlayer = units[id].commander_type === 'player';
+        if (isPlayer) start_turn();
+        reset_mask();
         const state = read_battle_state();
         const before = units.map(unit => [unit.x, unit.y, unit.speed]);
         const shared = MovementRules.findReachableCells(state, id);
@@ -50,7 +52,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
         selected_move(id);
         const highlighted = Array.from(document.querySelectorAll('#mask img.clickable_mask'),
           element => element.id.split('_').map(Number));
-        result.push({id, side: units[id].side, before,
+        result.push({id, side: units[id].side, isPlayer, before,
           after: units.map(unit => [unit.x, unit.y, unit.speed]),
           shared: shared.map(cell => [cell.x, cell.y]),
           ai: ai.map(cell => [cell.x, cell.y]), highlighted});
@@ -61,7 +63,8 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     assert.ok(ranges.some(range => range.side === 1));
     for (const range of ranges) {
       const label = `Map ${level + 1}, unit ${range.id}`;
-      assert.deepEqual(range.highlighted, range.shared, label + ': player highlight order');
+      assert.deepEqual(range.highlighted, range.isPlayer ? range.shared : [],
+        label + ': player highlights require the active player turn');
       assert.deepEqual(range.ai, range.shared, label + ': AI candidate order');
       assert.deepEqual(range.after, range.before, label + ': range queries do not move units');
       comparedUnits++;
@@ -131,7 +134,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
   await click('#operation_hover_initial_mask_1');
   await click('#mask img[id="4_5"]');
   assert.equal(await evaluate('units[2].health'), 7, 'The player can still attack after moving');
-  assert.equal(await evaluate('current_act_unit'), 1, 'Attacking advances to the next living unit');
+  await until('next living player after attack', () => evaluate('current_act_unit === 1'));
   await page(battlePage);
   console.log('PASS  ally traversal, enemy/dead occupancy, speed limits and real move-then-attack actions');
 
@@ -144,6 +147,8 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     units_count = 1;
     current_act_unit = 0;
     have_moved = false;
+    initial_board();
+    start_turn();
     selected_move(0);
     const shortRange = MovementRules.findReachableCells(read_battle_state(), 0).map(cell => [cell.x, cell.y]);
     click_block(4, 3);
@@ -177,20 +182,20 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       const random = Math.random;
       try {
         Math.random = () => 0;
-        computer_operate();
+        start_turn();
       } finally {
         Math.random = random;
       }
       return {position: [units[0].x, units[0].y], targetHealth: units[1].health,
         current: current_act_unit,
-        confirm: document.getElementById('operation_hover_initial_mask_0').getAttribute('onclick')};
+        confirm: typeof document.getElementById('operation_hover_initial_mask_0').onclick};
     })()`);
     assert.deepEqual(outcome.position, kind === 'wait' ? [4, 1] : [4, 3], kind + ': AI final position');
     assert.equal(outcome.targetHealth, kind === 'attack' ? 7 : 10, kind + ': damage only when attacking');
     assert.equal(outcome.current, 0, kind + ': AI waits for confirmation');
-    assert.match(outcome.confirm, /confirm\(/);
+    assert.equal(outcome.confirm, 'function');
     await click('#operation_hover_initial_mask_0');
-    assert.equal(await evaluate('current_act_unit'), 1, kind + ': confirmation advances once');
+    await until(kind + ': confirmation advances once', () => evaluate('current_act_unit === 1'));
     assert.equal(await evaluate('units[1].health'), outcome.targetHealth, kind + ': confirmation does not repeat damage');
   }
   console.log('PASS  actual AI movement, attack and wait actions retain the confirmation flow');

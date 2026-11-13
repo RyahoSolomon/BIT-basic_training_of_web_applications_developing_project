@@ -18,13 +18,9 @@ function settle_battle() {
     const result = BattleOutcomeRules.evaluate(read_battle_outcome_state());
     if (result.outcome === 'ongoing') return false;
     battle_settlement_started = true;
+    // 取消尚未执行的回合推进，同时关闭战场操作入口。
+    stop_turn_flow();
 
-    // 成就窗口之外仍能点击战场，终局时移除可执行的操作和格子遮罩。
-    reset_mask();
-    reset_operations();
-    document.getElementById('operation_hover_initial_mask').innerHTML = '';
-    document.getElementById('selected_box').innerHTML = '';
-    clear_operation_hover_mask();
     units_display_update();
     load_items();
 

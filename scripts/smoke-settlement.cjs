@@ -178,6 +178,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       }
     `);
     await evaluate('end_turn()');
+    await until(cause + ': round-end settlement', () => evaluate('settlementCalls.win + settlementCalls.lose === 1'));
     const state = await snapshot();
     assert.equal(state.round, 4, cause + ': effects run in the new round once');
     assert.equal(state.calls.starts, 0, cause + ': terminal round effects cannot start another unit');

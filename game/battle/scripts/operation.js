@@ -1,14 +1,6 @@
-function confirm()
-{
-  reset_mask();
-  document.getElementById("selected_box").innerHTML = '';
-  document.getElementById("operation_hover_initial_mask").innerHTML = '';
-  clear_operation_hover_mask();
-  end_turn();
-}
-
 function selected_attack(id)
 {
+  if(!can_player_act()) return;
   selected_operation = "attack";
   reset_mask();
   let mask_innerhtml = '';
@@ -41,6 +33,7 @@ function selected_attack(id)
 
 function selected_move(id)
 {
+  if(!can_player_act()) return;
   selected_operation = "move";
   const destinations = MovementRules.findReachableCells(read_battle_state(), id);
   document.getElementById("mask").innerHTML = destinations.map(create_move_mask).join('');
@@ -58,6 +51,7 @@ function create_move_mask(cell)
 
 function selected_defend()
 {
+  if(!can_player_act()) return;
   selected_operation = "defend";
   reset_mask();
   let armor_change_value = 4;
@@ -94,6 +88,7 @@ function selected_defend()
 
 function selected_trap()
 {
+  if(!can_player_act()) return;
   selected_operation = "trap";
   reset_mask();
   let skill_attack = units[current_act_unit].attack;
@@ -129,6 +124,7 @@ function selected_trap()
 
 function selected_ice_storm()
 {
+  if(!can_player_act()) return;
   selected_operation = "ice_storm";
   reset_mask();
   let mask_innerhtml = '';
@@ -159,6 +155,7 @@ function selected_ice_storm()
 
 function selected_whack()
 {
+  if(!can_player_act()) return;
   selected_operation = "whack";
   reset_mask();
   let mask_innerhtml = '';
@@ -192,6 +189,7 @@ function selected_whack()
 
 function selected_poison()
 {
+  if(!can_player_act()) return;
   selected_operation = "poison";
   reset_mask();
   let mask_innerhtml = '';
@@ -215,6 +213,7 @@ function selected_poison()
 
 function selected_buff()
 {
+  if(!can_player_act()) return;
   selected_operation = "buff";
   reset_mask();
   let mask_innerhtml = '';
@@ -248,6 +247,7 @@ function selected_buff()
 
 function selected_skip()
 {
+  if(!can_player_act()) return;
   document.getElementById("selected_box").innerHTML = '';
   document.getElementById("operation_hover_initial_mask").innerHTML = '';
   clear_operation_hover_mask();

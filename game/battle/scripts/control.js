@@ -294,23 +294,6 @@ function summon_random_type(cx, cy)
   }
 }
 
-const sleep = (milliseconds) => {
-  const start = Date.now();
-  while (Date.now() <= start + milliseconds) {}
-};
-
-function initial_confirm()
-{
-  operation_count++;
-  let operation_hover_initial_mask_innerhtml = '<img src = "assets/images/mask/transparent-operation-mask.png" id = "operation_hover_initial_mask_0" onmouseenter = "load_operation_hover_mask(0)" onmouseleave = "clear_operation_hover_mask()" onclick = "confirm()" title = "确认:\n此按钮用于电脑角色行动后,请确认电脑角色行动后再点击本按钮以继续.">';
-  operation_button_html = '<img src = "assets/images/ui/button.png" id = "operation_button_0" >';
-  operation_html = '<img src = assets/images/ui/enemy-action-confirm.png id = "operation_0" >';
-  document.getElementById("operations").innerHTML = operation_html;
-  document.getElementById("operation_buttons").innerHTML = operation_button_html;
-  document.getElementById("operation_hover_initial_mask").innerHTML = operation_hover_initial_mask_innerhtml;
-  show_operations();
-}
-
 function reset_operations()
 {
   //重设交互UI
@@ -490,6 +473,7 @@ function save_exp_info()
 
 function game_over()
 {
+  stop_turn_flow();
   save_exp_info();
 }
 
@@ -576,23 +560,6 @@ function selected_box_update()
   temp.style.position = "absolute";
   temp.style.top = -720 + 64 * units[current_act_unit].x;
   temp.style.left = 64 * units[current_act_unit].y;
-}
-
-function start_turn()
-{
-  load_annoucement();
-  units_display_update();
-  load_items();
-  if(units[current_act_unit].commander_type == "player")
-  {
-    have_moved = false;
-    selected_box_update()
-    units[current_act_unit].commander.initial_UI(current_act_unit);
-  }
-  else
-  {
-    computer_operate();
-  }
 }
 
 // 持续效果按流血、中毒、强化、地形与冷却的原顺序处理，死亡后停止本轮剩余效果。
@@ -782,31 +749,6 @@ function summon_pangu_spirit()
     announcement_list.push("[第" + round + "回合]盘古真灵出现了!快去消灭它!");
     load_annoucement();
   }
-}
-
-function end_turn()
-{
-  if(settle_battle()) return;
-  units_display_update();
-  load_items();
-  reset_mask();
-  reset_operations();
-  sleep(300);
-  load_annoucement()
-  while(true)
-  {
-    current_act_unit++;
-    if(current_act_unit >= units_count)
-    {
-      if(end_round()) return;
-      current_act_unit = 0;
-    }
-    if(units[current_act_unit].is_alive)
-    {
-      break;
-    }
-  }
-  start_turn();
 }
 
 function fake_pangu_skill_execute(skill)

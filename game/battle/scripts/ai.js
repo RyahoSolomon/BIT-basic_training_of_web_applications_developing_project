@@ -1,7 +1,8 @@
 // 页面接入：AI 规则决定动作，这里执行移动/伤害并显示行动标记，等待玩家确认。
 function computer_operate() {
     const actor = units[current_act_unit];
-    if (actor.AI_type !== 'normal' && actor.AI_type !== 'wait') return;
+    if (!actor || !actor.is_alive || (actor.AI_type !== 'normal' && actor.AI_type !== 'wait')) return;
+    if (!begin_computer_action()) return;
 
     const origin = { x: actor.x, y: actor.y };
     const action = AiRules.chooseAction(read_battle_state(), current_act_unit);

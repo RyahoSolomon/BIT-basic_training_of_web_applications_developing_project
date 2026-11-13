@@ -1,6 +1,6 @@
 # 胜负与通关结算
 
-[battle-outcome-rules.js](../game/battle/scripts/battle-outcome-rules.js) 判断战斗结果与通关成就，[battle-settlement.js](../game/battle/scripts/battle-settlement.js) 应用完美通关记录、保存成就、等待确认并进入结果页。[control.js](../game/battle/scripts/control.js) 的 `end_turn()` 和 `end_round()` 共用这一个流程。
+[battle-outcome-rules.js](../game/battle/scripts/battle-outcome-rules.js) 判断战斗结果与通关成就，[battle-settlement.js](../game/battle/scripts/battle-settlement.js) 应用完美通关记录、保存成就、等待确认并进入结果页。[turn-flow.js](../game/battle/scripts/turn-flow.js) 的行动结束与 [control.js](../game/battle/scripts/control.js) 的 `end_round()` 共用这一个流程。
 
 ## 纯规则接口
 
@@ -20,13 +20,13 @@
 
 ## 页面流程与确认
 
-`settle_battle()` 在战斗仍进行时返回 `false`，终局已接管时返回 `true`。两种回合入口都在推进前调用它，轮末效果结束后也再次检查。终局会停止后续单位行动、回合推进和重复结算，移除战场操作入口；`end_turn()` 收到 `end_round()` 的停止结果后也直接返回。
+`settle_battle()` 在战斗仍进行时返回 `false`，终局已接管时返回 `true`。两种回合入口都在推进前调用它，轮末效果结束后也再次检查。终局会取消待执行的计时器，停止后续单位行动、回合推进和重复结算，并移除战场操作入口；回合推进任务收到 `end_round()` 的停止结果后也直接返回。
 
 [achievements-popup.js](../game/battle/scripts/achievements-popup.js) 集中维护成就键与展示编号，`ach8` 对应编号 7 的“杀人如麻 以杀证道”。弹窗排队显示，确认先关闭当前提示，再展示下一条；旧按钮或回调再次触发不会消费下一条。伤害和升级产生的成就也加入同一队列，因此最后一击获得的“唯我独尊”等提示不会被通关成就覆盖。
 
 终局流程只保存新解锁的成就一次，并等所有提示确认后执行一次胜利或失败跳转。`check_game()` 保留原来的数值查询接口：进行中为 0，胜利为 1，失败为 2；查询本身不会保存或显示提示。
 
-本次调整的是终局结算。原有回合效果顺序保持不变，同步等待和单位节点刷新仍属于 [TODO 第七项](TODO.md)。
+原有回合效果顺序保持不变。行动间隔使用异步等待，单位刷新保留现有节点，详见 [回合推进与单位显示](turn-flow.md)。
 
 ## 验证
 

@@ -1,136 +1,134 @@
+// 以 Unit 对象关联显示节点，后续召唤单位没有 uuid 也能稳定刷新。
+const unit_display_views = new Map();
+const unit_display_parts = [
+  { name: 'unit', tag: 'img', x: 0, y: 0, className: 'unit' },
+  { name: 'health', tag: 'img', x: 4, y: 4, source: 'assets/images/unit/heart.png' },
+  { name: 'health_text', tag: 'a', x: 13, y: 4, smallText: true },
+  { name: 'armor', tag: 'img', x: 32, y: 4, source: 'assets/images/unit/armor.png' },
+  { name: 'armor_text', tag: 'a', x: 41, y: 4, smallText: true },
+  { name: 'defending', tag: 'img', x: 0, y: 16, source: 'assets/images/state/defending.png' },
+  { name: 'blooding', tag: 'img', x: 0, y: 32, source: 'assets/images/state/blooding.png' },
+  { name: 'poison', tag: 'img', x: 48, y: 16, source: 'assets/images/state/poison.png' },
+  { name: 'poison_info', tag: 'a', x: 54, y: 18, className: 'poison_info' },
+  { name: 'reinforce', tag: 'img', x: 48, y: 32, source: 'assets/images/state/reinforce.png' },
+  { name: 'reinforce_info', tag: 'a', x: 54, y: 34, className: 'reinforce_info' },
+  { name: 'exp_icon', tag: 'img', x: 0, y: 48, source: 'assets/images/unit/exp.png' },
+  { name: 'level_info', tag: 'a', x: 16, y: 48, className: 'level_info' },
+  { name: 'exp_info', tag: 'a', x: 16, y: 56, className: 'level_info' },
+];
+
+function create_unit_display_view(container)
+{
+  const nodes = {};
+  const fragment = document.createDocumentFragment();
+  for(const part of unit_display_parts)
+  {
+    const node = document.createElement(part.tag);
+    node.style.position = 'absolute';
+    if(part.source) node.src = part.source;
+    if(part.className) node.className = part.className;
+    if(part.smallText)
+    {
+      node.style.fontSize = '8px';
+      node.style.color = 'white';
+    }
+    nodes[part.name] = node;
+    fragment.appendChild(node);
+  }
+  container.appendChild(fragment);
+  return { nodes };
+}
+
+function set_unit_display_text(node, text)
+{
+  // 数值未变时也保留原有文字节点，不反复清空并创建它的子节点。
+  if(node.textContent !== text) node.textContent = text;
+}
+
+function update_unit_display_view(view, unit, id)
+{
+  if(view.id !== id)
+  {
+    for(const part of unit_display_parts) view.nodes[part.name].id = part.name + '_' + id;
+    view.id = id;
+  }
+  if(view.x !== unit.x || view.y !== unit.y)
+  {
+    for(const part of unit_display_parts)
+    {
+      const node = view.nodes[part.name];
+      node.style.left = unit.y * 64 + part.x + 'px';
+      node.style.top = unit.x * 64 - 720 + part.y + 'px';
+    }
+    view.x = unit.x;
+    view.y = unit.y;
+  }
+
+  const nodes = view.nodes;
+  if(nodes.unit.getAttribute('src') !== unit.icon) nodes.unit.src = unit.icon;
+  set_unit_display_text(nodes.health_text, unit.health + '/' + unit.max_health);
+  set_unit_display_text(nodes.armor_text, unit.armor + '/' + unit.max_armor);
+  nodes.defending.hidden = !unit.defending;
+  nodes.blooding.hidden = !unit.blooding;
+  nodes.poison.hidden = nodes.poison_info.hidden = !(unit.poison > 0);
+  nodes.reinforce.hidden = nodes.reinforce_info.hidden = !(unit.reinforce > 0);
+  set_unit_display_text(nodes.poison_info, String(unit.poison));
+  set_unit_display_text(nodes.reinforce_info, String(unit.reinforce));
+
+  const player = unit.commander_type === 'player';
+  nodes.exp_icon.hidden = nodes.level_info.hidden = nodes.exp_info.hidden = !player;
+  if(player)
+  {
+    set_unit_display_text(nodes.level_info, 'level:' + unit.level);
+    const experience = unit.level === 6 ? '已满级' : unit.exp + '/' + exp_threshold[unit.level - 1];
+    set_unit_display_text(nodes.exp_info, 'exp:' + experience);
+  }
+}
+
+function get_unit_hover_info(unit)
+{
+  return '\n\n' + unit.name_cn + '\n阵营:' + (unit.side === 1 ? '敌方' : '友方') +
+    '\n攻击力:' + unit.attack + ' 移动速度:' + unit.speed +
+    '\n最大攻击距离:' + unit.max_range + ' 最小攻击距离:' + unit.min_range +
+    '\n生命值' + unit.health + '/' + unit.max_health + ' 护甲值:' + unit.armor + '/' + unit.max_armor +
+    '\n举盾:' + (unit.defending ? '是' : '否') + ' 流血:' + (unit.blooding ? '是' : '否') +
+    '\n中毒层数:' + unit.poison + ' 昆仑护体仙术层数:' + unit.reinforce;
+}
+
 function units_display_update()
 {
-  document.getElementById('units').innerHTML = "";
-  units_html = '';
-  for(let i = 0; i < height; i++)
+  const container = document.getElementById('units');
+  const living = new Set(units.slice(0, units_count).filter(unit => unit.is_alive));
+  // 先移除死者或已被替换的对象，避免新单位复用数组位置时留下相同 id。
+  for(const [unit, view] of unit_display_views)
   {
-    for(let j = 0; j < width; j++)
+    if(!living.has(unit))
     {
-      document.getElementById('hover_initial_mask_' + i + '_' + j).title = get_block_info(map[i][j]);
+      for(const node of Object.values(view.nodes)) node.remove();
+      unit_display_views.delete(unit);
     }
   }
-  for(let i = 0;i < units_count; i++)
+
+  const hoverText = map.map(row => row.map(get_block_info));
+  for(let id = 0; id < units_count; id++)
   {
-    if(units[i].is_alive)
+    const unit = units[id];
+    if(!unit.is_alive) continue;
+    let view = unit_display_views.get(unit);
+    if(!view)
     {
-      units_html += '<img src = "' + units[i].icon + '" id = "unit_'+i+'" class = "unit">';
-      units_html += '<img src = "assets/images/unit/heart.png" id = "health_' + i + '">'
-      units_html += '<a id = "health_text_' + i + '">' + units[i].health + '/' + units[i].max_health + '</a>';
-      units_html += '<img src = "assets/images/unit/armor.png" id = "armor_' + i + '">'
-      units_html += '<a id = "armor_text_' + i + '">' + units[i].armor + '/' + units[i].max_armor + '</a>';
-      if(units[i].defending)
-      {
-        units_html += '<img src = "assets/images/state/defending.png" id = "defending_' + i + '">';
-      }
-      if(units[i].blooding)
-      {
-        units_html += '<img src = "assets/images/state/blooding.png" id = "blooding_' + i + '">';
-      }
-      if(units[i].poison > 0)
-      {
-        units_html += '<img src = "assets/images/state/poison.png" id = "poison_' + i + '">';
-        units_html += '<a id = "poison_info_' + i + '" class = "poison_info">' + units[i].poison + "</a>";
-      }
-      if(units[i].reinforce > 0)
-      {
-        units_html += '<img src = "assets/images/state/reinforce.png" id = "reinforce_' + i + '">';
-        units_html += '<a id = "reinforce_info_' + i + '" class = "reinforce_info">' + units[i].reinforce + "</a>";
-      }
-      if(units[i].commander_type == "player")
-      {
-        units_html += '<img src = assets/images/unit/exp.png id = "exp_icon_' + i + '">';
-        let level_info = "level:" + units[i].level;
-        let exp_info = "exp:";
-        if(units[i].level == 6)
-        {
-          exp_info += "已满级";
-        }
-        else
-        {
-          exp_info += units[i].exp + '/';
-          exp_info += exp_threshold[units[i].level - 1];
-        }
-        units_html += '<a id = "level_info_' + i + '" class = "level_info">' +  level_info + '</a>';
-        units_html += '<a id = "exp_info_' + i + '" class = "level_info">' +  exp_info + '</a>';
-      }
+      view = create_unit_display_view(container);
+      unit_display_views.set(unit, view);
     }
+    update_unit_display_view(view, unit, id);
+    hoverText[unit.x][unit.y] += get_unit_hover_info(unit);
   }
-  document.getElementById('units').innerHTML = units_html;
-  for(let i  = 0; i < units_count; i++)
+  for(let x = 0; x < height; x++)
   {
-    if(units[i].is_alive)
+    for(let y = 0; y < width; y++)
     {
-      document.getElementById("unit_" + i).style.position = "absolute";
-      document.getElementById("unit_" + i).style.left = units[i].y*64 + "px";
-      document.getElementById("unit_" + i).style.top = -720 + units[i].x*64+"px";
-      document.getElementById("health_" + i).style.position = "absolute";
-      document.getElementById("health_" + i).style.left = units[i].y*64 + 4 + "px";
-      document.getElementById("health_" + i).style.top = -716 + units[i].x*64+"px";
-      document.getElementById("health_text_" + i).style.position = "absolute";
-      document.getElementById("health_text_" + i).style.left = units[i].y*64 + 13 + "px";
-      document.getElementById("health_text_" + i).style.top = -716 + units[i].x*64+"px";
-      document.getElementById("health_text_" + i).style.fontSize = "8px";
-      document.getElementById("health_text_" + i).style.color = "white";
-      document.getElementById("armor_" + i).style.position = "absolute";
-      document.getElementById("armor_" + i).style.left = units[i].y*64 + 32 + "px";
-      document.getElementById("armor_" + i).style.top = -716 + units[i].x*64+"px";
-      document.getElementById("armor_text_" + i).style.position = "absolute";
-      document.getElementById("armor_text_" + i).style.left = units[i].y*64 + 41 + "px";
-      document.getElementById("armor_text_" + i).style.top = -716 + units[i].x*64+"px";
-      document.getElementById("armor_text_" + i).style.fontSize = "8px";
-      document.getElementById("armor_text_" + i).style.color = "white";
-      if(units[i].defending == true)
-      {
-        //console.log(units[i].name + "is defending:" + units[i].defending)
-        document.getElementById("defending_" + i).style.position = "absolute";
-        document.getElementById("defending_" + i).style.left = units[i].y * 64 + "px";
-        document.getElementById("defending_" + i).style.top = -720 + units[i].x*64 + 16 + "px";
-      }
-      if(units[i].blooding == true)
-      {
-        //console.log(units[i].name + "is defending:" + units[i].defending)
-        document.getElementById("blooding_" + i).style.position = "absolute";
-        document.getElementById("blooding_" + i).style.left = units[i].y * 64 + "px";
-        document.getElementById("blooding_" + i).style.top = -720 + units[i].x * 64 + 32 + "px";
-      }
-      if(units[i].poison > 0)
-      {
-        //console.log(units[i].name + "is defending:" + units[i].defending)
-        document.getElementById("poison_" + i).style.position = "absolute";
-        document.getElementById("poison_" + i).style.left = units[i].y * 64 + 48 + "px";
-        document.getElementById("poison_" + i).style.top = -720 + units[i].x*64 + 16 + "px";
-        document.getElementById("poison_info_" + i).style.position = "absolute";
-        document.getElementById("poison_info_" + i).style.left = units[i].y * 64 + 54 + "px";
-        document.getElementById("poison_info_" + i).style.top = -720 + units[i].x*64 + 18 + "px";
-      }
-      if(units[i].reinforce > 0)
-      {
-        //console.log(units[i].name + "is defending:" + units[i].defending)
-        document.getElementById("reinforce_" + i).style.position = "absolute";
-        document.getElementById("reinforce_" + i).style.left = units[i].y * 64 + 48 + "px";
-        document.getElementById("reinforce_" + i).style.top = -720 + units[i].x*64 + 32 + "px";
-        document.getElementById("reinforce_info_" + i).style.position = "absolute";
-        document.getElementById("reinforce_info_" + i).style.left = units[i].y * 64 + 54 + "px";
-        document.getElementById("reinforce_info_" + i).style.top = -720 + units[i].x*64 + 34 + "px";
-      }
-      if(units[i].commander_type == "player")
-      {
-        document.getElementById("exp_icon_" + i).style.position = "absolute";
-        document.getElementById("exp_icon_" + i).style.left = units[i].y * 64 + "px";
-        document.getElementById("exp_icon_" + i).style.top = -720 + units[i].x * 64 + 48 + "px";
-        document.getElementById("level_info_" + i).style.position = "absolute";
-        document.getElementById("level_info_" + i).style.left = units[i].y * 64 + 16 + "px";
-        document.getElementById("level_info_" + i).style.top = -720 + units[i].x * 64 + 48 + "px";
-        document.getElementById("exp_info_" + i).style.position = "absolute";
-        document.getElementById("exp_info_" + i).style.left = units[i].y * 64 + 16 + "px";
-        document.getElementById("exp_info_" + i).style.top = -720 + units[i].x * 64 + 56+ "px";
-      }
-      let side_info = "友方";
-      if(units[i].side == 1)
-      {
-        side_info = "敌方";
-      }
-      document.getElementById('hover_initial_mask_' + units[i].x + '_' + units[i].y).title += "\n\n" + units[i].name_cn + "\n阵营:" + side_info + "\n攻击力:" + units[i].attack + " 移动速度:" + units[i].speed + "\n最大攻击距离:" + units[i].max_range + " 最小攻击距离:" + units[i].min_range + "\n生命值" + units[i].health + "/" + units[i].max_health + " 护甲值:" + units[i].armor + '/' + units[i].max_armor + "\n举盾:" + (units[i].defending ? "是" : "否") + " 流血:" + (units[i].blooding ? "是" : "否") + "\n中毒层数:" + units[i].poison + " 昆仑护体仙术层数:" + units[i].reinforce; 
+      const mask = document.getElementById('hover_initial_mask_' + x + '_' + y);
+      if(mask.title !== hoverText[x][y]) mask.title = hoverText[x][y];
     }
   }
 }

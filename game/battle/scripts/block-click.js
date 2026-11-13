@@ -1,5 +1,6 @@
 function click_block(i,j)
 {
+  if(!can_player_act()) return;
   //console.log("点击("+i+','+j+')');
   if(selected_operation == '')
   {
@@ -25,6 +26,7 @@ function click_block(i,j)
         document.getElementById("operation_hover_initial_mask").innerHTML = '';
         clear_operation_hover_mask();
         end_turn();
+        return;
       }
     }
   }
@@ -32,6 +34,7 @@ function click_block(i,j)
 
 function move_selected_unit(x, y)
 {
+  if(!can_player_act()) return;
   if(have_moved) return;
   const destinations = MovementRules.findReachableCells(read_battle_state(), current_act_unit);
   if(!destinations.some(cell => cell.x === x && cell.y === y)) return;
@@ -52,6 +55,7 @@ function move_selected_unit(x, y)
 
 function place_trap_on(cx, cy, attack)
 {
+  if(!can_player_act()) return;
   let temp = new Trap(attack, current_act_unit);
   temp.x = cx;
   temp.y = cy;
@@ -66,6 +70,7 @@ function place_trap_on(cx, cy, attack)
 
 function use_ice_storm(cx, cy, damage)
 {
+  if(!can_player_act()) return;
   for(let i = cx - 2; i <= cx + 2; i++)
   {
     for(let j = cy - 2; j <= cy + 2; j ++)
@@ -94,6 +99,7 @@ function use_ice_storm(cx, cy, damage)
 
 function whack(cx, cy, damage)
 {
+  if(!can_player_act()) return;
   for(let cur = 0; cur < units_count; cur++)
   {
     if(units[cur].x == cx && units[cur].y == cy && units[cur].is_alive)
@@ -110,12 +116,14 @@ function whack(cx, cy, damage)
       document.getElementById("operation_hover_initial_mask").innerHTML = '';
       clear_operation_hover_mask();
       end_turn();
+      return;
     }
   }
 }
 
 function poison_cloud(cx, cy, damage)
 {
+  if(!can_player_act()) return;
   for(let i = cx - 2; i <= cx + 2; i++)
   {
     for(let j = cy - 2; j <= cy + 2; j ++)
@@ -148,6 +156,7 @@ function poison_cloud(cx, cy, damage)
 
 function reinforce(target)
 {
+  if(!can_player_act()) return;
   units[target].armor = units[target].max_armor;
   units[target].blooding = false;
   units[target].poison = false;
