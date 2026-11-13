@@ -2,34 +2,36 @@
 
 每项可独立跟踪。复选框在对应验收条件通过后勾选。优先保证现有玩法、存档和页面跳转能够复验。
 
+目录与命名规则见 [项目目录说明](project-structure.md)。目录整理已将公共音频、手动存读档、源码、构建产物和开发材料分开存放；战斗规则仍沿用原实现，以下未勾选的架构问题继续保留。
+
 ## 高优先级
 
 - [x] **01 · 页面依赖缺少回归检查**
-  - 已修复两个入口失效的 Bootstrap 引用、剧情页对未引入的 jQuery 的调用、地图第六关状态变量错误，以及静态检查发现的图标和音乐路径。[第一章初始化](../main/story/chapter1/plot.html#L19-L24) · [地图初始化](../main/story/map/map.html#L135-L160)
-  - 已验收：静态检查覆盖 56 个 HTML 页面的本地引用。浏览器直接打开根入口，经注册、登录和新游戏进入地图，校验自动存档后进入第一场战斗，通过跳过按钮到达胜利页，沿途无未捕获的脚本异常。[运行方法](../README.md#开发时检查页面依赖) · [静态检查](../scripts/check-pages.cjs) · [浏览器检查](../scripts/smoke-game.cjs)
+  - 已修复两个入口失效的 Bootstrap 引用、剧情页对未引入的 jQuery 的调用、地图第六关状态变量错误，以及静态检查发现的图标和音乐路径。[第一章初始化](../game/story/chapter-1/plot.html) · [地图初始化](../game/map/index.html)
+  - 已验收：静态检查覆盖 HTML 页面的本地引用。浏览器直接打开根入口，经注册、登录和新游戏进入地图，校验自动存档后进入第一场战斗，通过跳过按钮到达胜利页，沿途无未捕获的脚本异常。[运行方法](../README.md#开发时检查页面依赖) · [静态检查](../scripts/check-pages.cjs) · [浏览器检查](../scripts/smoke-game.cjs)
 
 - [x] **02 · 剧情文本与播放顺序由不同文件维护**
-  - 第 0–6 章的 24 个对话场景现由同一个 React 播放器读取。每句数据同时记录说话人、文本和中央字幕，选项、读完后的目标和跳过目标由场景配置指定。第一章进入战斗的按钮在读完台词后出现。[播放器源码](../src/story-player.jsx) · [第一章场景](../main/story/chapter1/plot.js) · [序章分支](../main/story/chapter0/plot.js)
+  - 第 0–6 章的 24 个对话场景现由同一个 React 播放器读取。每句数据同时记录说话人、文本和中央字幕，选项、读完后的目标和跳过目标由场景配置指定。第一章进入战斗的按钮在读完台词后出现。[播放器源码](../src/story/player.jsx) · [第一章场景](../game/story/chapter-1/plot.js) · [序章分支](../game/story/chapter-0/plot.js)
   - 已验收：在浏览器中逐句播放全部 24 个场景，验证序章与第二章的分支、选项写入的标记、第四章两条线索分支和黑屏转战斗、第五章交错字幕及第六章背景切换。剧情检查还会临时增删第一章台词，确认说话人和战斗入口正确。首句出现后的第一次点击会推进到第二句。[剧情检查](../scripts/smoke-story.cjs) · [编辑与构建方法](../README.md#编辑章节对话)
 
 - [ ] **03 · 跨页面进度缺少统一的存档格式和读写入口**
-  - 现象：新游戏在主菜单分别初始化 `current` 和 `level1` 至 `level6`；地图自动存档、手动存档和两种恢复路径各自枚举字段。各处还需自行区分当前游戏的键与按用户名保存的键。字段增减时容易漏掉某条路径。[初始化与继续游戏](../main/_INDEX.html#L15-L67) · [自动存档](../main/story/map/map.html#L51-L75) · [手动存档与读档](../main/js/controll.js#L47-L127)
+  - 现状：手动存读档已从旧的 `controll.js` 提取到公共 `saves.js`，原存档字段和键名保持不变。新游戏在主菜单分别初始化 `current` 和 `level1` 至 `level6`；地图自动存档、手动存档和两种恢复路径各自枚举字段。各处还需自行区分当前游戏的键与按用户名保存的键。字段增减时容易漏掉某条路径。[初始化与继续游戏](../game/pages/menu.html) · [自动存档](../game/map/index.html) · [手动存档与读档](../game/shared/scripts/saves.js)
   - 验收：新游戏、自动保存、手动保存和恢复使用同一份有版本的进度定义。用原版生成的存档验证两种恢复路径，角色等级、关卡解锁和隐藏线索一致；空档位或损坏数据不会覆盖已有进度。
 
 - [ ] **04 · 战斗规则依赖页面全局变量，结算副作用混在单位方法里**
-  - 现象：战棋页通过 20 个普通脚本共享 `units`、`map`、`round` 和当前行动单位。`Unit.get_hurt()` 同时处理扣血、死亡计数、经验、公告、成就弹窗和存储。回合末的持续伤害还会作用于已死亡单位；同一个盘古精魂再次受伤会再次增加击杀计数，而第五战以该计数达到 8 判胜。[战棋状态](../main/story/war_chess/war_chess.html#L41-L78) · [伤害结算](../main/story/war_chess/js/class_unit.js#L69-L119) · [持续伤害](../main/story/war_chess/js/control.js#L857-L866) · [第五战胜利条件](../main/story/war_chess/js/control.js#L667-L678)
+  - 现象：战棋页通过 20 个普通脚本共享 `units`、`map`、`round` 和当前行动单位。`Unit.get_hurt()` 同时处理扣血、死亡计数、经验、公告、成就弹窗和存储。回合末的持续伤害还会作用于已死亡单位；同一个盘古精魂再次受伤会再次增加击杀计数，而第五战以该计数达到 8 判胜。[战棋状态](../game/battle/index.html) · [伤害结算](../game/battle/scripts/class-unit.js) · [持续伤害](../game/battle/scripts/control.js) · [第五战胜利条件](../game/battle/scripts/control.js)
   - 验收：给定战斗状态和一次伤害，可以脱离页面与浏览器存储验证生命、经验、击杀计数，再由界面显示结算结果。同一单位死亡只结算一次，后续持续伤害不会使关卡提前获胜。
 
 ## 中优先级
 
 - [ ] **05 · 玩家与 AI 各自实现移动范围搜索**
-  - 现象：玩家选取移动时，一边搜索可达格一边生成高亮遮罩；AI 另写了一遍地形、占位和速度判断。修改通行规则时需要同步维护两套实现。[玩家移动](../main/story/war_chess/js/operation.js#L42-L95) · [AI 可达格搜索](../main/story/war_chess/js/ai.js#L22-L76)
+  - 现象：玩家选取移动时，一边搜索可达格一边生成高亮遮罩；AI 另写了一遍地形、占位和速度判断。修改通行规则时需要同步维护两套实现。[玩家移动](../game/battle/scripts/operation.js) · [AI 可达格搜索](../game/battle/scripts/ai.js)
   - 验收：给定相同棋盘、单位和速度，玩家高亮与 AI 候选位置来自同一份计算。覆盖速度边界、不可通行地形、友军可穿过但不可停留、敌军阻挡。
 
 - [ ] **06 · 行动结束与整轮结束重复处理胜负和成就**
-  - 现象：`end_turn()` 与 `end_round()` 各自维护一套结算分支。两处都解锁 `ach8`，传给弹窗的编号却分别为 7 和 0，显示内容已经分叉。[行动结束](../main/story/war_chess/js/control.js#L1028-L1066) · [整轮结束](../main/story/war_chess/js/control.js#L802-L839) · [弹窗取值](../main/story/war_chess/js/achievements_popup.js#L1-L14)
+  - 现象：`end_turn()` 与 `end_round()` 各自维护一套结算分支。两处都解锁 `ach8`，传给弹窗的编号却分别为 7 和 0，显示内容已经分叉。[行动结束](../game/battle/scripts/control.js) · [整轮结束](../game/battle/scripts/control.js) · [弹窗取值](../game/battle/scripts/achievements-popup.js)
   - 验收：同一战斗状态在两个入口产生一致的胜负、成就编号和提示。确认弹窗后继续结算，同一成就只解锁一次。
 
 - [ ] **07 · 回合推进阻塞浏览器，单位刷新销毁现有节点**
-  - 现象：AI 直接写入终点坐标并结算伤害，之后刷新单位层；刷新函数会清空并重建该层，再逐元素写入位置。回合推进还用循环同步等待约 300 毫秒，期间浏览器无法处理输入和绘制。[AI 行动](../main/story/war_chess/js/ai.js#L337-L354) · [单位刷新](../main/story/war_chess/js/units_update.js#L1-L81) · [等待实现](../main/story/war_chess/js/control.js#L315-L318) · [回合调用处](../main/story/war_chess/js/control.js#L1067-L1086)
+  - 现象：AI 直接写入终点坐标并结算伤害，之后刷新单位层；刷新函数会清空并重建该层，再逐元素写入位置。回合推进还用循环同步等待约 300 毫秒，期间浏览器无法处理输入和绘制。[AI 行动](../game/battle/scripts/ai.js) · [单位刷新](../game/battle/scripts/units-update.js) · [等待实现](../game/battle/scripts/control.js) · [回合调用处](../game/battle/scripts/control.js)
   - 验收：回合等待期间界面仍可响应；同一存活单位从行动前到行动后保留其显示节点。一次敌方行动只结算一次，玩家确认后才交给下一单位。

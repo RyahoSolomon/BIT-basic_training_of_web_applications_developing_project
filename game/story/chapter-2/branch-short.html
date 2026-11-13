@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第二章</title>
+<link rel="stylesheet" type="text/css" href="plot-after.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../../minesweeper/styles/achievement.css">
+<script>
+    function ReturnToIndex(){
+        window.location.href = "../../map/index.html";
+    }
+    function save_(){
+        window.location.href = "../../pages/save.html"
+    }
+</script>
+</head>
+
+<body style="background-image: url('../../assets/images/background/009-plain-out-of-forest.png');">
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/005-kill-nut.mp3" type="audio/mp3"></audio>
+	
+	<div id="text1" class="centered-text">次日寅时 森林外平原</div>
+
+    <div id="story-player"></div>
+		<div id="achievement_popup">
+			<div id="achievement_confirm_button_mask">
+				<p id="achievement_confirm_button_text">解锁成就</p>
+			</div>
+			<div class="achievement_title_container">
+				<p class="achievement_title">保护坚果</p>
+			</div>
+			<div class="achievement_content_container">
+				<p class="achievement_content">在第二关胜利后,选择放掉妖族监国</p>
+			</div>
+			<div id="achievement_confirm_button_mask">
+				<p id="achievement_confirm_button_text" onclick="Shutoff()">确认</p>
+			</div>
+		</div>
+		<div class="button-group">
+			<div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../assets/images/return.jpg"></div>
+			<div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../assets/images/unmute.jpg"></div>
+			<div class="button-save"><img title = "跳过剧情" src="../../assets/images/skip.png"></div>
+		</div>
+    <script src="branch-short.js"></script>
+    <script src="../../generated/story-player.js"></script>
+		<script src="../../shared/scripts/audio.js"></script>
+		
+		<script>
+			function Shutoff(){
+				var achievement_popup = document.getElementById("achievement_popup");
+				achievement_popup.style.display = "none";
+			}
+			function achieve(){
+				var achievement_popup = document.getElementById("achievement_popup");
+				achievement_popup.style.display = "flex";
+			}
+			window.onload = function (){
+				console.log(localStorage.username);
+        		var username = localStorage.username;
+				//var username = window.localStorage.username;
+				var achievement = window.localStorage.getItem(username + 'achievement');
+				achievement = JSON.parse(achievement);
+				
+				var flag = localStorage.getItem(username + 'flag');
+				if(achievement['ach2'] == 0 && flag == 1){
+					setTimeout(achieve,100);
+				}
+				achievement['ach2'] = 1;
+				localStorage.setItem(username + 'achievement',JSON.stringify(achievement));
+			}
+
+			initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+		</script>
+</body>
+</html>

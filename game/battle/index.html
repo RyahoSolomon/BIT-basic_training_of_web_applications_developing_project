@@ -1,0 +1,133 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title id = "html_title">战斗</title>
+    <!-- 战棋版本 正式版1.0.4 -->
+    <script type="text/javascript" src="scripts/initial-board.js"></script>
+    <script type="text/javascript" src="scripts/block-click.js"></script>
+    <script type="text/javascript" src="scripts/load-map.js"></script>
+    <script type="text/javascript" src="scripts/units-update.js"></script>
+    <script type="text/javascript" src="scripts/class-commander.js"></script>
+    <script type="text/javascript" src="scripts/class-unit.js"></script>
+    <script type="text/javascript" src="scripts/control.js"></script>
+    <script type="text/javascript" src="scripts/operation.js"></script>
+    <script type="text/javascript" src="scripts/ai.js"></script>
+    <script type="text/javascript" src="scripts/hover-events.js"></script>
+    <script type="text/javascript" src="scripts/class-items.js"></script>
+    <script type="text/javascript" src="scripts/announcement.js"></script>
+    <script type="text/javascript" src="scripts/bootstrap.js"></script>
+    <script type="text/javascript" src="scripts/class-pos.js"></script>
+    <script type="text/javascript" src="scripts/mission-objective.js"></script>
+    <script type="text/javascript" src="scripts/random.js"></script>
+    <script type="text/javascript" src="scripts/achievements-popup.js"></script>
+    <script type="text/javascript" src="scripts/plot.js"></script>
+    <script type="text/javascript" src="scripts/class-queue.js"></script>
+    
+    
+    <link rel="stylesheet" type="text/css" href="styles/unit.css">
+    <link rel="stylesheet" type="text/css" href="styles/items.css">
+    <link rel="stylesheet" type="text/css" href="styles/blocks.css">
+    <link rel="stylesheet" type="text/css" href="styles/ui.css">
+    <link rel="stylesheet" type="text/css" href="styles/background.css">
+    <link rel="stylesheet" type="text/css" href="styles/mission.css">
+    <link rel="stylesheet" type="text/css" href="styles/achievement.css">
+    <link rel="stylesheet" type="text/css" href="styles/plot.css">
+    <link rel="stylesheet" type="text/css" href="styles/clickable-mask.css">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+    <script>
+      var current_info = localStorage.getItem("current");
+      var username = localStorage.getItem("username");
+      if(username == null)
+      {
+        username = 'TEST';
+      }
+      initial_current_info();
+      var music_library =["assets/audio/war-chess1.mp3","assets/audio/war-chess2.mp3","assets/audio/war-chess3.mp3","assets/audio/cross-your-heart.mp3","assets/audio/fractured-shrines.mp3","assets/audio/machine.mp3","assets/audio/same-old-story.mp3","assets/audio/sanddust.mp3","assets/audio/maintitles.mp3"];
+      var user_level = current_info.user_level;
+      var yuanlan_level = current_info.yuanlan_level;
+      var yedai_level = current_info.yedai_level;
+      var achievements = localStorage.getItem(username + 'achievement');
+      initial_game_info();
+      initial_achievements();
+      var operation_count = 0;
+      var height = 9;
+      var current_act_unit = 0;
+      var have_moved = false;
+      var width = 20;
+      var level = current_info.level;//当前关卡内部代号
+      var map;//储存地图格子
+      var current_state = "waiting";
+      var units_count = 0;
+      var units = new Array();//储存单位
+      var items = new Array();
+      var round = 0;
+      var selected_operation = "";//当前选取操作
+      var announcement_list = new Array();
+      var spirit_pos = new Array();
+      var fire_pos = new Array();
+      var earthquake_pos = new Array();
+      var swamp_pos = new Array();
+      var thunder_pos = new Array();
+      var spirit_count = 0;
+      var exp_threshold = [20, 48, 96, 144, 216];
+      var currentTextIndex = 0;
+      var executeAnimation = 0;
+    </script>
+  </head>
+
+  <body ondragstart='return false' oncontextmenu='self.event.returnValue=false'>
+    <audio id="audioPlayer" src="assets/audio/war-chess1.mp3" preload="auto"></audio>
+    <div id= "board"></div>
+    <div id = 'UI'>
+      <img id = "round_info" src = "assets/images/ui/round-info.png">
+      <a id = "round_info_text">0</a>
+      <img id = "skip_game_button" src = "assets/images/ui/skip-game.png">
+      <img id = "guide_button" src = "assets/images/ui/guide.png">
+      <img id = "back_to_map" class = "control_button" src = "assets/images/ui/back-to-map.png">
+      <img id = "check_mission_info" class = "control_button" src = "assets/images/ui/check-mission-info.png">
+      <img id = "switch_music_state" class = "control_button" src = "assets/images/ui/music-on.png">
+      <div id = "announcement_board">
+        <div id = "announcement"></div>
+      </div>
+    </div>
+    <div id = 'items'></div>
+    <div id = 'units'></div>
+    <div id = 'selected_box'></div>
+    <div id = 'operation_buttons'></div>
+    <div id = 'operations'></div>
+    <div id = 'hover_mask'></div>
+    <div id = 'hover_initial_mask'></div>
+    <div id = 'operation_hover_initial_mask'></div>
+    <div id = 'other_buttons_hover_mask'></div>
+    <div id = 'other_buttons_hover_initial_mask'>
+      <img id = "skip_game_hover_initial_mask" src = "assets/images/mask/transparent-other-button.png" onclick = "win()" onmouseenter = "load_skip_game_hover_mask()" onmouseleave="reset_other_buttons_hover_mask()" title = "跳过游戏:自动获得游戏胜利,但有可能错过关键剧情和隐藏结局触发.">
+      <img id = "guide_hover_initial_mask" src = "assets/images/mask/transparent-other-button.png" onclick = "window.open('../../docs/game-guide.pdf')" onmouseenter = "load_guide_hover_mask()" onmouseleave="reset_other_buttons_hover_mask()" title = "查看教程">
+      <img id = "back_to_map_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "window.location.href = '../map/index.html'" onmouseenter = "load_control_button_hover_mask(0)" onmouseleave="reset_other_buttons_hover_mask()" title = "返回大地图(不保存本场战役获得的经验,但保留成就和隐藏线索)">
+      <img id = "check_mission_info_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "load_mission_icons(true)" onmouseenter = "load_control_button_hover_mask(1)" onmouseleave="reset_other_buttons_hover_mask()" title = "回顾任务目标">
+      <img id = "switch_music_state_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "switch_music_state()" onmouseenter = "load_control_button_hover_mask(2)" onmouseleave="reset_other_buttons_hover_mask()" title = "点我开启音乐">
+    </div>
+    <div id = 'mask'></div>
+    <div id = "mission_icons"></div>
+    <div id = "mission_hover_mask"></div>
+    <div id = "mission_confirm_masks"></div>
+    <div id = "achievement_popup"></div>
+    <div id = "achievement_confirm_hover_mask"></div>
+    <div id = "achievement_confirm_mask"></div>
+    <div id = "plot"></div>
+    <div id = "plot_mask"></div>
+    <div id = "plot_option"></div>
+    <div id = "plot_option_hover_masks"></div>
+    <div id = "plot_option_masks"></div>
+  </body>
+  <script type="text/javascript" src="scripts/audio.js"></script>
+  <script>
+      pre_load();
+      //loadPlots()
+      load_mission_icons(false);
+      //achievement_popup(4);
+  </script>
+</html>

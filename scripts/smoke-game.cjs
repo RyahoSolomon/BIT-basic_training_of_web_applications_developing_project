@@ -13,17 +13,17 @@ async function smoke({ evaluate, click, page, open }) {
     await click(form + ' button[type="submit"]');
   }
   await open('index.html');
-  await click('a[href="main/register.html"]');
-  await page('main/register.html');
+  await click('a[href="game/pages/register.html"]');
+  await page('game/pages/register.html');
   await submitCredentials('#registerForm', true);
-  await page('main/login.html');
+  await page('game/pages/login.html');
   await submitCredentials('#loginForm');
-  await page('main/_INDEX.html');
+  await page('game/pages/menu.html');
   assert.equal(await evaluate('localStorage.username'), username);
-  await click('a[href="story/chapter0/background.html"]');
-  await page('main/story/chapter0/background.html');
+  await click('a[href="../story/chapter-0/background.html"]');
+  await page('game/story/chapter-0/background.html');
   await click('.button-save');
-  await page('main/story/map/map.html');
+  await page('game/map/index.html');
   const save = await evaluate('JSON.parse(localStorage.getItem(localStorage.username + "autosave"))');
   assert.equal(save.saveurl, 0);
   assert.equal(save.MSYgamename, '序章');
@@ -33,15 +33,15 @@ async function smoke({ evaluate, click, page, open }) {
   assert.equal(current.user_level.level, 1);
   assert.deepEqual(current.perfect_level_complete, Array(6).fill(false));
   await click('#Level1');
-  await page('main/story/chapter1/plot.html');
+  await page('game/story/chapter-1/plot.html');
   await click('.button-save');
   // Keep controlling the game tab if the first-play tutorial opens in a new tab.
-  await page('main/story/war_chess/war_chess.html');
+  await page('game/battle/index.html');
   assert.equal(await evaluate('level'), 0);
   await click('#mission_confirm_mask');
   assert.ok(await evaluate('document.querySelector("#unit_0") && !!document.querySelector("#operation_button_0")'));
   await click('#skip_game_hover_initial_mask');
-  await page('main/story/war_chess/result/level_1/win.html');
+  await page('game/battle/results/level-1/win.html');
   assert.match(await evaluate('document.querySelector(".result_inform").textContent'), /胜利/);
 }
 

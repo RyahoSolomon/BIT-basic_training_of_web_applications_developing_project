@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>最终章</title>
+<link rel="stylesheet" type="text/css" href="plot.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
+<script>
+    function ReturnToIndex(){
+        window.location.href = "../../map/index.html";
+    }
+    function save_(){
+        window.location.href = "../../pages/save.html"
+    }
+</script>
+</head>
+
+<body>
+    <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../assets/audio/013-meeting-before-war.mp3" type="audio/mp3"></audio>
+    <div class="button-group">
+        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../assets/images/return.jpg"></div>
+        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../assets/images/unmute.jpg"></div>
+        <div class="button-save"><img title = "跳过剧情" src="../../assets/images/skip.png"></div>
+    </div>
+    <div id="text2" class="centered-text">我们陷入了令人尴尬的沉默,此时一个传令兵进来通报</div>
+
+    <div id="story-player"></div>
+		
+		<script src = "plot2.js"></script>
+    <script src="../../generated/story-player.js"></script>
+        <script src="../../shared/scripts/audio.js"></script>
+        <script>
+
+
+        initial_muisc_button_img();
+        function window_click_listener()
+        {
+          initial_music();
+          this.removeEventListener("click", window_click_listener);
+        }
+
+        window.addEventListener('click', window_click_listener);
+        </script>
+</body>
+</html>

@@ -1,7 +1,14 @@
 #### 北京理工大学(Beijing Institute of Technology) 互联网应用开发基础训练(实践周/赵丰年)课程设计
 # 源神 The Origin Of God
 ### 开始冒险
-拉取项目后直接用浏览器(最好是较新版)打开位于根目录下的index.html即可。
+
+拉取项目后，用较新版浏览器打开根目录的 [index.html](index.html) 即可。仓库包含已打包的剧情播放器，游玩不需要安装 npm 包或启动服务器。
+
+### 文件放在哪里
+
+正式游戏文件统一放在 `game/`。账号与存档页面放在 `game/pages/`；剧情、地图、战棋和扫雷分别放在对应模块；跨模块资源放在 `game/assets/`，公共脚本和样式放在 `game/shared/`。完整目录规则和常用入口见 [项目目录说明](docs/project-structure.md)。
+
+需要构建的源码位于 `src/`，构建产物位于 `game/generated/`；第三方库位于 `game/vendor/`。开发工具和美术源稿分别放在 [tools/](tools/README.md) 和 [design/](design/README.md)，与正式游戏内容分开维护。原项目已在独立分支归档，当前分支不再保留未使用的历史代码和样例副本。
 
 ### 开发时检查页面依赖
 
@@ -16,15 +23,17 @@ node scripts/smoke-game.cjs
 
 ### 编辑章节对话
 
-第 0–6 章的 24 个对话页面共用 React 播放器。每个页面原来的同名 JS 文件现在定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 与 `skip` 分别定义读完和跳过后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+第 0–6 章的 24 个对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。
 
-例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效。
+场景 JS 定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 与 `skip` 分别定义读完和跳过后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+
+例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效，无需重新构建播放器。
 
 ```js
 { speaker: "[鸢阑]", text: "我们继续出发吧。" },
 ```
 
-共用播放逻辑位于 `src/story-player.jsx`。修改该文件后，在根目录执行以下命令，并将重新生成的 `main/js/story-player.js` 一起提交。仓库附带已打包的播放器，可以直接打开游戏。
+共用播放逻辑位于 [src/story/player.jsx](src/story/player.jsx)。修改该文件后，在根目录执行以下命令，并将重新生成的 `game/generated/story-player.js` 及其许可证文件一起提交：
 
 ```sh
 npm ci
@@ -34,11 +43,11 @@ node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
 ```
 
-剧情检查会逐句核对说话人，走过序章和第二章的分支、第一章的战斗入口，以及第五章的字幕切换。它还会临时增删第一章的台词，验证后续说话人和进入战斗的按钮仍然正确。
+第一至第三章的相同剧情样式已合并到 [game/story/styles/dialogue.css](game/story/styles/dialogue.css)；场景专用样式仍与章节页面就近存放。剧情检查会逐句核对覆盖场景的说话人，走过序章与第二章分支、第一章战斗入口及第五章字幕切换，并临时增删第一章台词，确认后续说话人和按钮仍然正确。
 
 ### 项目基本介绍
 该项目为基于前端三件套(html，CSS，JavaScript)开发的简单的战棋类策略游戏，玩法改编自Worldwalker Games LLC开发的游戏**Wildermyth**，剧情改编自由Minecraft游戏中由水狼阳介企划，MTW和红石口袋联手制作的大型东方幻想RPG地图(社区内容)**盘灵古域**。
-目前该项目已停止更新，但是如果有bug issue可能会修。之后会更新打码的发布视频等内容。
+当前在保留原有玩法的基础上整理目录、修复问题并完善回归检查。尚未完成的架构改进见 [问题清单](docs/TODO.md)。
 
 ### 后记
 其实目前来看，剧情上还是有很多瑕疵，在当时编剧时没有考虑。种族之间的冲突没有铺垫的很深，尤其是神族的霸权统治。其次某昆仑修士的隐藏身份的伏笔和铺垫都不够充分和明显导致最终揭露身份的剧情时戏剧冲突没那么大。最后就是台词有点中二。谨以此作品致敬《盘灵古域》，虽然它已经是这一项目九年前的作品了。
