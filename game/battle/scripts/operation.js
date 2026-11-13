@@ -42,178 +42,18 @@ function selected_attack(id)
 function selected_move(id)
 {
   selected_operation = "move";
-  document.getElementById("mask").innerHTML='';
-  let mask_innerhtml = '';
-  let reachable_blocks = new Queue;
-  reachable_blocks.push(new PointWithDistance(units[id].x, units[id].y, 0));
-  let vis = new Array();
-  for(let i = 0; i < height; i++)
-  {
-    vis[i] = new Array();
-    for(let j = 0; j < width; j++)
-    {
-      vis[i][j] = false;
-      //console.log(vis[i][j],)
-    }
-  }
-  while(!reachable_blocks.empty())
-  {
-    let current_block = reachable_blocks.top();
-    //console.log("当前检测到(" + current_block.x + "," + current_block.y + ") 距离为" + current_block.distance)
-    if(current_block.distance >= units[id].speed)
-    {
-      break;
-    }
-    if(current_block.x + 1 < height)
-    {
-      let cx = current_block.x + 1;
-      let cy = current_block.y;
-      //console.log(vis[cx][cy]);
-      //console.log(is_block_reachable(cx,cy));
-      if(!vis[cx][cy] && is_block_reachable(cx, cy))
-      {
-        let flag = false;
-        for(let i = 0; i < units_count; i++)
-        {
-          if(units[i].is_alive && units[i].x == cx && units[i].y == cy)
-          {
-            flag = true;
-            vis[cx][cy] = true;
-            if(units[i].side == units[id].side)
-            {
-              reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-            }
-            break;
-          }
-        }
-        if(!flag)
-        {
-          reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-          vis[cx][cy] = true;
-          mask_innerhtml += '<img src = "assets/images/mask/can-move-on.png" id = "' + cx + '_' + cy + '" onclick = "click_block(' + cx + ',' + cy +')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + cx + ',' + cy + ')" onmouseleave = "delete_hover_mask(' + cx + ',' + cy + ')"  title = "移动到(' + (cy + 1) + ',' + (cx + 1) + ')">';
-        }
-      }
-    }
-    if(current_block.x - 1 >= 0)
-    {
-      let cx = current_block.x - 1;
-      let cy = current_block.y;
-      //console.log(vis[cx][cy]);
-      //console.log(is_block_reachable(cx,cy));
-      if(!vis[cx][cy] && is_block_reachable(cx, cy))
-      {
-        let flag = false;
-        for(let i = 0; i < units_count; i++)
-        {
-          if(units[i].is_alive && units[i].x == cx && units[i].y == cy)
-          {
-            flag = true;
-            vis[cx][cy] = true;
-            if(units[i].side == units[id].side)
-            {
-              reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-            }
-            break;
-          }
-        }
-        if(!flag)
-        {
-          reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-          vis[cx][cy] = true;
-          mask_innerhtml += '<img src = "assets/images/mask/can-move-on.png" id = "' + cx + '_' + cy + '" onclick = "click_block(' + cx + ',' + cy +')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + cx + ',' + cy + ')" onmouseleave = "delete_hover_mask(' + cx + ',' + cy + ')"  title = "移动到(' + (cy + 1) + ',' + (cx + 1) + ')">';
-        }
-      }
-    }
-    if(current_block.y + 1 < width)
-    {
-      let cx = current_block.x;
-      let cy = current_block.y + 1;
-      //console.log(vis[cx][cy]);
-      //console.log(is_block_reachable(cx,cy));
-      if(!vis[cx][cy] && is_block_reachable(cx, cy))
-      {
-        let flag = false;
-        for(let i = 0; i < units_count; i++)
-        {
-          if(units[i].is_alive && units[i].x == cx && units[i].y == cy)
-          {
-            flag = true;
-            vis[cx][cy] = true;
-            if(units[i].side == units[id].side)
-            {
-              reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-            }
-            break;
-          }
-        }
-        if(!flag)
-        {
-          reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-          vis[cx][cy] = true;
-          mask_innerhtml += '<img src = "assets/images/mask/can-move-on.png" id = "' + cx + '_' + cy + '" onclick = "click_block(' + cx + ',' + cy +')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + cx + ',' + cy + ')" onmouseleave = "delete_hover_mask(' + cx + ',' + cy + ')"  title = "移动到(' + (cy + 1) + ',' + (cx + 1) + ')">';
-        }
-      }
-    }
-    if(current_block.y - 1 >= 0)
-    {
-      let cx = current_block.x;
-      let cy = current_block.y - 1;
-      // console.log(vis[cx][cy]);
-      // console.log(is_block_reachable(cx,cy));
-      if(!vis[cx][cy] && is_block_reachable(cx, cy))
-      {
-        let flag = false;
-        for(let i = 0; i < units_count; i++)
-        {
-          if(units[i].is_alive && units[i].x == cx && units[i].y == cy)
-          {
-            flag = true;
-            vis[cx][cy] = true;
-            if(units[i].side == units[id].side)
-            {
-              reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-            }
-            break;
-          }
-        }
-        if(!flag)
-        {
-          reachable_blocks.push(new PointWithDistance(cx, cy, current_block.distance + 1));
-          vis[cx][cy] = true;
-          mask_innerhtml += '<img src = "assets/images/mask/can-move-on.png" id = "' + cx + '_' + cy + '" onclick = "click_block(' + cx + ',' + cy +')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + cx + ',' + cy + ')" onmouseleave = "delete_hover_mask(' + cx + ',' + cy + ')"  title = "移动到(' + (cy + 1) + ',' + (cx + 1) + ')">';
-        }
-      }
-    }
-    reachable_blocks.pop();
-  }
-  // for(let i = 0; i < height; i++)
-  // {
-  //   for(let j = 0; j < width; j++)
-  //   {
-
-  //     if(manhattan_distance_cal(i,j,units[id].x,units[id].y) <= units[id].speed)
-  //     {
-  //       let flag = false;
-  //       if(!is_block_reachable(i, j))
-  //       {
-  //         continue;
-  //       }
-  //       for(let k = 0; k < units_count; k++)
-  //       {
-  //         if(units[k].x == i && units[k].y == j && units[k].is_alive)
-  //         {
-  //           flag = true;
-  //         }
-  //       }
-  //       if(flag)
-  //       {
-  //         continue;
-  //       }
-  //     }
-  //   }
-  // }
-  document.getElementById("mask").innerHTML = mask_innerhtml;
+  const destinations = MovementRules.findReachableCells(read_battle_state(), id);
+  document.getElementById("mask").innerHTML = destinations.map(create_move_mask).join('');
   load_mask();
+}
+
+function create_move_mask(cell)
+{
+  const { x, y } = cell;
+  return `<img src="assets/images/mask/can-move-on.png" id="${x}_${y}"
+    onclick="click_block(${x},${y})" class="mask_img clickable_mask"
+    onmouseenter="load_hover_mask(${x},${y})" onmouseleave="delete_hover_mask(${x},${y})"
+    title="移动到(${y + 1},${x + 1})">`;
 }
 
 function selected_defend()

@@ -35,6 +35,8 @@ design/                            可编辑的美术源稿
 | 战棋 | [game/battle/index.html](../game/battle/index.html) |
 | 伤害与经验规则 | [battle-rules.js](../game/battle/scripts/battle-rules.js) |
 | 战斗结果的页面接入 | [battle-state.js](../game/battle/scripts/battle-state.js) |
+| 玩家与 AI 共用移动规则 | [movement-rules.js](../game/battle/scripts/movement-rules.js) |
+| AI 候选评估与决策 | [ai-rules.js](../game/battle/scripts/ai-rules.js) |
 | 扫雷 | [game/minesweeper/index.html](../game/minesweeper/index.html) |
 | 第一章场景 | [game/story/chapter-1/plot.js](../game/story/chapter-1/plot.js) |
 | 剧情播放器源码 | [src/story/player.jsx](../src/story/player.jsx) |
@@ -61,7 +63,7 @@ design/                            可编辑的美术源稿
 
 本项目使用相对 URL，路径分隔符统一为 `/`。HTML 的资源和跳转路径相对于该 HTML；外部 CSS 的 `url(...)` 相对于 CSS 文件；脚本中写入页面的图片地址和跳转地址通常相对于引用它的 HTML，而非脚本自身。因此移动脚本或共用 CSS 时，需要按实际使用位置核对引用。
 
-修改路径后运行 `npm run check`，再运行 `npm test`。前者检查 HTML、CSS、可静态识别的 JavaScript 路径和检查器自身；后者继续执行存档与战斗规则单元测试，以及存档、战斗、开局、剧情、页面导航和音频六个浏览器回归。动态生成的图片与跳转仍需要浏览器检查。修改播放器源码时，先运行 `npm ci` 和 `npm run build:story`。详细要求见 [开发说明](../README.md#开发时检查页面依赖)。
+修改路径后运行 `npm run check`，再运行 `npm test`。前者检查 HTML、CSS、可静态识别的 JavaScript 路径和检查器自身；后者继续执行存档与战斗规则单元测试，以及存档、战斗、移动、开局、剧情、页面导航和音频七个浏览器回归。动态生成的图片与跳转仍需要浏览器检查。修改播放器源码时，先运行 `npm ci` 和 `npm run build:story`。详细要求见 [开发说明](../README.md#开发时检查页面依赖)。
 
 ## 已合并的共用内容
 
@@ -71,4 +73,4 @@ design/                            可编辑的美术源稿
 - 三份结局字幕脚本共用 `game/story/scripts/ending.js`。
 - 新游戏、自动保存、手动保存和两种恢复入口共用 `game/shared/scripts/progress.js` 的版本化进度定义；`saves.js` 负责存读档页交互。账号存档键保持兼容，原版格式通过统一转换读取，详见 [存档格式](save-format.md)。
 
-战棋伤害、经验和死亡计数已提取为可独立运行的规则，页面通过适配层处理显示与存储，见 [伤害与死亡结算](battle-rules.md)。移动、回合推进和胜负结算仍有后续拆分工作，见 [架构问题清单](TODO.md)。
+战棋伤害、经验和死亡计数已提取为可独立运行的规则，页面通过适配层处理显示与存储，见 [伤害与死亡结算](battle-rules.md)。玩家与 AI 共用移动范围计算，AI 决策也与页面执行分离，见 [移动范围与 AI 决策](movement-rules.md)。回合推进和胜负结算仍有后续拆分工作，见 [架构问题清单](TODO.md)。

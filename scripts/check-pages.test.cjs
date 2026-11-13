@@ -48,6 +48,34 @@ test('a shared script is checked in every loading page context', () => {
   });
 });
 
+test('relative CommonJS imports use the script directory and missing modules cannot use page files', () => {
+  fixture({
+    'pages/index.html': '<script src="../scripts/page.js"></script>',
+    'scripts/page.js': [
+      'const helper = require("./helper.js");',
+      'const settings = require("./settings");',
+      'const packageName = require("package-name.js");',
+      'image.src = "icon.png";',
+      'location.href = "next.html";',
+    ].join('\n'),
+    'scripts/helper.js': '',
+    'scripts/settings.json': '{}',
+    'pages/icon.png': '',
+    'pages/next.html': '',
+  }, (result, errors) => {
+    assert.deepEqual(errors, []);
+    assert.equal(result.references, 5);
+  });
+  fixture({
+    'pages/index.html': '<script src="../scripts/page.js"></script>',
+    'scripts/page.js': 'const helper = require("./missing.js");',
+    'pages/missing.js': '',
+  }, (result, errors) => {
+    assert.equal(result.failures, 1);
+    assert.deepEqual(errors, ['scripts/page.js:1: missing module ./missing.js']);
+  });
+});
+
 test('checks inline scripts, events, CSS and static image URLs inside assembled HTML', () => {
   fixture({
     'index.html': [

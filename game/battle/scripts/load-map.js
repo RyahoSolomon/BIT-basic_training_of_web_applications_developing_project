@@ -85,15 +85,6 @@ function get_block_info(block_id)
   }
 }
 
-function is_block_reachable(cx, cy)
-{
-  if(map[cx][cy] == 11 || map[cx][cy] == 18 || map[cx][cy] == 17 || map[cx][cy] == 16 || map[cx][cy] == 4)
-  {
-    return false;
-  }
-  return true;
-}
-
 function load_map(level)
 {
   map = new Array();

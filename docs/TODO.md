@@ -2,7 +2,7 @@
 
 每项可独立跟踪。复选框在对应验收条件通过后勾选。优先保证现有玩法、存档和页面跳转能够复验。
 
-目录与命名规则见 [项目目录说明](project-structure.md)。公共音频、存档、源码、构建产物和开发材料已分开存放；伤害与经验规则已从页面中拆出，以下未勾选的架构问题继续保留。
+目录与命名规则见 [项目目录说明](project-structure.md)。公共音频、存档、源码、构建产物和开发材料已分开存放；伤害、经验、移动与 AI 决策已从页面中拆出，以下未勾选的架构问题继续保留。
 
 ## 高优先级
 
@@ -21,13 +21,13 @@
 
 - [x] **04 · 战斗规则依赖页面全局变量，结算副作用混在单位方法里**
   - 伤害、首次死亡、精魂击杀数、经验与等级由 [battle-rules.js](../game/battle/scripts/battle-rules.js) 根据传入状态计算，不修改输入，也不访问页面或存储。[battle-state.js](../game/battle/scripts/battle-state.js) 应用结果、显示死亡公告与成就并负责持久化，`Unit.get_hurt()` 仅转发调用。回合末跳过死者，并在某项伤害致死后停止剩余效果；重击自损和地形伤害统一通过绕甲选项结算。接口见 [伤害与死亡结算](battle-rules.md)。
-  - 已验收：纯规则测试覆盖生命、护甲、经验、等级、计数与成就事件；浏览器中验证初始及召唤单位、同轮与后续回合持续伤害、死亡公告与成就存储。同一精魂死亡后重复受伤不增加计数，前七具死亡不判胜，第八具死亡才达到第五关目标。原有经验分配与升级阈值保持不变。[规则测试](../scripts/battle-rules.test.cjs) · [浏览器战斗回归](../scripts/smoke-battle.cjs)，统一运行 `npm run test:battle` 或 `npm test`。移动、回合推进与胜负结算的进一步拆分见第五至七项。
+  - 已验收：纯规则测试覆盖生命、护甲、经验、等级、计数与成就事件；浏览器中验证初始及召唤单位、同轮与后续回合持续伤害、死亡公告与成就存储。同一精魂死亡后重复受伤不增加计数，前七具死亡不判胜，第八具死亡才达到第五关目标。原有经验分配与升级阈值保持不变。[规则测试](../scripts/battle-rules.test.cjs) · [浏览器战斗回归](../scripts/smoke-battle.cjs)，统一运行 `npm run test:battle` 或 `npm test`。后续回合推进与胜负结算的拆分见第六、七项。
 
 ## 中优先级
 
-- [ ] **05 · 玩家与 AI 各自实现移动范围搜索**
-  - 现象：玩家选取移动时，一边搜索可达格一边生成高亮遮罩；AI 另写了一遍地形、占位和速度判断。修改通行规则时需要同步维护两套实现。[玩家移动](../game/battle/scripts/operation.js) · [AI 可达格搜索](../game/battle/scripts/ai.js)
-  - 验收：给定相同棋盘、单位和速度，玩家高亮与 AI 候选位置来自同一份计算。覆盖速度边界、不可通行地形、友军可穿过但不可停留、敌军阻挡。
+- [x] **05 · 玩家与 AI 各自实现移动范围搜索**
+  - 玩家高亮、点击校验与 AI 候选位置已统一使用 [movement-rules.js](../game/battle/scripts/movement-rules.js)。[ai-rules.js](../game/battle/scripts/ai-rules.js) 独立评估候选和选择动作，[ai.js](../game/battle/scripts/ai.js) 仅执行动作与显示标记；删除了重复搜索、旧队列、无引用的距离类与注释掉的旧实现。保留现有地形、占位、射程及随机选择顺序，详见 [移动范围与 AI 决策](movement-rules.md)。
+  - 已验收：11 项移动规则测试和 9 项 AI 策略测试覆盖速度边界、绕路距离、不可通行地形、友军可穿过但不可停留、敌军阻挡、死亡单位及平局顺序。浏览器遍历六张实际地图、55 个双方活单位，确认高亮与 AI 可达位置及顺序一致，并验证移动后攻击、不可重复移动、过期点击和电脑确认流程。另用旧实现对比 1,000 组棋盘和 3,000 次固定随机动作，正常行为一致。[移动测试](../scripts/movement-rules.test.cjs) · [AI 测试](../scripts/ai-rules.test.cjs) · [浏览器回归](../scripts/smoke-movement.cjs)，统一运行 `npm run test:movement` 或 `npm test`。
 
 - [ ] **06 · 行动结束与整轮结束重复处理胜负和成就**
   - 现象：`end_turn()` 与 `end_round()` 各自维护一套结算分支。两处都解锁 `ach8`，传给弹窗的编号却分别为 7 和 0，显示内容已经分叉。[行动结束](../game/battle/scripts/control.js) · [整轮结束](../game/battle/scripts/control.js) · [弹窗取值](../game/battle/scripts/achievements-popup.js)

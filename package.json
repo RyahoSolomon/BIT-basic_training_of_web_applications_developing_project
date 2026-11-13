@@ -6,7 +6,8 @@
     "check": "node --test scripts/check-pages.test.cjs && node scripts/check-pages.cjs",
     "test:progress": "node --test scripts/progress.test.cjs && node scripts/smoke-progress.cjs",
     "test:battle": "node --test scripts/battle-rules.test.cjs && node scripts/smoke-battle.cjs",
-    "test": "npm run check && npm run test:progress && npm run test:battle && node scripts/smoke-game.cjs && node scripts/smoke-story.cjs && node scripts/smoke-navigation.cjs && node scripts/smoke-audio.cjs"
+    "test:movement": "node --test scripts/movement-rules.test.cjs scripts/ai-rules.test.cjs && node scripts/smoke-movement.cjs",
+    "test": "npm run check && npm run test:progress && npm run test:battle && npm run test:movement && node scripts/smoke-game.cjs && node scripts/smoke-story.cjs && node scripts/smoke-navigation.cjs && node scripts/smoke-audio.cjs"
   },
   "dependencies": {
     "react": "19.3.1",

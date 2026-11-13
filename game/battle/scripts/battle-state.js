@@ -1,6 +1,6 @@
 // 页面适配：向规则传入当前战局，再统一应用结果、显示事件和保存成就。
 function read_battle_state() {
-    return { units: units, spiritCount: spirit_count, achievements: achievements };
+    return { map: map, units: units, spiritCount: spirit_count, achievements: achievements };
 }
 
 function apply_battle_result(result) {

@@ -2,6 +2,7 @@
 // Dynamic URL construction still needs the browser smoke checks.
 // Run from any directory with: node path/to/scripts/check-pages.cjs [project-root]
 const fs = require('node:fs');
+const { createRequire } = require('node:module');
 const path = require('node:path');
 const { fileURLToPath, pathToFileURL } = require('node:url');
 
@@ -69,6 +70,7 @@ function* javascriptStrings(text) {
         value: decodeString(raw), line: lineAt(text, start),
         dynamic: (quote === '`' && raw.includes('${')) || before.endsWith('+') || after.startsWith('+'),
         explicitBase: parens.some(Boolean),
+        commonJS: /(?:^|[^\w$.])require\s*\(\s*$/.test(before) && after.startsWith(')'),
       };
     } else if (text[i] === '(') {
       parens.push(/\bnew\s+URL\s*$/.test(text.slice(0, i)));
@@ -84,7 +86,13 @@ function* javascriptStrings(text) {
 
 function* javascriptReferences(js) {
   for (const literal of javascriptStrings(js)) {
-    const {value, line, dynamic, explicitBase} = literal;
+    const {value, line, dynamic, explicitBase, commonJS} = literal;
+    if (commonJS) {
+      // Relative CommonJS imports belong to the script, not its loading page.
+      // Package/built-in names are not local page URLs.
+      if (!dynamic && /^\.\.?\//.test(value)) yield {value, line, module: true};
+      continue;
+    }
     if (!dynamic && !explicitBase && isResource(value)) yield {value, line};
     // Complete URLs embedded in HTML fragments remain checkable even when
     // the surrounding HTML is assembled by concatenating multiple strings.
@@ -144,6 +152,7 @@ function* htmlReferences(html) {
 
 function checkProject(root, report = console.error) {
   root = path.resolve(root);
+  const moduleRoot = fs.realpathSync(root); // Node resolves module paths through directory symlinks.
   const files = new Set(), pages = [], styles = [];
   function collect(directory) {
     for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
@@ -166,6 +175,23 @@ function checkProject(root, report = console.error) {
     if (!isLocal(value)) return null;
     count++;
     let target;
+    if (reference.module) {
+      // Resolve without executing the module; this also handles .js/.json
+      // extension lookup and directory imports according to CommonJS rules.
+      try {
+        target = path.relative(moduleRoot, createRequire(path.join(root, source)).resolve(value)).split(path.sep).join('/');
+      } catch {
+        report(`${source}:${reference.line}: missing module ${value}`);
+        failures++;
+        return null;
+      }
+      if (!files.has(target)) {
+        report(`${source}:${reference.line}: missing module ${value}`);
+        failures++;
+        return null;
+      }
+      return target;
+    }
     try {
       target = path.relative(root, fileURLToPath(new URL(value, pathToFileURL(path.join(root, baseFile))))).split(path.sep).join('/');
     } catch {

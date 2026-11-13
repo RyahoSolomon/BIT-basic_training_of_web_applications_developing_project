@@ -7,21 +7,7 @@ function click_block(i,j)
   }
   if(selected_operation == 'move')
   {
-    if(manhattan_distance_cal(i,j,units[current_act_unit].x,units[current_act_unit].y) <= units[current_act_unit].speed)
-    {
-      have_moved = true;
-      units[current_act_unit].x = i;
-      units[current_act_unit].y = j;
-      selected_operation = "";
-      units_display_update();
-      load_items();
-      document.getElementById("operation_hover_initial_mask").innerHTML = '';
-      clear_operation_hover_mask();
-      units[current_act_unit].commander.initial_UI(current_act_unit);
-      selected_box_update();
-      reset_mask();
-      return;
-    }
+    move_selected_unit(i, j);
     return;
   }
   if(selected_operation == 'attack')
@@ -42,6 +28,26 @@ function click_block(i,j)
       }
     }
   }
+}
+
+function move_selected_unit(x, y)
+{
+  if(have_moved) return;
+  const destinations = MovementRules.findReachableCells(read_battle_state(), current_act_unit);
+  if(!destinations.some(cell => cell.x === x && cell.y === y)) return;
+
+  const unit = units[current_act_unit];
+  unit.x = x;
+  unit.y = y;
+  have_moved = true;
+  selected_operation = "";
+  units_display_update();
+  load_items();
+  document.getElementById("operation_hover_initial_mask").innerHTML = '';
+  clear_operation_hover_mask();
+  unit.commander.initial_UI(current_act_unit);
+  selected_box_update();
+  reset_mask();
 }
 
 function place_trap_on(cx, cy, attack)
