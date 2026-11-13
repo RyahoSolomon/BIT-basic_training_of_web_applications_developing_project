@@ -359,52 +359,6 @@ function show_operations()
   }
 }
 
-function is_all_player_operated_killed()
-{
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].commander_type == "player")
-    {
-      if(units[i].is_alive)
-      {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-
-function is_all_player_operated_alive()
-{
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].commander_type == "player")
-    {
-      if(!units[i].is_alive)
-      {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-function is_all_enemy_killed()
-{
-  for(let i = 0; i < units_count;i++)
-  {
-    if(units[i].side == 1)
-    {
-      if(units[i].is_alive)
-      {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
 function is_all_friendly_killed()
 {
   for(let i = 0;i < units_count; i++)
@@ -418,18 +372,6 @@ function is_all_friendly_killed()
     }
   }
   return true;
-}
-
-function is_step_on(x,y)
-{
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].is_alive && units[i].side == 0 && units[i].x == x && units[i].y == y)
-    {
-      return true;
-    }
-  }
-  return false;
 }
 
 function is_designated_unit_dead(name)
@@ -464,31 +406,6 @@ function is_all_designated_units_dead(name)
     }
   }
   return true;
-}
-
-function is_all_levels_perfectly_complete()
-{
-  for(let i = 0; i < 6; i++)
-  {
-    if(current_info.perfect_level_complete[i] == false)
-    {
-      return false;
-    }
-  }
-  return true;
-}
-
-function get_player_operated_alive_count()
-{
-  let alive_count = 0;
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].commander_type == "player" && units[i].is_alive)
-    {
-      alive_count++;
-    }
-  }
-  return alive_count;
 }
 
 function fuck_away(id)
@@ -569,94 +486,6 @@ function save_exp_info()
   // let temp = JSON.parse(localStorage.getItem("current"));
   // console.log("temp.level:" + temp.level);
   console.log("储存完成");
-}
-
-function check_game()
-{
-  switch(level)
-  {
-    case 0:
-      {
-        if(is_all_player_operated_killed())
-        {
-          return 2;
-        }
-        if(is_all_enemy_killed())
-        {
-          return 1;
-        }
-        if(is_step_on(4,19) || is_step_on(3,19) || is_step_on(5,19))
-        {
-          return 1;
-        }
-        return 0;
-      }
-    case 1:
-      {
-        if(is_all_player_operated_killed())
-        {
-          return 2;
-        }
-        if(is_all_enemy_killed())
-        {
-          return 1;
-        }
-        return 0;
-      }
-    case 2:
-      {
-        if(is_all_player_operated_killed())
-        {
-          return 2;
-        }
-        if(is_all_enemy_killed())
-        {
-          return 1;
-        }
-        return 0;
-      }
-    case 3:
-      {
-        if(is_all_player_operated_killed())
-        {
-          return 2;
-        }
-        if(is_designated_unit_dead("zijue"))
-        {
-          return 2;
-        }
-        if(is_all_enemy_killed())
-        {
-          return 1;
-        }
-        return 0;
-      }
-    case 4:
-      {
-        if(is_all_player_operated_killed())
-        {
-          return 2;
-        }
-        if(spirit_count >= 8)
-        {
-          return 1;
-        }
-        return 0;
-      }
-    case 5:
-      {
-        if(is_designated_unit_dead("desperate"))
-        {
-          return 2;
-        }
-        if(round >= 20)
-        {
-          return 1;
-        }
-        return 0;
-      }
-  }
-  return 0;
 }
 
 function game_over()
@@ -802,43 +631,7 @@ function apply_end_round_effects()
 
 function end_round()
 {
-  let game_result = check_game();
-  if(game_result == 1)
-  {
-    if(!current_info.perfect_level_complete[level] && is_all_player_operated_alive())
-    {
-      current_info.perfect_level_complete[level] = true;
-    }
-    if(level == 0 && is_all_enemy_killed() && achievements.ach8 == false)
-    {
-      console.log("成就解锁");
-      achievement_popup(0, "end_round()");
-      achievements.ach8 = true;
-      localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-      return;
-    }
-    if(achievements.ach1 == false && is_all_levels_perfectly_complete())
-    {
-      console.log("成就解锁");
-      achievement_popup(0, "end_turn()");
-      achievements.ach1 = true;
-      localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-      return;
-    }
-    if(achievements.ach4 == false && get_player_operated_alive_count() == 1)
-    {
-      console.log("成就解锁");
-      achievement_popup(3, "end_turn()");
-      achievements.ach4 = true;
-      localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-      return;
-    }
-    win();
-  }
-  else if(game_result == 2)
-  {
-    lose();
-  }
+  if(settle_battle()) return true;
   round++;
   document.getElementById("round_info_text").innerHTML = round;
   for(let i = 0; i < units_count; i++)
@@ -952,6 +745,8 @@ function end_round()
   load_annoucement();
   units_display_update();
   load_items();
+  // 整轮效果可能改变胜负；先结算，再由调用方选择下一位行动者。
+  return settle_battle();
 }
 
 function summon_pangu_spirit()
@@ -991,43 +786,7 @@ function summon_pangu_spirit()
 
 function end_turn()
 {
-  let game_result = check_game();
-  if(game_result == 1)
-  {
-    if(!current_info.perfect_level_complete[level] && is_all_player_operated_alive())
-    {
-      current_info.perfect_level_complete[level] = true;
-    }
-    if(level == 0 && is_all_enemy_killed() && achievements.ach8 == false)
-    {
-      console.log("成就解锁");
-      achievement_popup(7, "end_turn()");
-      achievements.ach8 = true;
-      localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-      return;
-    }
-    if(achievements.ach1 == false && is_all_levels_perfectly_complete())
-    {
-      console.log("成就解锁");
-      achievement_popup(0, "end_turn()");
-      achievements.ach1 = true;
-      localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-      return;
-    }
-    if(achievements.ach4 == false && get_player_operated_alive_count() == 1)
-    {
-      console.log("成就解锁");
-      achievement_popup(3, "end_turn()");
-      achievements.ach4 = true;
-      localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-      return;
-    }
-    win();
-  }
-  else if(game_result == 2)
-  {
-    lose();
-  }
+  if(settle_battle()) return;
   units_display_update();
   load_items();
   reset_mask();
@@ -1039,7 +798,7 @@ function end_turn()
     current_act_unit++;
     if(current_act_unit >= units_count)
     {
-      end_round();
+      if(end_round()) return;
       current_act_unit = 0;
     }
     if(units[current_act_unit].is_alive)

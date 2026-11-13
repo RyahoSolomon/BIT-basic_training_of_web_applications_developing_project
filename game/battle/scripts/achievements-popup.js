@@ -1,17 +1,53 @@
-function achievement_popup(id, func)
+// 存储中的成就键与展示编号只在此对应，避免不同结算入口提示错位。
+const ACHIEVEMENT_IDS = Object.freeze({
+  ach1: 0, ach2: 1, ach3: 2, ach4: 3, ach5: 4, ach6: 5, ach7: 6, ach8: 7,
+});
+const achievement_popup_queue = [];
+const achievement_popup_waiters = [];
+
+function achievement_popup(id, onConfirm)
 {
-  let achievement = '';
-  let achievement_tilte = get_achievement_title(id);
-  let achievement_content = get_achievement_content(id);
-  let func_info = 'clear_achievement_icons()';
-  if(func != null && func != '')
-  {
-    func_info = func;
-  }
-  achievement += '<div id = "achievement_popup_board" ><div class = "achievement_display_container"><a class = "achievement_display" class="box">成就解锁</a></div><div class = "achievement_title_container"><a class = "achievement_title" class="box">' + achievement_tilte +'</a></div><div class = "achievement_content_container"><a class = "achievement_content">' + achievement_content + '</a></div><img src = "assets/images/ui/confirm.png" id = "achievement_confirm_button"><a id = "achievement_confirm_button_text">确认</a></div>';
-  let achievement_mask = '<img id = "achievement_confirm_button_mask" src = "assets/images/mask/confirm-mask.png" onclick = "' + func_info + '" onmouseenter = "load_achievement_hover_mask()" onmouseleave = "clear_achievement_hover_mask()">';
-  document.getElementById("achievement_popup").innerHTML = achievement;
-  document.getElementById("achievement_confirm_mask").innerHTML = achievement_mask;
+  achievement_popup_queue.push({ id, onConfirm });
+  if(achievement_popup_queue.length === 1) show_next_achievement_popup();
+}
+
+function after_achievement_popups(callback)
+{
+  if(achievement_popup_queue.length === 0) callback();
+  else achievement_popup_waiters.push(callback);
+}
+
+function show_next_achievement_popup()
+{
+  const entry = achievement_popup_queue[0];
+  const title = get_achievement_title(entry.id);
+  const content = get_achievement_content(entry.id);
+  document.getElementById("achievement_popup").innerHTML =
+    '<div id="achievement_popup_board">' +
+      '<div class="achievement_display_container"><a class="achievement_display">成就解锁</a></div>' +
+      '<div class="achievement_title_container"><a class="achievement_title">' + title + '</a></div>' +
+      '<div class="achievement_content_container"><a class="achievement_content">' + content + '</a></div>' +
+      '<img src="assets/images/ui/confirm.png" id="achievement_confirm_button">' +
+      '<a id="achievement_confirm_button_text">确认</a>' +
+    '</div>';
+  document.getElementById("achievement_confirm_mask").innerHTML =
+    '<img id="achievement_confirm_button_mask" src="assets/images/mask/confirm-mask.png">';
+  const button = document.getElementById("achievement_confirm_button_mask");
+  button.onmouseenter = load_achievement_hover_mask;
+  button.onmouseleave = clear_achievement_hover_mask;
+  let confirmed = false;
+  button.onclick = function () {
+    // 即使旧按钮或旧回调再次触发，也只能消费它自己的这一次确认。
+    if(confirmed) return;
+    confirmed = true;
+    clear_achievement_icons();
+    achievement_popup_queue.shift();
+    if(achievement_popup_queue.length > 0) show_next_achievement_popup();
+    if(typeof entry.onConfirm === 'function') entry.onConfirm();
+    while(achievement_popup_queue.length === 0 && achievement_popup_waiters.length > 0) {
+      achievement_popup_waiters.shift()();
+    }
+  };
 }
 
 function initial_achievements()

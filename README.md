@@ -21,7 +21,7 @@ npm test
 
 `npm run check` 检查 HTML、CSS 和可静态识别的 JavaScript 本地资源与页面路径，并运行检查器自身的测试。路径失效时会报告文件名和行号。检查不扫描美术源稿，也不会推断运行时拼接的任意 URL。
 
-`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、开局、剧情、页面导航和音频七个浏览器回归检查，覆盖注册、登录、新游戏、新旧存档恢复、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
+`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、终局结算、开局、剧情、页面导航和音频八个浏览器回归检查，覆盖注册、登录、新游戏、新旧存档恢复、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、胜负与成就确认、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
 
 这些检查无需安装 npm 包，但浏览器回归需要已安装 Chrome 或 Edge。若浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定可执行文件。也可分别运行：
 
@@ -29,6 +29,7 @@ npm test
 npm run test:progress
 npm run test:battle
 npm run test:movement
+npm run test:settlement
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
 node scripts/smoke-navigation.cjs
@@ -42,6 +43,8 @@ node scripts/smoke-audio.cjs
 伤害、死亡计数和经验由 [战斗规则模块](game/battle/scripts/battle-rules.js) 计算，页面再应用结果、显示公告与成就。同一个单位死亡只结算一次；接口与验证方式见 [伤害与死亡结算](docs/battle-rules.md)。
 
 玩家高亮和 AI 候选位置共用 [移动规则模块](game/battle/scripts/movement-rules.js)。AI 决策与行动显示也已分离，保留原有地形、占位、射程和随机选择规则；接口与验证方式见 [移动范围与 AI 决策](docs/movement-rules.md)。
+
+行动结束和整轮结束共用胜负与成就结算，终局停止推进战斗，成就逐个确认后再进入结果页。同一次击杀触发的满级成就与通关成就也会按序保留；规则、入口与检查方法见 [胜负与通关结算](docs/battle-settlement.md)。
 
 ### 编辑章节对话
 
