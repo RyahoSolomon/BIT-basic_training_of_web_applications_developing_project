@@ -8,6 +8,8 @@
     <script type="text/javascript" src="scripts/load-map.js"></script>
     <script type="text/javascript" src="scripts/units-update.js"></script>
     <script type="text/javascript" src="scripts/class-commander.js"></script>
+    <script src="scripts/battle-rules.js"></script>
+    <script src="scripts/battle-state.js"></script>
     <script type="text/javascript" src="scripts/class-unit.js"></script>
     <script type="text/javascript" src="scripts/control.js"></script>
     <script type="text/javascript" src="scripts/operation.js"></script>
@@ -74,7 +76,7 @@
       var swamp_pos = new Array();
       var thunder_pos = new Array();
       var spirit_count = 0;
-      var exp_threshold = [20, 48, 96, 144, 216];
+      var exp_threshold = BattleRules.EXPERIENCE_THRESHOLDS;
       var currentTextIndex = 0;
       var executeAnimation = 0;
     </script>

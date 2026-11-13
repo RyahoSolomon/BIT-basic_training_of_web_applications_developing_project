@@ -22,24 +22,6 @@ function get_max(a, b)
   return b;
 }
 
-function level_up(id)
-{
-  if(units[id].exp > exp_threshold[units[id].level - 1])
-  {
-    units[id].exp -= exp_threshold[units[id].level - 1];
-    units[id].level ++;
-  }
-  if(achievements.ach7 == false && is_all_player_operated_max_level())
-  {
-    achievement_popup(6, "")
-    console.log("成就解锁");
-    achievements.ach7 = true;
-    //console.log(username + "achievement");
-    localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-    save_exp_info();
-  }
-}
-
 function is_in_map(cx, cy)
 {
   if(cx >= height || cy >= width || cx < 0 || cy < 0)
@@ -509,21 +491,6 @@ function get_player_operated_alive_count()
   return alive_count;
 }
 
-function is_all_player_operated_max_level()
-{
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].commander_type == "player")
-    {
-      if(units[i].level < 6)
-      {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
 function fuck_away(id)
 {
   //强制让指定实体离开原位置
@@ -799,6 +766,40 @@ function start_turn()
   }
 }
 
+// 持续效果按流血、中毒、强化、地形与冷却的原顺序处理，死亡后停止本轮剩余效果。
+function apply_end_round_effects()
+{
+  for(let i = 0; i < units_count; i++)
+  {
+    const unit = units[i];
+    if(!unit.is_alive) continue;
+    if(unit.blooding) unit.get_hurt(2);
+    if(!unit.is_alive) continue;
+    if(unit.poison > 0)
+    {
+      unit.get_hurt(unit.poison);
+      unit.poison--;
+    }
+    if(!unit.is_alive) continue;
+    if(unit.reinforce > 0)
+    {
+      unit.reinforce--;
+      if(unit.reinforce == 0)
+      {
+        unit.speed--;
+        unit.attack--;
+      }
+    }
+    if(map[unit.x][unit.y] == 12) unit.get_hurt(2, null, { ignoreArmor: true });
+    if(!unit.is_alive) continue;
+    if(unit.commander_type == "player")
+    {
+      if(unit.current_cooldown[0] > 0) unit.current_cooldown[0]--;
+      if(unit.current_cooldown[1] > 0) unit.current_cooldown[1]--;
+    }
+  }
+}
+
 function end_round()
 {
   let game_result = check_game();
@@ -846,51 +847,14 @@ function end_round()
     {
       if(units[i].commander_type == "player")
       {
-        units[i].exp += units[i].max_armor - units[i].armor;
-        level_up(i);
+        level_up(i, units[i].max_armor - units[i].armor);
       }
       units[i].armor = units[i].max_armor;
     }
   }
   units_display_update();
   load_items();
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].blooding)
-    {
-      units[i].get_hurt(2);
-    }
-    if(units[i].poison > 0)
-    {
-      units[i].get_hurt(units[i].poison);
-      units[i].poison --;
-    }
-    if(units[i].reinforce > 0)
-    {
-      units[i].reinforce --;
-      if(units[i].reinforce == 0)
-      {
-        units[i].speed --;
-        units[i].attack --;
-      }
-    }
-    if(map[units[i].x][units[i].y] == 12)
-    {
-      units[i].health -= 2;
-      units[i].get_hurt(0);
-    }
-    if(units[i].commander_type == "player")
-    {
-      if(units[i].current_cooldown[0] > 0)
-      {
-        units[i].current_cooldown[0]--;
-      }
-      if(units[i].current_cooldown[1] > 0)
-      {
-        units[i].current_cooldown[1]--;
-      }
-    }
-  }
+  apply_end_round_effects();
   for(let i = 0; i < items.length; i++)
   {
     items[i].effect();

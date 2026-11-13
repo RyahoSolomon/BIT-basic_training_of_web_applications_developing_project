@@ -92,8 +92,7 @@ function whack(cx, cy, damage)
   {
     if(units[cur].x == cx && units[cur].y == cy && units[cur].is_alive)
     {
-      units[current_act_unit].health -= 2;
-      units[current_act_unit].get_hurt(0);
+      units[current_act_unit].get_hurt(2, null, { ignoreArmor: true });
       units[cur].armor = 0;
       units[cur].blooding = true;
       units[cur].get_hurt(damage, current_act_unit);

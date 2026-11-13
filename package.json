@@ -5,7 +5,8 @@
     "build:story": "esbuild src/story/player.jsx --bundle --minify --legal-comments=eof --outfile=game/generated/story-player.js",
     "check": "node --test scripts/check-pages.test.cjs && node scripts/check-pages.cjs",
     "test:progress": "node --test scripts/progress.test.cjs && node scripts/smoke-progress.cjs",
-    "test": "npm run check && npm run test:progress && node scripts/smoke-game.cjs && node scripts/smoke-story.cjs && node scripts/smoke-navigation.cjs && node scripts/smoke-audio.cjs"
+    "test:battle": "node --test scripts/battle-rules.test.cjs && node scripts/smoke-battle.cjs",
+    "test": "npm run check && npm run test:progress && npm run test:battle && node scripts/smoke-game.cjs && node scripts/smoke-story.cjs && node scripts/smoke-navigation.cjs && node scripts/smoke-audio.cjs"
   },
   "dependencies": {
     "react": "19.3.1",

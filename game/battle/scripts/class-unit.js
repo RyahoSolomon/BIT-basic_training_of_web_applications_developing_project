@@ -66,61 +66,9 @@ class Unit
     //传入game,返回操作
     return command;
   }
-  get_hurt(hurt, launcher_id)
+  get_hurt(hurt, launcher_id, options)
   {
-    let rest_hurt = 0;
-    rest_hurt = hurt - this.armor;
-    if(rest_hurt < 0)
-    {
-      rest_hurt = 0;
-    }
-    this.armor -= hurt;
-    if(this.armor < 0)
-    {
-      this.armor = 0;
-    }
-    this.health -= rest_hurt;
-    if(this.health <= 0)
-    {
-      this.health = 0;
-      this.is_alive = false;
-      if(this.name == "spirit")
-      {
-        spirit_count++;
-      }
-      if(launcher_id != null && this.side == 1 && this.side != units[launcher_id].side && units[launcher_id].commander_type == "player")
-      {
-        units[launcher_id].exp += this.exp;
-        level_up(launcher_id);
-        for(let cur = 0; cur < units_count; cur++)
-        {
-          if(cur != launcher_id && units[cur].commander_type == "player" && units[cur].is_alive)
-          {
-            units[cur].exp += Math.floor(this.exp / 4);
-            level_up(cur);
-          }
-        }
-      }
-      if(this.side == 0)
-      {
-        announcement_list.push("[第" + round + "回合]" + this.name_cn + "在战场上陨落了");load_annoucement();
-        if(achievements.ach3 == false && this.commander_type == "player" && this.name == "yedai" && launcher_id != null)
-        {
-          if(units[launcher_id].commander_type == "player")
-          {
-            if(units[launcher_id].name == "yuanlan" || units[launcher_id].name == "user")
-            {   
-              console.log("成就解锁");
-              achievement_popup(2, "");
-              achievements.ach3 = true;
-              localStorage.setItem(username + "achievement", JSON.stringify(achievements));
-            }
-          }
-        }
-      }
-      return true;
-    }
-    return false;
+    return apply_battle_damage(this, hurt, launcher_id, options);
   }
 }
 
