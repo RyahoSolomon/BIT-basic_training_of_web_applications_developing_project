@@ -58,7 +58,7 @@ design/                            可编辑的美术源稿
 
 本项目使用相对 URL，路径分隔符统一为 `/`。HTML 的资源和跳转路径相对于该 HTML；外部 CSS 的 `url(...)` 相对于 CSS 文件；脚本中写入页面的图片地址和跳转地址通常相对于引用它的 HTML，而非脚本自身。因此移动脚本或共用 CSS 时，需要按实际使用位置核对引用。
 
-修改路径后运行 `node scripts/check-pages.cjs` 检查 HTML 本地引用，再运行 `node scripts/smoke-game.cjs` 和 `node scripts/smoke-story.cjs` 检查开局与剧情流程。动态生成的图片与跳转仍需要浏览器检查。修改播放器源码时，先运行 `npm ci` 和 `npm run build:story`。详细要求见 [开发说明](../README.md#开发时检查页面依赖)。
+修改路径后运行 `npm run check`，再运行 `npm test`。前者检查 HTML、CSS、可静态识别的 JavaScript 路径和检查器自身；后者继续执行开局、剧情和页面导航三个浏览器回归。动态生成的图片与跳转仍需要浏览器检查。修改播放器源码时，先运行 `npm ci` 和 `npm run build:story`。详细要求见 [开发说明](../README.md#开发时检查页面依赖)。
 
 ## 已合并的共用内容
 

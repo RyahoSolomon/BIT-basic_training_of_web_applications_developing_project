@@ -2,7 +2,9 @@
   "name": "the-origin-of-god",
   "private": true,
   "scripts": {
-    "build:story": "esbuild src/story/player.jsx --bundle --minify --legal-comments=eof --outfile=game/generated/story-player.js"
+    "build:story": "esbuild src/story/player.jsx --bundle --minify --legal-comments=eof --outfile=game/generated/story-player.js",
+    "check": "node --test scripts/check-pages.test.cjs && node scripts/check-pages.cjs",
+    "test": "npm run check && node scripts/smoke-game.cjs && node scripts/smoke-story.cjs && node scripts/smoke-navigation.cjs"
   },
   "dependencies": {
     "react": "19.3.1",

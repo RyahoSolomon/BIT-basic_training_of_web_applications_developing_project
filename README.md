@@ -12,14 +12,24 @@
 
 ### 开发时检查页面依赖
 
-在项目根目录用 Node.js 22 或更高版本运行以下两条命令，无需安装 npm 包。
+使用 Node.js 22 或更高版本，在项目根目录运行：
 
 ```sh
-node scripts/check-pages.cjs
-node scripts/smoke-game.cjs
+npm run check
+npm test
 ```
 
-第一条检查 HTML 中声明的本地脚本、样式、页面和媒体路径，失效时报告文件名和行号。第二条使用已安装的 Chrome 或 Edge，在独立的临时浏览器档案中直接打开 `index.html`，检查注册、登录、新游戏、地图自动存档和首战入口，最后通过游戏自带的跳过按钮进入胜利页。任一检查失败会返回非零退出码。如浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定其可执行文件。
+`npm run check` 检查 HTML、CSS 和可静态识别的 JavaScript 本地资源与页面路径，并运行检查器自身的测试。路径失效时会报告文件名和行号。检查不扫描美术源稿，也不会推断运行时拼接的任意 URL。
+
+`npm test` 先运行上述检查，再依次运行开局、剧情和页面导航三个浏览器回归检查，覆盖注册、登录、新游戏、地图自动存档、战斗入口、剧情分支以及迁移后页面的资源和跳转。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
+
+这些检查无需安装 npm 包，但浏览器回归需要已安装 Chrome 或 Edge。若浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定可执行文件。也可分别运行：
+
+```sh
+node scripts/smoke-game.cjs
+node scripts/smoke-story.cjs
+node scripts/smoke-navigation.cjs
+```
 
 ### 编辑章节对话
 
@@ -38,12 +48,10 @@ node scripts/smoke-game.cjs
 ```sh
 npm ci
 npm run build:story
-node scripts/check-pages.cjs
-node scripts/smoke-game.cjs
-node scripts/smoke-story.cjs
+npm test
 ```
 
-第一至第三章的相同剧情样式已合并到 [game/story/styles/dialogue.css](game/story/styles/dialogue.css)；场景专用样式仍与章节页面就近存放。剧情检查会逐句核对覆盖场景的说话人，走过序章与第二章分支、第一章战斗入口及第五章字幕切换，并临时增删第一章台词，确认后续说话人和按钮仍然正确。
+第一至第三章的相同剧情样式已合并到 [game/story/styles/dialogue.css](game/story/styles/dialogue.css)；场景专用样式仍与章节页面就近存放。剧情检查会逐句核对覆盖场景的说话人，走过序章与第二章分支、第一章战斗入口及第五章字幕切换，并临时增删第一章台词，确认后续说话人和按钮仍然正确。页面导航检查另外遍历全部运行页面，核对初始资源加载及各战斗结果页的跳转。
 
 ### 项目基本介绍
 该项目为基于前端三件套(html，CSS，JavaScript)开发的简单的战棋类策略游戏，玩法改编自Worldwalker Games LLC开发的游戏**Wildermyth**，剧情改编自由Minecraft游戏中由水狼阳介企划，MTW和红石口袋联手制作的大型东方幻想RPG地图(社区内容)**盘灵古域**。

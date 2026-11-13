@@ -9,6 +9,7 @@
 - [x] **01 · 页面依赖缺少回归检查**
   - 已修复两个入口失效的 Bootstrap 引用、剧情页对未引入的 jQuery 的调用、地图第六关状态变量错误，以及静态检查发现的图标和音乐路径。[第一章初始化](../game/story/chapter-1/plot.html) · [地图初始化](../game/map/index.html)
   - 已验收：静态检查覆盖 HTML 页面的本地引用。浏览器直接打开根入口，经注册、登录和新游戏进入地图，校验自动存档后进入第一场战斗，通过跳过按钮到达胜利页，沿途无未捕获的脚本异常。[运行方法](../README.md#开发时检查页面依赖) · [静态检查](../scripts/check-pages.cjs) · [浏览器检查](../scripts/smoke-game.cjs)
+  - 当前静态检查还覆盖 CSS 资源和可静态识别的 JavaScript 路径，并有 [检查器自测](../scripts/check-pages.test.cjs)。目录迁移后的页面与资源由 [导航回归](../scripts/smoke-navigation.cjs) 检查，统一执行 `npm test`。
 
 - [x] **02 · 剧情文本与播放顺序由不同文件维护**
   - 第 0–6 章的 24 个对话场景现由同一个 React 播放器读取。每句数据同时记录说话人、文本和中央字幕，选项、读完后的目标和跳过目标由场景配置指定。第一章进入战斗的按钮在读完台词后出现。[播放器源码](../src/story/player.jsx) · [第一章场景](../game/story/chapter-1/plot.js) · [序章分支](../game/story/chapter-0/plot.js)

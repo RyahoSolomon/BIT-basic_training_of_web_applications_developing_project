@@ -9,4 +9,4 @@
 
 这两个旧工具页面打开即执行删除操作，没有确认按钮。只在专门的测试浏览器环境中按需使用，不要通过正式游戏页面链接它们。它们不会替代正常的“开始新游戏”流程，也不负责清理所有账号与存档。
 
-自动回归脚本位于根目录的 `scripts/`，通过 `node scripts/smoke-game.cjs` 和 `node scripts/smoke-story.cjs` 运行；浏览器回归使用独立临时档案。目录归属规则见 [项目目录说明](../docs/project-structure.md)。
+自动回归脚本位于根目录的 `scripts/`，通过 `npm test` 运行；浏览器回归使用独立临时档案。目录归属规则见 [项目目录说明](../docs/project-structure.md)。
