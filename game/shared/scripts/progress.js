@@ -86,7 +86,7 @@
                 progress: validate(value.progress, definition, 'INVALID_SAVE'),
             };
         }
-        // Original registration/empty-slot placeholders have no playable current data.
+        // 兼容未带版本号的原版存档：识别空档，并将有效旧数据转换为当前进度格式。
         if (value.current === 0 && value.MSYgamename === 0) {
             fail('EMPTY_SAVE', '这个位置还没有存档。');
         }
