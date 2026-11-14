@@ -6,6 +6,7 @@ const { withBrowser } = require('./smoke-browser.cjs');
 
 async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) {
   const username = 'story-smoke-player';
+  const background = 'main/story/chapter0/background.html';
   const prologue = 'main/story/chapter0/plot.html';
   const chapter1 = 'main/story/chapter1/plot.html';
   const battle = 'main/story/war_chess/war_chess.html';
@@ -14,11 +15,11 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     ? await fs.mkdtemp(path.join(os.tmpdir(), 'bit-story-preview-'))
     : null;
 
-  async function screenshot(name) {
+  async function screenshot(name, textSelector = '#story-player .text') {
     if (!screenshots) return;
     // The first-battle guide can open a new tab, which suspends this tab's painting.
     await cdp.send('Page.bringToFront');
-    await until('dialogue fade-in', () => evaluate('Number(getComputedStyle(document.querySelector("#story-player .text")).opacity) === 1'));
+    await until('dialogue fade-in', () => evaluate('Number(getComputedStyle(document.querySelector(' + JSON.stringify(textSelector) + ')).opacity) === 1'));
     const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' });
     const file = path.join(screenshots, name + '.png');
     await fs.writeFile(file, Buffer.from(data, 'base64'));
@@ -65,6 +66,33 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     assert.equal(await evaluate('level'), 0);
   }
 
+  async function readBackgroundToEnd(takeScreenshots = false) {
+    const slides = await evaluate('backgrounds');
+    assert.equal(slides.length, 7, 'The opening history should contain all seven slides');
+    for (let index = 0; index < slides.length; index++) {
+      await until('visible opening slide ' + (index + 1), () => evaluate(`(() => {
+        const text = document.getElementById("overlayText");
+        const style = getComputedStyle(text);
+        return text.textContent === ${JSON.stringify(slides[index].text)}
+          && style.visibility === "visible" && Number(style.opacity) === 1
+          && style.display !== "none" && text.getBoundingClientRect().height > 0;
+      })()`));
+      assert.equal(await evaluate('currentBackground'), index,
+        'Rapid clicks must not skip opening slides');
+      assert.equal(await evaluate('getComputedStyle(document.body).backgroundImage.includes(' +
+        JSON.stringify(slides[index].image.replace('../..', '/main')) + ')'), true);
+      if (takeScreenshots && [2, 3, 5].includes(index)) {
+        await screenshot('opening-slide-' + (index + 1), '#overlayText');
+      }
+      await click('#overlayText');
+      if (index < slides.length - 1) {
+        // Repeated input during the same transition must still advance only one slide.
+        await evaluate('for (let click = 0; click < 5; click++) document.getElementById("slideImage").click()');
+      }
+    }
+    await page(prologue);
+  }
+
   // Registration and the normal new-game action initialize all progress and achievements.
   await open('main/register.html');
   await evaluate(`
@@ -77,7 +105,30 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await open('main/_INDEX.html');
   await evaluate('localStorage.setItem("username", ' + JSON.stringify(username) + ')');
   await click('a[href="story/chapter0/background.html"]');
-  await page('main/story/chapter0/background.html');
+  await page(background);
+  await readBackgroundToEnd(true);
+  console.log('PASS  all seven opening slides, repeated backgrounds and rapid clicks');
+
+  // Missing transitionend used to leave narration hidden indefinitely. Disable
+  // the image transition before the page starts to reproduce that case reliably.
+  const { identifier: noTransition } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
+    source: `document.addEventListener("DOMContentLoaded", () => {
+      if (location.pathname.endsWith("/main/story/chapter0/background.html")) {
+        const style = document.createElement("style");
+        style.textContent = "#slideImage { transition: none !important; }";
+        document.head.appendChild(style);
+      }
+    }, { once: true });`,
+  });
+  try {
+    await open(background);
+    await readBackgroundToEnd();
+  } finally {
+    await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: noTransition });
+  }
+  console.log('PASS  opening narration without image transition events');
+
+  await open(background);
   await click('.button-save');
   await page(map);
 

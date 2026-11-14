@@ -1,5 +1,7 @@
 let currentBackground = 0;
-let isTransitioning = false; // 引入锁，防止重复切换
+let isTransitioning = true; // 首段文字出现前也禁止翻页
+let revealTimer;
+const dialogueSlideDuration = 1000;
 
 const backgrounds = [
     {
@@ -40,7 +42,6 @@ function nextBackground() {
         currentBackground++;
         setTimeout(() => {
             loadBackground(currentBackground);
-            isTransitioning = false; // 切换完成后重置状态
         }, 500);
     }else{
         window.location.href = "plot.html";
@@ -57,16 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定点击事件
     image.addEventListener('click', nextBackground);
     overlayText.addEventListener('click', nextBackground);
-
-    // 监听图片动画结束时显示文字
-    image.addEventListener('transitionend', function() {
-        setTimeout(() => {
-            showElement(overlayText); // 显示文字
-        }, 50);
-    });
 });
 
 function loadBackground(index) {
+    isTransitioning = true;
+    clearTimeout(revealTimer);
     const overlayText = document.getElementById('overlayText');
     document.body.style.backgroundImage = `url(${backgrounds[index].image})`;
 
@@ -74,10 +70,18 @@ function loadBackground(index) {
     hideElement(overlayText); // 在加载背景时隐藏文字
 
     const image = document.getElementById('slideImage');
+    // 先立即复位并提交布局，避免短定时器内的两个位置被浏览器合并。
+    image.style.transition = 'none';
     image.style.bottom = '-100%';
-    setTimeout(() => {
-        image.style.bottom = '0';
-    }, 10);
+    void image.offsetHeight;
+    image.style.transition = `bottom ${dialogueSlideDuration}ms ease-in-out`;
+    image.style.bottom = '0';
+
+    // 文字由当前页的播放时序显示，不依赖可能被取消或省略的 transitionend。
+    revealTimer = setTimeout(() => {
+        showElement(overlayText);
+        isTransitioning = false;
+    }, dialogueSlideDuration);
 }
 
 function flashBlackEffect() {

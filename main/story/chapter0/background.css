@@ -61,10 +61,9 @@ body {
     bottom: -100%;
     left: 50%;
     transform: translateX(-50%);
-    transition: bottom 1s ease-in-out;
     pointer-events: auto; /* 确保点击事件可用 */
     height: 100%; /* 确保图片尺寸自动适应 */
-    width: 100%;  /
+    width: 100%;
 }
 .button-group {
 	position: absolute;
