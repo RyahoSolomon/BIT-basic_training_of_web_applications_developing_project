@@ -30,8 +30,7 @@ function loadPlots()
   initial_variables();
   if(level == 2)
   {
-    setTimeout("initialPlotCLickListener()", 1000 );
-    setTimeout("onSlideImageTransitionEnd()", 1000 );
+    initialPlotCLickListener();
   }
   let initial_name = "系统";
   let initial_text = "你找到了本关隐藏线索,点击对话框查看剧情";
@@ -70,7 +69,6 @@ function continue_dialogue()
     }
   }
   initialPlotCLickListener();
-  onSlideImageTransitionEnd();
   showNextText();
 }
 
@@ -87,11 +85,6 @@ function leave_dialogue()
 function initialPlotCLickListener()
 {
   imageContainer.addEventListener('click', showNextText);
-}
-
-function onSlideImageTransitionEnd() {
-    // 移除监听器，防止多次触发
-    imageContainer.removeEventListener('transitionend', onSlideImageTransitionEnd);
 }
 
 function showNextText() {

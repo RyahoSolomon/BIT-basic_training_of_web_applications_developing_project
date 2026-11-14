@@ -1,7 +1,5 @@
 let currentBackground = 0;
-let isTransitioning = true; // 首段文字出现前也禁止翻页
-let revealTimer;
-const dialogueSlideDuration = 1000;
+let isReady = false;
 
 const backgrounds = [
     {
@@ -34,15 +32,11 @@ const backgrounds = [
     }
 ];
 
-function nextBackground() {
-    if (isTransitioning) return; // 如果正在切换，则直接返回
+function nextBackground(event) {
+    if (!isReady || event.detail > 1) return;
     if (currentBackground < backgrounds.length - 1) {
-        isTransitioning = true; // 设置为正在切换状态
-        flashBlackEffect();
         currentBackground++;
-        setTimeout(() => {
-            loadBackground(currentBackground);
-        }, 500);
+        loadBackground(currentBackground);
     }else{
         window.location.href = "plot.html";
     }
@@ -50,58 +44,24 @@ function nextBackground() {
 
 document.addEventListener('DOMContentLoaded', function() {
     const image = document.getElementById('slideImage');
-    const overlayText = document.getElementById('overlayText');
+    const container = document.querySelector('.image-container');
 
     // 加载初始背景
     loadBackground(currentBackground);
 
-    // 绑定点击事件
-    image.addEventListener('click', nextBackground);
-    overlayText.addEventListener('click', nextBackground);
+    // 框图加载后，整组文字和框同时出现。
+    function showDialogue() {
+        container.style.visibility = 'visible';
+        isReady = true;
+    }
+    if (image.complete && image.naturalWidth) showDialogue();
+    else image.addEventListener('load', showDialogue, { once: true });
+    container.addEventListener('click', nextBackground);
 });
 
 function loadBackground(index) {
-    isTransitioning = true;
-    clearTimeout(revealTimer);
     const overlayText = document.getElementById('overlayText');
     document.body.style.backgroundImage = `url(${backgrounds[index].image})`;
-
-    overlayText.innerText = backgrounds[index].text;
-    hideElement(overlayText); // 在加载背景时隐藏文字
-
-    const image = document.getElementById('slideImage');
-    // 先立即复位并提交布局，避免短定时器内的两个位置被浏览器合并。
-    image.style.transition = 'none';
-    image.style.bottom = '-100%';
-    void image.offsetHeight;
-    image.style.transition = `bottom ${dialogueSlideDuration}ms ease-in-out`;
-    image.style.bottom = '0';
-
-    // 文字由当前页的播放时序显示，不依赖可能被取消或省略的 transitionend。
-    revealTimer = setTimeout(() => {
-        showElement(overlayText);
-        isTransitioning = false;
-    }, dialogueSlideDuration);
-}
-
-function flashBlackEffect() {
-    const flashBlack = document.getElementById('flashBlack');
-    flashBlack.classList.add('visible');
-    setTimeout(() => {
-        flashBlack.classList.remove('visible');
-    }, 500);
-}
-
-// 用于显示元素
-function showElement(element) {
-    element.style.opacity = '1';
-    element.style.visibility = 'visible';
-    element.style.pointerEvents = 'auto'; // 确保元素可以点击
-}
-
-// 用于隐藏元素
-function hideElement(element) {
-    element.style.opacity = '0';
-    element.style.visibility = 'hidden';
-    element.style.pointerEvents = 'none'; // 防止点击隐藏状态的元素
+    overlayText.textContent = backgrounds[index].text;
+    overlayText.style.setProperty('--story-font-family', backgrounds[index].fontFamily || '');
 }

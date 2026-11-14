@@ -38,7 +38,8 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await until('dialogue: ' + text.slice(0, 35), () => evaluate(`
       document.querySelector("#story-player .text")?.textContent.trim() === ${JSON.stringify(text)}
       && document.querySelector("#story-player .topLeftText")?.textContent.trim() === ${JSON.stringify(speaker)}
-      && document.querySelector("#story-player .text")?.style.opacity === "1"
+      && getComputedStyle(document.querySelector("#story-player .image-container")).visibility === "visible"
+      && getComputedStyle(document.querySelector("#story-player .text")).opacity === "1"
       && (document.querySelector("#story-player .centered-text1")?.textContent.trim() || "") === ${JSON.stringify(caption)}
     `));
     assert.equal(await evaluate('document.querySelectorAll("#story-player .text").length'), 1);
@@ -78,17 +79,13 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
           && style.display !== "none" && text.getBoundingClientRect().height > 0;
       })()`));
       assert.equal(await evaluate('currentBackground'), index,
-        'Rapid clicks must not skip opening slides');
+        'Opening slides must stay in order');
       assert.equal(await evaluate('getComputedStyle(document.body).backgroundImage.includes(' +
         JSON.stringify(slides[index].image.replace('../..', '/main')) + ')'), true);
       if (takeScreenshots && [2, 3, 5].includes(index)) {
         await screenshot('opening-slide-' + (index + 1), '#overlayText');
       }
       await click('#overlayText');
-      if (index < slides.length - 1) {
-        // Repeated input during the same transition must still advance only one slide.
-        await evaluate('for (let click = 0; click < 5; click++) document.getElementById("slideImage").click()');
-      }
     }
     await page(prologue);
   }
@@ -107,7 +104,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await click('a[href="story/chapter0/background.html"]');
   await page(background);
   await readBackgroundToEnd(true);
-  console.log('PASS  all seven opening slides, repeated backgrounds and rapid clicks');
+  console.log('PASS  all seven opening slides and repeated backgrounds');
 
   // Missing transitionend used to leave narration hidden indefinitely. Disable
   // the image transition before the page starts to reproduce that case reliably.

@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function() {
     texts.forEach((text, index) => {
         setTimeout(() => {
             text.style.opacity = "1";
-            text.style.transform = "translateY(0)";
         }, delay);
         delay += 3000; // (毫秒) Adjust delay time to control the timing of text appearance
     });

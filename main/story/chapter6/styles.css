@@ -1,3 +1,9 @@
+@import url("../../css/story-fonts.css");
+
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -10,7 +16,7 @@ body {
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center; /* Center vertically */
-  height: 100vh; /* Full viewport height */
+  min-height: 100vh; /* 长篇结局允许自然向下延展，避免顶部文字被裁切。 */
   box-sizing: border-box;
 }
 
@@ -23,14 +29,14 @@ body {
 
 .text {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 1s ease, transform 1s ease;
+  -webkit-user-select: none;
+  user-select: none;
   margin: 20px 0; /* Increased margin between paragraphs */
   line-height: 1.8; /* Increased line spacing */
 }
 
 .art-font1 {
-  font-family: "Zhi Mang Xing", cursive;
+  font-family: var(--story-font-family, var(--story-default-font));
   font-weight: 400;
   font-style: normal; /* Artistic font */
   font-size: 2.2em; /* Larger font size for better readability */

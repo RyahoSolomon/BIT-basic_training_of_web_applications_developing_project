@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>背景</title>
     <link rel="stylesheet" type="text/css" href="background.css">
+    <link rel="stylesheet" href="../../css/story-player.css">
 </head>
 <body id="mainBody">
     <audio id="audioPlayer" autoplay="autoplay" loop="loop" preload="preload" src="../../bgm/001_story_background .mp3" type="audio/mp3"></audio>
-    <div id="flashBlack" class="hidden"></div>
-    <div class="image-container">
-        <img src="../../img/ui/text_box_no.png" id="slideImage">
+    <div class="image-container" style="visibility: hidden">
+        <img src="../../img/ui/text_box_no.png" id="slideImage" alt="" draggable="false">
         <p id="overlayText" class="centered-text"></p>
     </div>
     <div class="button-group">

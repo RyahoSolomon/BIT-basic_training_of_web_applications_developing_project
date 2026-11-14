@@ -24,6 +24,14 @@ node scripts/smoke-game.cjs
 { speaker: "[鸢阑]", text: "我们继续出发吧。" },
 ```
 
+开场介绍和第 0–6 章的对白统一直接显示，文字与文本框一起出现；点击区域禁止选择文字，默认字体统一为楷体（依次回退到 KaiTi、楷体、STKaiti 和系统衬线字体）。共用显示规则位于 `main/css/story-player.css`，默认字体定义位于 `main/css/story-fonts.css`。
+
+需要某句使用特殊字体时，在该条记录中加 `fontFamily`；下一句没有配置就恢复默认。也可在 `window.storyScene.fontFamily` 设置整个场景的字体，单句配置优先。分支选项和 `inlineChoice` 同样支持 `fontFamily`。开场介绍可在 `background.js` 的对应 `backgrounds` 条目设置同名字段。字体必须已安装或通过页面的 `@font-face` 加载。
+
+```js
+{ speaker: "[法海]", text: "此事非同小可。", fontFamily: '"华文新魏", serif' },
+```
+
 共用播放逻辑位于 `src/story-player.jsx`。修改该文件后，在根目录执行以下命令，并将重新生成的 `main/js/story-player.js` 一起提交。仓库附带已打包的播放器，可以直接打开游戏。
 
 ```sh
@@ -32,9 +40,10 @@ npm run build:story
 node scripts/check-pages.cjs
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
+node scripts/smoke-story-presentation.cjs
 ```
 
-剧情检查会验证开场七段背景介绍在正常播放、连续点击和禁用动画时仍显示文字，并检查读完和跳过的去向；还会逐句核对说话人，走过序章和第二章的分支、第一章的战斗入口，以及第五章的字幕切换。它还会临时增删第一章的台词，验证后续说话人和进入战斗的按钮仍然正确。
+剧情检查会验证开场七段背景介绍的文字及读完和跳过的去向；还会逐句核对说话人，走过序章和第二章的分支、第一章的战斗入口，以及第五章的字幕切换。它还会临时增删第一章的台词，验证后续说话人和进入战斗的按钮仍然正确。显示检查遍历开场与全部章节对话页，验证文字与框同步出现、没有滑入或淡入动画、没有临时滚动条、禁止选择文字，以及自定义字体与默认字体的切换。
 
 ### 项目基本介绍
 该项目为基于前端三件套(html，CSS，JavaScript)开发的简单的战棋类策略游戏，玩法改编自Worldwalker Games LLC开发的游戏**Wildermyth**，剧情改编自由Minecraft游戏中由水狼阳介企划，MTW和红石口袋联手制作的大型东方幻想RPG地图(社区内容)**盘灵古域**。

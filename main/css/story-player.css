@@ -1,0 +1,48 @@
+@import url("story-fonts.css");
+
+/* Shared by narration and chapter dialogue pages. */
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body .centered-text,
+body .centered-text1,
+body .centered-text2,
+body .topLeftText,
+body .text,
+body .text button,
+body .button-text {
+    font-family: var(--story-font-family, var(--story-default-font)) !important;
+    transition: none;
+    animation: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+body .image-container {
+    position: fixed;
+    transition: none;
+    animation: none;
+}
+
+body #slideImage {
+    bottom: 0;
+    transition: none;
+    animation: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+body .topLeftText,
+body .text {
+    opacity: 1;
+}

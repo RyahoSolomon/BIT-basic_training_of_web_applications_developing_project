@@ -25,40 +25,15 @@ body {
     font-size: 2vw;
     text-align: left; /* 设置文本左对齐 */
     color: black;
-    opacity: 0; /* 初始隐藏 */
-    visibility: hidden; /* 初始不可见 */
-    transition: opacity 1s ease-in-out; /* 统一过渡效果 */
     z-index: 10; /* 确保文字在图片之上 */
     pointer-events: auto; /* 确保点击事件可用 */
     width: 90%; /* 设置宽度以控制文本行长度 */
     line-height: 1.5; /* 设置行高以保证文本阅读性 */
 }
 
-#flashBlack {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: black;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out;
-    pointer-events: none; /* 不阻挡点击事件 */
-}
-
-#flashBlack.visible {
-    opacity: 1;
-}
-
-.hidden {
-    opacity: 0;
-    transition: opacity 1s;
-}
-
 #slideImage {
     position: absolute;
-    bottom: -100%;
+    bottom: 0;
     left: 50%;
     transform: translateX(-50%);
     pointer-events: auto; /* 确保点击事件可用 */
