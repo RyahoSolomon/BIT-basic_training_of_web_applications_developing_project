@@ -57,13 +57,6 @@ function StoryPlayer({ scene }) {
     navigate(target);
   }
 
-  useEffect(() => {
-    const button = document.querySelector('.button-save');
-    const skip = () => leave(scene.skip);
-    if (scene.skip) button?.addEventListener('click', skip);
-    return () => button?.removeEventListener('click', skip);
-  }, [scene]);
-
   async function advance(event) {
     if (!ready || !boxReady || finished || leaving.current || advancing.current || event.detail > 1) return;
     if (index + 1 < scene.lines.length) {

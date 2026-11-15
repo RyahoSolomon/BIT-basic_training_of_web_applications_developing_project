@@ -147,3 +147,97 @@ test('reports CSS line numbers and handles queries, spaces and case-sensitive fi
     assert.equal(result.failures, 2);
   });
 });
+
+test('script-relative URL helpers resolve literals, ternaries and HTML interpolations from their declared base', () => {
+  fixture({
+    'index.html': '<script src="scripts/ui.js"></script>',
+    'nested/page.html': '<script src="../scripts/ui.js"></script>',
+    'scripts/ui.js': [
+      'const base = new URL("../", document.currentScript.src);',
+      'const asset = name => new URL("images/" + name, base).href;',
+      'host.innerHTML = `<img src="${asset(\'logo.png\')}">`;',
+      'image.src = asset(enabled ? "on.png" : "off.png");',
+      'location.href = new URL("destination.html", base).href;',
+    ].join('\n'),
+    'images/logo.png': '',
+    'images/on.png': '',
+    'images/off.png': '',
+    'destination.html': '',
+  }, (result, errors) => {
+    assert.deepEqual(errors, []);
+    assert.equal(result.references, 10);
+  });
+  fixture({
+    'nested/page.html': '<script src="../scripts/ui.js"></script>',
+    'scripts/ui.js': [
+      'const base = new URL("../", document.currentScript.src);',
+      'const asset = name => new URL("images/" + name, base).href;',
+      'host.innerHTML = `<img src="${asset(\'missing.png\')}">`;',
+      'image.src = asset(enabled ? "on.png" : "missing-off.png");',
+      'image.src = "ordinary-missing.png";',
+    ].join('\n'),
+    'images/on.png': '',
+  }, (result, errors) => {
+    assert.equal(result.failures, 3);
+    assert.deepEqual(errors, [
+      'scripts/ui.js:3: missing images/missing.png (loaded by nested/page.html)',
+      'scripts/ui.js:4: missing images/missing-off.png (loaded by nested/page.html)',
+      'scripts/ui.js:5: missing ordinary-missing.png (loaded by nested/page.html)',
+    ]);
+  });
+});
+
+test('download output names and picker extensions are not input resources, but reused fetch names are checked', () => {
+  fixture({
+    'index.html': '<script src="download.js"></script>',
+    'download.js': [
+      'const name = "save_test.json";',
+      'link.download = name;',
+      'link.download = "other-output.json";',
+      'showSaveFilePicker({suggestedName: "picker-output.json", types: [{accept: {"application/json": [".json"]}}]});',
+      'const loaded = "existing.json";',
+      'link.download = loaded; fetch(loaded);',
+      'const missing = "missing.json";',
+      'link.download = missing; fetch(missing);',
+      'const icon = "missing-icon.png"; // link.download = icon;',
+      'const unrelated = "missing-unrelated.json";',
+    ].join('\n'),
+    'existing.json': '{}',
+  }, (result, errors) => {
+    assert.equal(result.failures, 3);
+    assert.deepEqual(errors, [
+      'download.js:7: missing missing.json (loaded by index.html)',
+      'download.js:9: missing missing-icon.png (loaded by index.html)',
+      'download.js:10: missing missing-unrelated.json (loaded by index.html)',
+    ]);
+  });
+});
+
+test('unknown URL helper bases are not guessed relative to the page, and unrelated URLs remain checked', () => {
+  fixture({
+    'index.html': '<script src="runtime.js"></script>',
+    'runtime.js': [
+      'const asset = name => new URL("images/" + name, runtimeBase).href;',
+      'image.src = asset("runtime-location.png");',
+      'image.src = "missing-page-image.png";',
+    ].join('\n'),
+  }, (result, errors) => {
+    assert.equal(result.failures, 1);
+    assert.deepEqual(errors, ['runtime.js:3: missing missing-page-image.png (loaded by index.html)']);
+  });
+});
+
+test('URL helpers with an explicit external base do not become local file dependencies', () => {
+  fixture({
+    'index.html': '<script src="cdn.js"></script>',
+    'cdn.js': [
+      'const base = new URL("https://example.test/", document.currentScript.src);',
+      'const asset = name => new URL("images/" + name, base).href;',
+      'image.src = asset("remote.png");',
+      'image.src = "missing-local.png";',
+    ].join('\n'),
+  }, (result, errors) => {
+    assert.equal(result.failures, 1);
+    assert.deepEqual(errors, ['cdn.js:4: missing missing-local.png (loaded by index.html)']);
+  });
+});

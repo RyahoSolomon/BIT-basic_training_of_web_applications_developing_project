@@ -1,66 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>开始页</title>
-	<!-- 总游戏版本 1.0.4.1 -->
-	<link rel="stylesheet" type="text/css" href="game/shared/styles/menu.css">
-	<style>
-        .index-button-group {
-            margin-left: 40vw;
-        }
-    </style>
-	<script type="text/javascript" src="game/vendor/jquery/jquery.min.js"></script>
-  <script src="game/shared/scripts/audio.js"></script>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>源神</title>
+    <script src="game/shared/scripts/profile.js"></script>
+    <script src="game/shared/scripts/preferences.js"></script>
+    <script src="game/shared/scripts/progress.js"></script>
+    <script src="game/shared/scripts/settings.js"></script>
+    <link rel="stylesheet" href="game/shared/styles/settings.css">
+    <meta http-equiv="refresh" content="0; url=game/pages/menu.html">
+    <script>window.location.replace("game/pages/menu.html");</script>
 </head>
 <body>
-	<audio id="audioPlayer" loop="loop" preload="preload" src="game/assets/audio/example.mp3" type="audio/mp3"></audio>
-	<script>
-		function Next(URL){
-			window.location.assign(URL);
-		}
-		
-	</script>
-	<video src = "game/assets/video/background.mp4" class="index-video" autoplay="autoplay" loop="loop" muted="muted"></video>
-	<div class="header">
-			<img src="game/assets/images/logo.png">
-	</div>
-		<div class="index-button-group">
-			<div class="index-button">
-				<img src="game/assets/images/button.png">
-				<a href="game/pages/login.html">登          录</a>
-			</div>
-            <div class="index-button">
-				<img src="game/assets/images/button.png">
-				<a href="game/pages/register.html">注          册</a>
-			</div>
-		</div>
-
-        <div class="button-group">
-			<div class="button-music"><img onclick="switch_music_state()" src="game/assets/images/unmute.jpg"></div>
-		</div>
-		<!-- <script>
-			var audioPlayer = $('#audioPlayer')[0];
-			var img = document.querySelector('.music-button img');
-			var musicbutton=document.getElementById('music-button');
-		let musicPlayer = {
-			
-        	mute : function(){
-				this.onclick = musicPlayer.unmute;
-				img.src = 'img/mute.jpg';
-				audioPlayer.pause();
-				event.stopPropagation()
-			},
-			unmute : function(){
-				this.onclick = musicPlayer.mute;
-				img.src = 'img/unmute.jpg';
-				audioPlayer.play();
-				event.stopPropagation()
-			},
-		}
-		
-		</script> -->
+    <a href="game/pages/menu.html">进入游戏</a>
 </body>
 </html>

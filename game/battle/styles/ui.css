@@ -253,18 +253,3 @@
   top: -47px;
   cursor: pointer;
 }
-
-#switch_music_state
-{
-  position: absolute;
-  left: 1226px;
-  top: 97px;
-}
-
-#switch_music_state_mask
-{
-  position: absolute;
-  left: 1226px;
-  top: -47px;
-  cursor: pointer;
-}

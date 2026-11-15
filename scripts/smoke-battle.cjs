@@ -10,16 +10,15 @@ async function smoke({ evaluate, click, page, open }) {
   async function startBattle(level = 4) {
     await evaluate(`(() => {
       localStorage.clear();
-      localStorage.setItem('username', 'battle-smoke-player');
-      localStorage.setItem('battle-smoke-playerachievement', JSON.stringify({
+      localStorage.setItem('username', 'test');
+      localStorage.setItem('testachievement', JSON.stringify({
         ach1: false, ach2: false, ach3: false, ach4: false,
         ach5: false, ach6: false, ach7: false, ach8: false,
       }));
       GameProgress.newGame();
       const current = JSON.parse(localStorage.current);
       current.level = ${level};
-      current.is_plot_music_on = false;
-      current.is_inwar_music_on = false;
+      GamePreferences.setVolume('music', 0);
       localStorage.setItem('current', JSON.stringify(current));
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);
@@ -150,7 +149,7 @@ async function smoke({ evaluate, click, page, open }) {
   assert.equal(friendlyDeath.health, 0);
   assert.equal(friendlyDeath.alive, false);
   assert.deepEqual(friendlyDeath.popups, [2]);
-  assert.deepEqual(friendlyDeath.writes, ['battle-smoke-playerachievement']);
+  assert.deepEqual(friendlyDeath.writes, ['testachievement']);
   assert.equal(friendlyDeath.achievement, true);
   assert.equal(friendlyDeath.announcements.length, 1);
   assert.match(friendlyDeath.visibleAnnouncement, /叶岱在战场上陨落了/);
@@ -189,7 +188,7 @@ async function smoke({ evaluate, click, page, open }) {
   })()`);
   assert.deepEqual(maximumLevel.players, [{level: 6, exp: 10}, {level: 6, exp: 2}, {level: 6, exp: 2}]);
   assert.deepEqual(maximumLevel.popups, [6]);
-  assert.deepEqual(maximumLevel.writes, ['battle-smoke-playerachievement', 'current']);
+  assert.deepEqual(maximumLevel.writes, ['testachievement', 'current']);
   assert.equal(maximumLevel.achievement, true);
   for (const [index, key] of ['user_level', 'yuanlan_level', 'yedai_level'].entries()) {
     assert.deepEqual(maximumLevel.current[key], maximumLevel.players[index]);

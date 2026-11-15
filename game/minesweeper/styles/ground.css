@@ -51,7 +51,7 @@ body {
         gap: 15px; /* 增加元素之间的间距 */
     }
 
-    .span, button, input {
+    #p .span, #p button, #p input {
         width: 100%; /* 控制面板项宽度为 100% */
         max-width: 200px; /* 最大宽度限制为 200px */
     }
@@ -67,7 +67,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    .span, button, input {
+    #p .span, #p button, #p input {
         max-width: 100px; /* 在屏幕宽度小于 480px 时，进一步调整最大宽度 */
     }
 

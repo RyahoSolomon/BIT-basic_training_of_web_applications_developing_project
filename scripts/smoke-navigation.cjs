@@ -2,8 +2,9 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { fileURLToPath } = require('node:url');
+const { fileURLToPath, pathToFileURL } = require('node:url');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { openingToMap } = require('./smoke-story-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
 const mapPage = 'game/map/index.html';
@@ -77,26 +78,11 @@ async function smoke({ evaluate, click, page, open, cdp, until }) {
     }
   }
 
-  // Obtain the fixture through the game's real registration and new-game actions.
-  const username = 'navigation-smoke-player';
-  await open('game/pages/register.html');
-  await evaluate(`
-    document.getElementById('username').value = ${JSON.stringify(username)};
-    document.getElementById('password').value = 'navigation-smoke';
-    document.getElementById('confirm-password').value = 'navigation-smoke';
-  `);
-  await click('#registerForm button[type="submit"]');
-  await page('game/pages/login.html');
-  await evaluate(`
-    document.getElementById('username').value = ${JSON.stringify(username)};
-    document.getElementById('password').value = 'navigation-smoke';
-  `);
-  await click('#loginForm button[type="submit"]');
-  await page('game/pages/menu.html');
+  // Obtain progress through the actual new-game and opening controls.
+  await open('game/pages/menu.html');
   await click('a[href="../story/chapter-0/background.html"]');
   await page('game/story/chapter-0/background.html');
-  await click('.button-save');
-  await page(mapPage);
+  await openingToMap({ evaluate, click, page, cdp, until });
   await evaluate('localStorage.setItem("IsFirstPlay", "false")');
   const fixture = await evaluate('Object.fromEntries(Object.entries(localStorage))');
 
@@ -110,24 +96,13 @@ async function smoke({ evaluate, click, page, open, cdp, until }) {
   const pages = ['index.html', ...htmlPages(path.join(root, 'game')).sort()];
   for (const file of pages) {
     await reset();
-    await open(file);
+    if (file === 'index.html') {
+      await cdp.send('Page.navigate', { url: pathToFileURL(path.join(root, file)).href });
+      await page('game/pages/menu.html');
+    } else await open(file);
     await resources(file);
   }
   console.log('PASS  ' + pages.length + ' runtime pages, local resources and initial story images');
-
-  await reset();
-  await open('game/pages/save.html');
-  await click('#save1');
-  const saved = await evaluate('JSON.parse(localStorage.getItem(localStorage.username + "savearea"))[0]');
-  assert.equal(saved.version, 1);
-  assert.equal(saved.progress.chapterName, fixture.MSYgamename);
-  assert.deepEqual(saved.progress.current, JSON.parse(fixture.current));
-  await evaluate("localStorage.level1 = '999'");
-  await open('game/pages/load.html');
-  await click('#save1');
-  await page(mapPage);
-  assert.equal(await evaluate('localStorage.level1'), fixture.level1);
-  console.log('PASS  manual save/load with the shared progress format');
 
   await reset();
   await open('game/minesweeper/index.html');
@@ -143,9 +118,12 @@ async function smoke({ evaluate, click, page, open, cdp, until }) {
   })()`);
   await until('revealed mine', () => evaluate('!!document.querySelector("#ground img")'));
   await resources('minesweeper revealed mine');
-  await click('#introduction');
+  await click('[data-settings-open]');
+  await click('[data-menu-leave]');
+  await page('game/pages/menu.html');
+  await click('a[onclick="return load()"]');
   await page(mapPage);
-  console.log('PASS  minesweeper startup, dynamic mine image and map return');
+  console.log('PASS  minesweeper startup, dynamic mine image and settings/menu continuation');
 
   const winTargets = [
     'game/story/chapter-1/plot-after.html',

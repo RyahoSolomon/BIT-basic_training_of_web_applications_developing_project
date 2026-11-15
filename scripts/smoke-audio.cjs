@@ -2,6 +2,7 @@
 const assert = require('node:assert/strict');
 const { setTimeout: delay } = require('node:timers/promises');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { openingToMap } = require('./smoke-story-helpers.cjs');
 
 const mapPage = 'game/map/index.html';
 const storyPage = 'game/story/chapter-1/plot.html';
@@ -23,6 +24,20 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     }
   ` });
 
+  async function toggleMusic() {
+    await click('[data-settings-open]');
+    await until('open settings', () => evaluate("document.getElementById('game-settings')?.open"));
+    await click('[data-channel="music"] [data-volume-toggle]');
+    await click('[data-settings-close]');
+    // Verify the dialog has closed and the underlying page accepts pointer input.
+    await until('settings closed and page interactive', () => evaluate(`(() => {
+      const opener = document.querySelector('[data-settings-open]');
+      const box = opener.getBoundingClientRect();
+      return !document.getElementById('game-settings').open
+        && opener.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
+    })()`));
+  }
+
   async function playing(label) {
     await until('music playing: ' + label, () => evaluate(`(() => {
       const audio = document.getElementById('audioPlayer');
@@ -39,22 +54,22 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
         paused: audio.paused,
         time: audio.currentTime,
         events: window.__musicPlaybackEvents,
-        enabled: JSON.parse(localStorage.current).is_plot_music_on,
-        icon: document.querySelector('.button-music img').src,
-        battleEnabled: JSON.parse(localStorage.current).is_inwar_music_on,
+        enabled: GamePreferences.effectiveVolume('music') > 0,
+        volume: audio.volume,
+        sound: GamePreferences.get().sound,
       };
     })()`);
     assert.equal(state.enabled, false, label + ': mute preference was lost');
     assert.equal(state.paused, true, label + ': music resumed');
-    assert.match(state.icon, /\/mute\.jpg$/, label + ': wrong music icon');
-    assert.equal(state.battleEnabled, true, label + ': story mute changed battle preference');
+    assert.equal(state.volume, 0, label + ': muted audio still has volume');
+    assert.deepEqual(state.sound, { volume: 50, muted: false }, label + ': music changed the sound preference');
     if (neverStarted) {
       assert.deepEqual(state.events, [], label + ': music briefly started before being paused');
       assert.ok(Math.abs(state.time - expectedTime) < 0.1, label + ': paused music position changed');
     }
   }
 
-  await open('index.html');
+  await open('game/pages/menu.html');
   await until('landing music loaded', () => evaluate('document.getElementById("audioPlayer").readyState >= 2'));
   await delay(300);
   assert.equal(await evaluate('navigator.userActivation.hasBeenActive'), false,
@@ -65,35 +80,18 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await playing('landing page after real click');
   console.log('PASS  blocked autoplay recovers after real user interaction');
 
-  // Create progress using the real registration, login and new-game flows.
-  await click('a[href="game/pages/register.html"]');
-  await page('game/pages/register.html');
-  await evaluate(`
-    document.getElementById('username').value = 'audio-smoke-player';
-    document.getElementById('password').value = 'audio-smoke';
-    document.getElementById('confirm-password').value = 'audio-smoke';
-  `);
-  await click('#registerForm button[type="submit"]');
-  await page('game/pages/login.html');
-  await evaluate(`
-    document.getElementById('username').value = 'audio-smoke-player';
-    document.getElementById('password').value = 'audio-smoke';
-  `);
-  await click('#loginForm button[type="submit"]');
-  await page('game/pages/menu.html');
+  // No account is required; initialize progress through the menu.
   await click('a[href="../story/chapter-0/background.html"]');
   await page('game/story/chapter-0/background.html');
-  await click('.button-save');
-  await page(mapPage);
+  await openingToMap({ evaluate, click, page, cdp, until });
   await click('#Level1');
   await page(storyPage);
   // A new file:// document may require its own interaction to allow audio.
   await click('body');
   await playing('story before muting');
-  await click('.button-music img');
+  await toggleMusic();
   await silent('story after muting', { neverStarted: false });
-  await click('.button-return');
-  await page(mapPage);
+  await open(mapPage);
   await silent('map after muted story');
   await click('#Level1');
   await page(storyPage);
@@ -125,23 +123,23 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
 
   await open(mapPage);
   await silent('map before enabling');
-  await click('.button-music img');
+  await toggleMusic();
   await playing('map after enabling');
-  assert.equal(await evaluate('JSON.parse(localStorage.current).is_plot_music_on'), true);
+  assert.equal(await evaluate("GamePreferences.effectiveVolume('music')"), 50);
   await click('#Level1');
   await page(storyPage);
   // Re-entering a file:// page does not always carry over autoplay permission.
   await click('body');
   await playing('next story after enabling');
-  assert.equal(await evaluate('JSON.parse(localStorage.current).is_inwar_music_on'), true);
-  console.log('PASS  enabling music restores playback and preserves the separate battle preference');
+  assert.deepEqual(await evaluate("GamePreferences.get().sound"), { volume: 50, muted: false });
+  console.log('PASS  enabling music restores playback and preserves the separate sound preference');
 
   // Reset media loading, then toggle on/off without waiting for play() to settle.
   // A subsequent ordinary page click must not revive a stale playback attempt.
-  await click('.button-music img');
+  await toggleMusic();
   await evaluate('document.getElementById("audioPlayer").load()');
-  await click('.button-music img');
-  await click('.button-music img');
+  await toggleMusic();
+  await toggleMusic();
   const pausedTime = await evaluate('document.getElementById("audioPlayer").currentTime');
   await silent('rapid music toggle', { neverStarted: false });
   await click('body');
@@ -153,7 +151,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   async function readToEnd() {
     const lines = await evaluate('window.storyScene.lines');
     for (const line of lines) {
-      const text = line.text.replaceAll('{player}', 'audio-smoke-player');
+      const text = line.text.replaceAll('{player}', 'test');
       await until('audio branch dialogue: ' + text.slice(0, 30), () => evaluate(`
         document.querySelector('#story-player .text')?.textContent === ${JSON.stringify(text)}
         && getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'
@@ -222,7 +220,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
 
   const prologue = 'game/story/chapter-0/plot.html';
   const aftermath = 'game/story/chapter-2/plot-after.html';
-  await click('.button-music img');
+  await toggleMusic();
   for (const [source, destinations, track] of [
     [prologue, ['plot-b.html', 'plot-a.html'], '002-huguo-palace.mp3'],
     [aftermath, ['branch-short.html', 'branch-long.html'], '005-kill-nut.mp3'],
@@ -253,7 +251,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
 
   // A real track change must not inherit the branch's offset, and entering the
   // same scene later must not reuse an already consumed continuation.
-  await click('.button-save');
+  await readToEnd();
   await page(mapPage);
   assert.ok(await evaluate('!document.getElementById("audioPlayer").src.endsWith("005-kill-nut.mp3")'));
   await fresh('map after chapter 2 branch');
@@ -271,14 +269,14 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await readToEnd();
   await choices();
   await seekPlaying('prologue before muted choice');
-  await click('.button-music img');
+  await toggleMusic();
   const mutedTime = await evaluate('document.getElementById("audioPlayer").currentTime');
   await click('#story-player .button-container .button:nth-child(1)');
   await page('game/story/chapter-0/plot-b.html');
   await silent('muted prologue branch', { expectedTime: mutedTime });
   await click('body');
   await silent('muted prologue branch after interaction', { expectedTime: mutedTime });
-  await click('.button-music img');
+  await toggleMusic();
   await continued('prologue branch enabled after muted navigation', mutedTime);
   console.log('PASS  a muted branch stays silent and retains its position when music is enabled');
 

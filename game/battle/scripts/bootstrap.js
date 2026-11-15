@@ -9,23 +9,11 @@ function pre_load()
     summon_pangu_spirit();
   }
   let is_first_play = localStorage.getItem("IsFirstPlay");
-  if(current_info.is_inwar_music_on)
-  {
-    document.getElementById("switch_music_state_mask").title = "关闭音乐";
-  }
-  else
-  {
-    document.getElementById("switch_music_state_mask").title = "开启音乐";
-  }
   if(is_first_play == null || is_first_play == "true")
   {
     window.open("../../docs/game-guide.pdf");
     localStorage.setItem("IsFirstPlay", "false");
     alert("首次游玩会弹出教程页面,请务必仔细阅读.部分浏览器会阻止页面弹出,右下角有按钮可随时打开教程.");
-  }
-  if(current_info.is_inwar_music_on == false)
-  {
-    document.getElementById("switch_music_state").src = "assets/images/ui/music-off.png";
   }
   shuffleSelf(music_library, music_library.length);
   document.getElementById("audioPlayer").src = music_library[0];

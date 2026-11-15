@@ -156,19 +156,10 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
 
   try {
-    // Use normal registration/new-game initialization for chapters that update
+    // Use normal new-game initialization for chapters that update
     // progress or achievements while loading.
-    const username = 'presentation-smoke-player';
-    await open('game/pages/register.html');
-    await evaluate(`
-      document.getElementById('username').value = ${JSON.stringify(username)};
-      document.getElementById('password').value = 'presentation-smoke';
-      document.getElementById('confirm-password').value = 'presentation-smoke';
-    `);
-    await click('#registerForm button[type="submit"]');
-    await page('game/pages/login.html');
+    const username = 'test';
     await open('game/pages/menu.html');
-    await evaluate('localStorage.setItem("username", ' + JSON.stringify(username) + ')');
     await click('a[href="../story/chapter-0/background.html"]');
     await page(background);
     const defaultFont = await checkPresentation('#overlayText');

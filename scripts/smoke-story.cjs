@@ -5,7 +5,7 @@ const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
 
 async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) {
-  const username = 'story-smoke-player';
+  const username = 'test';
   const background = 'game/story/chapter-0/background.html';
   const prologue = 'game/story/chapter-0/plot.html';
   const chapter1 = 'game/story/chapter-1/plot.html';
@@ -94,17 +94,8 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await page(prologue);
   }
 
-  // Registration and the normal new-game action initialize all progress and achievements.
-  await open('game/pages/register.html');
-  await evaluate(`
-    document.getElementById("username").value = ${JSON.stringify(username)};
-    document.getElementById("password").value = "story-smoke";
-    document.getElementById("confirm-password").value = "story-smoke";
-  `);
-  await click('#registerForm button[type="submit"]');
-  await page('game/pages/login.html');
+  // The normal new-game action initializes progress and the fixed player.
   await open('game/pages/menu.html');
-  await evaluate('localStorage.setItem("username", ' + JSON.stringify(username) + ')');
   await click('a[href="../story/chapter-0/background.html"]');
   await page(background);
   await readBackgroundToEnd(true);
@@ -129,9 +120,6 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
   console.log('PASS  opening narration without image transition events');
 
-  await open(background);
-  await click('.button-save');
-  await page(map);
 
   for (const [index, destination] of ['plot-b.html', 'plot-a.html'].entries()) {
     await open(prologue);
@@ -148,12 +136,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await open(chapter1);
   await readToEnd();
   await enterBattle();
-  await open(chapter1);
-  await readLines();
-  await click('.button-save');
-  await page(battle);
-  assert.equal(await evaluate('level'), 0);
-  console.log('PASS  chapter 1 natural battle entry and skip');
+  console.log('PASS  chapter 1 natural battle entry');
 
   // Inject scene edits before the production DOMContentLoaded listener mounts React.
   // This models editing only scene data and reloading the same HTML/player.
@@ -180,13 +163,13 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   console.log('PASS  inserted/deleted dialogue preserves speakers and battle endpoint');
 
   for (const [index, destination] of ['branch-short.html', 'branch-long.html'].entries()) {
-    await evaluate('localStorage.removeItem(' + JSON.stringify(username + 'flag') + ')');
+    await evaluate('localStorage.setItem(' + JSON.stringify(username + 'flag') + ', "0")');
     await open('game/story/chapter-2/plot-after.html');
     await readToEnd();
     await waitChoices();
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
     await page('game/story/chapter-2/' + destination);
-    assert.equal(await evaluate('localStorage.getItem(' + JSON.stringify(username + 'flag') + ')'), index === 0 ? '1' : null);
+    assert.equal(await evaluate('localStorage.getItem(' + JSON.stringify(username + 'flag') + ')'), index === 0 ? '1' : '0');
     if (index === 0) {
       await until('achievement popup', () => evaluate('getComputedStyle(document.getElementById("achievement_popup")).display !== "none"'));
       await click('#achievement_popup [onclick="Shutoff()"]');

@@ -1,5 +1,10 @@
 <html>
     <head>
+    <script src="../shared/scripts/profile.js"></script>
+    <script src="../shared/scripts/preferences.js"></script>
+    <script src="../shared/scripts/progress.js"></script>
+    <script src="../shared/scripts/settings.js"></script>
+
         <title>map</title>
         <link type="text/css" rel="stylesheet" href="styles/map.css">
         <style>
@@ -47,7 +52,6 @@
             }
             
         </style>
-        <script src="../shared/scripts/progress.js"></script>
         <script>
             function save() {
                 try {
@@ -60,12 +64,6 @@
             }
         </script>
         <script>
-            function ReturnToIndex(){
-                window.location.href = "../pages/menu.html";
-            }
-            function save_(){
-                window.location.href = "../pages/save.html"
-            }
             function change(situation){
                 var current = JSON.parse(window.localStorage.getItem("current"));
                 current.level = situation-1;
@@ -79,7 +77,8 @@
             }
         </script>
     <script src="../shared/scripts/audio.js"></script>
-    </head>
+    <link rel="stylesheet" href="../shared/styles/settings.css">
+</head>
     <body>
         <audio id="audioPlayer" loop="loop" preload="preload" src="../assets/audio/000-map.mp3" type="audio/mp3"></audio>
         <div id="box">
@@ -92,21 +91,8 @@
         <a href = "../story/chapter-5/plot1.html" class = "button" id="level-5"><img id="Level5" src = "assets/images/uncaptured-level.png" alt = "第五关" onclick="change(5)"></a>
         <a href = "../story/chapter-6/plot1.html" class = "button" id="level-6"><img id="Level6" src = "assets/images/uncaptured-level.png" alt = "第六关" onclick="change(6)"></a>
         
-        <div class="button-group">
-            <div class="button-save" onclick="save_()"><img tilte = "存档" src="../assets/images/save.jpg"></div>
-            <div class="button-return" onclick="ReturnToIndex()"><img title = "返回主界面" src="../assets/images/return.jpg"></div>
-            <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../assets/images/unmute.jpg"></div>
-        </div>
+        <div class="button-group" data-settings-host></div>
         <script>
-
-            document.querySelectorAll('button').forEach(button => {
-                button.addEventListener('click', jumpToPage);
-              });
-            
-              function jumpToPage(event) {
-                const targetUrl = event.target.getAttribute('data-url');
-                window.location.href = targetUrl;
-              }
 
               window.onload = function(){
                 var saved = save();

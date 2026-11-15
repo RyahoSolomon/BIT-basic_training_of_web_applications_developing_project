@@ -1,6 +1,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <script src="../shared/scripts/profile.js"></script>
+    <script src="../shared/scripts/preferences.js"></script>
+    <script src="../shared/scripts/progress.js"></script>
+    <script src="../shared/scripts/settings.js"></script>
+
     <title id = "html_title">战斗</title>
     <!-- 战棋版本 正式版1.0.4 -->
     <script type="text/javascript" src="scripts/initial-board.js"></script>
@@ -44,7 +49,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-    <script src="../shared/scripts/progress.js"></script>
     <script>
       var current_info = localStorage.getItem("current");
       var username = localStorage.getItem("username");
@@ -84,9 +88,11 @@
       var currentTextIndex = 0;
       var executeAnimation = 0;
     </script>
-  </head>
+    <link rel="stylesheet" href="../shared/styles/settings.css">
+</head>
 
   <body ondragstart='return false' oncontextmenu='self.event.returnValue=false'>
+    <div class="button-group" data-settings-host></div>
     <audio id="audioPlayer" src="assets/audio/war-chess1.mp3" preload="auto"></audio>
     <div id= "board"></div>
     <div id = 'UI'>
@@ -96,7 +102,6 @@
       <img id = "guide_button" src = "assets/images/ui/guide.png">
       <img id = "back_to_map" class = "control_button" src = "assets/images/ui/back-to-map.png">
       <img id = "check_mission_info" class = "control_button" src = "assets/images/ui/check-mission-info.png">
-      <img id = "switch_music_state" class = "control_button" src = "assets/images/ui/music-on.png">
       <div id = "announcement_board">
         <div id = "announcement"></div>
       </div>
@@ -115,7 +120,6 @@
       <img id = "guide_hover_initial_mask" src = "assets/images/mask/transparent-other-button.png" onclick = "window.open('../../docs/game-guide.pdf')" onmouseenter = "load_guide_hover_mask()" onmouseleave="reset_other_buttons_hover_mask()" title = "查看教程">
       <img id = "back_to_map_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "window.location.href = '../map/index.html'" onmouseenter = "load_control_button_hover_mask(0)" onmouseleave="reset_other_buttons_hover_mask()" title = "返回大地图(不保存本场战役获得的经验,但保留成就和隐藏线索)">
       <img id = "check_mission_info_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "load_mission_icons(true)" onmouseenter = "load_control_button_hover_mask(1)" onmouseleave="reset_other_buttons_hover_mask()" title = "回顾任务目标">
-      <img id = "switch_music_state_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "switch_music_state()" onmouseenter = "load_control_button_hover_mask(2)" onmouseleave="reset_other_buttons_hover_mask()" title = "点我开启音乐">
     </div>
     <div id = 'mask'></div>
     <div id = "mission_icons"></div>
@@ -130,6 +134,7 @@
     <div id = "plot_option_hover_masks"></div>
     <div id = "plot_option_masks"></div>
   </body>
+  <script src="../shared/scripts/audio.js"></script>
   <script type="text/javascript" src="scripts/audio.js"></script>
   <script>
       pre_load();

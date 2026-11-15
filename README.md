@@ -2,11 +2,11 @@
 # 源神 The Origin Of God
 ### 开始冒险
 
-拉取项目后，用较新版浏览器打开根目录的 [index.html](index.html) 即可。仓库包含已打包的剧情播放器，游玩不需要安装 npm 包或启动服务器。
+拉取项目后，用较新版浏览器打开根目录的 [index.html](index.html)，即可直接进入主菜单，无需注册或登录。仓库包含已打包的剧情播放器，游玩不需要安装 npm 包或启动服务器。
 
 ### 文件放在哪里
 
-正式游戏文件统一放在 `game/`。账号与存档页面放在 `game/pages/`；剧情、地图、战棋和扫雷分别放在对应模块；跨模块资源放在 `game/assets/`，公共脚本和样式放在 `game/shared/`。完整目录规则和常用入口见 [项目目录说明](docs/project-structure.md)。
+正式游戏文件统一放在 `game/`。主菜单与成就页面放在 `game/pages/`；剧情、地图、战棋和扫雷分别放在对应模块；跨模块资源放在 `game/assets/`，公共脚本和样式放在 `game/shared/`。完整目录规则和常用入口见 [项目目录说明](docs/project-structure.md)。
 
 需要构建的源码位于 `src/`，构建产物位于 `game/generated/`；第三方库位于 `game/vendor/`。开发工具和美术源稿分别放在 [tools/](tools/README.md) 和 [design/](design/README.md)，与正式游戏内容分开维护。原项目已在独立分支归档，当前分支不再保留未使用的历史代码和样例副本。
 
@@ -21,7 +21,7 @@ npm test
 
 `npm run check` 检查 HTML、CSS 和可静态识别的 JavaScript 本地资源与页面路径，并运行检查器自身的测试。路径失效时会报告文件名和行号。检查不扫描美术源稿，也不会推断运行时拼接的任意 URL。
 
-`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、终局结算、回合推进、单位显示、开局、剧情、页面导航、音频、剧情显示和背景过渡十二个浏览器回归检查，覆盖注册、登录、新游戏、新旧存档恢复、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、胜负与成就确认、回合等待和重复操作、单位节点保留、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
+`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、终局结算、回合推进、单位显示、开局、剧情、页面导航、音频、剧情显示和背景过渡等浏览器回归检查，覆盖新游戏、继续游戏、JSON 存档导入导出、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、胜负与成就确认、回合等待和重复操作、单位节点保留、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
 
 这些检查无需安装 npm 包，但浏览器回归需要已安装 Chrome 或 Edge。若浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定可执行文件。也可分别运行：
 
@@ -31,6 +31,7 @@ npm run test:battle
 npm run test:movement
 npm run test:settlement
 npm run test:turn
+npm run test:settings
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
 node scripts/smoke-story-presentation.cjs
@@ -39,11 +40,13 @@ node scripts/smoke-navigation.cjs
 node scripts/smoke-audio.cjs
 ```
 
-剧情、地图、菜单与结局的背景音乐由公共音频脚本在页面加载时读取存档中的开关状态后启动；关闭音乐后跳转或刷新不会重新播放。这些页面的 `<audio>` 不使用 `autoplay` 属性，以避免短暂出声。首次播放被浏览器阻止时，再等待页面点击重试。音频检查使用真实鼠标输入，并且不会把读取页面状态当作用户交互。
+剧情、地图、战斗、菜单与结局的背景音乐由公共音频脚本在页面加载时读取共用设置中的音乐音量与开关状态后启动；关闭音乐后跳转或刷新不会重新播放。这些页面的 `<audio>` 不使用 `autoplay` 属性，以避免短暂出声。首次播放被浏览器阻止时，再等待页面点击重试。音频检查使用真实鼠标输入，并且不会把读取页面状态当作用户交互。
 
 对白播放器跳转到下一段剧情时，会临时记录音乐进度；目标剧情使用同一首音乐时从该位置继续，曲目改变时从头播放。该记录仅供紧接着的目标页使用，不写入游戏存档，也不会影响刷新或重新进入剧情。序章两个选项、第二关战后两个选项及长分支接回后续剧情均保持原曲续播。
 
-新游戏、自动存档、手动存读档与继续游戏统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理。新版存档带有版本号，并兼容原版存档；空档或损坏数据不会覆盖当前进度。字段、旧档转换与测试样本说明见 [存档格式](docs/save-format.md)。
+新游戏、自动保存、继续游戏与 JSON 存档导入导出统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理，只保留一份本地存档。各页面右上角的设置入口提供音乐、音效和存档操作；两种音量默认均为 50，静音后再次点击图标恢复此前音量，拖动滑块也能开启声音。音效仅预留设置，等待后续接入。下载文件名为 `save_test.json`，导入后返回地图。空档或损坏数据不会覆盖当前进度。存档格式见 [存档格式](docs/save-format.md)。
+
+[本地档案初始化](game/shared/scripts/profile.js) 在各页面的其他游戏脚本之前运行，将玩家名固定为 `test`，仅在缺失时补齐八项成就和结局标记。它不会生成游戏进度；从主菜单开始新游戏或导入存档后再进入地图与战斗。页面依次加载 `profile.js`、`preferences.js`、`progress.js`、`settings.js`，并使用共用 `settings.css`。
 
 伤害、死亡计数和经验由 [战斗规则模块](game/battle/scripts/battle-rules.js) 计算，页面再应用结果、显示公告与成就。同一个单位死亡只结算一次；接口与验证方式见 [伤害与死亡结算](docs/battle-rules.md)。
 
@@ -57,7 +60,7 @@ node scripts/smoke-audio.cjs
 
 第 0–6 章的 24 个对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。
 
-场景 JS 定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 与 `skip` 分别定义读完和跳过后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+场景 JS 定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 定义读完后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
 
 例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效，无需重新构建播放器。
 

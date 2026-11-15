@@ -68,12 +68,16 @@ function* javascriptStrings(text) {
       const after = text.slice(i).trimStart();
       yield {
         value: decodeString(raw), line: lineAt(text, start),
+        start, end: i, before, after,
         dynamic: (quote === '`' && raw.includes('${')) || before.endsWith('+') || after.startsWith('+'),
-        explicitBase: parens.some(Boolean),
+        explicitBase: parens.some(context => context.explicitBase),
+        calls: parens.map(context => context.call),
         commonJS: /(?:^|[^\w$.])require\s*\(\s*$/.test(before) && after.startsWith(')'),
       };
     } else if (text[i] === '(') {
-      parens.push(/\bnew\s+URL\s*$/.test(text.slice(0, i)));
+      const before = text.slice(0, i);
+      parens.push({ explicitBase: /\bnew\s+URL\s*$/.test(before),
+        call: /([\w$]+)\s*$/.exec(before)?.[1] });
       i++;
     } else if (text[i] === ')') {
       parens.pop();
@@ -84,8 +88,43 @@ function* javascriptStrings(text) {
   }
 }
 
-function* javascriptReferences(js) {
-  for (const literal of javascriptStrings(js)) {
+function* javascriptReferences(js, scriptURL) {
+  const literals = [...javascriptStrings(js)];
+  const codeUnits = js.split('');
+  for (const literal of literals) {
+    for (let index = literal.start; index < literal.end; index++) {
+      if (codeUnits[index] !== '\n') codeUnits[index] = ' ';
+    }
+  }
+  const code = blankComments(codeUnits.join('')).replace(/\/\/[^\n]*/g, '');
+  const bases = new Map();
+  const helpers = new Map();
+  // Recognize only static URL bases and simple one-argument URL helpers. This
+  // is not evaluation: unresolved bases/expressions retain the conservative
+  // behavior above and remain covered by browser resource checks.
+  if (scriptURL) bases.set('document.currentScript.src', scriptURL);
+  for (const literal of literals) {
+    const declaration = /\b(?:const|let|var)\s+([\w$]+)\s*=\s*new\s+URL\(\s*$/.exec(literal.before);
+    const base = /^,\s*(document\.currentScript\.src|[\w$]+)\s*\)/.exec(literal.after);
+    if (declaration && base && bases.has(base[1]) && !literal.dynamic) {
+      try { bases.set(declaration[1], new URL(literal.value, bases.get(base[1])).href); } catch { /* Dynamic/invalid base. */ }
+    }
+    const helper = /\b(?:const|let|var)\s+([\w$]+)\s*=\s*\(?\s*([\w$]+)\s*\)?\s*=>\s*new\s+URL\(\s*$/.exec(literal.before);
+    const argument = /^\+\s*([\w$]+)\s*,\s*([\w$]+)\s*\)\.href/.exec(literal.after);
+    if (helper && argument && helper[2] === argument[1]) {
+      helpers.set(helper[1], { prefix: literal.value, baseURL: bases.get(argument[2]) });
+    }
+  }
+  function isOutput(literal) {
+    if (literal.calls.includes('showSaveFilePicker') || /\.download\s*=\s*$/.test(literal.before)) return true;
+    const declaration = /\b(?:const|let|var)\s+([\w$]+)\s*=\s*$/.exec(literal.before);
+    if (!declaration) return false;
+    const name = declaration[1].replace(/[$]/g, '\\$');
+    const output = new RegExp('(?:\\.download\\s*=|suggestedName\\s*:)\\s*' + name + '\\b');
+    const input = new RegExp('(?:\\.(?:src|href|poster)\\s*=|\\b(?:fetch|importScripts|require|URL|assign|replace)\\s*\\()\\s*' + name + '\\b');
+    return output.test(code) && !input.test(code);
+  }
+  for (const literal of literals) {
     const {value, line, dynamic, explicitBase, commonJS} = literal;
     if (commonJS) {
       // Relative CommonJS imports belong to the script, not its loading page.
@@ -93,7 +132,27 @@ function* javascriptReferences(js) {
       if (!dynamic && /^\.\.?\//.test(value)) yield {value, line, module: true};
       continue;
     }
-    if (!dynamic && !explicitBase && isResource(value)) yield {value, line};
+    const helper = literal.calls.map(name => helpers.get(name)).find(Boolean);
+    const base = /^,\s*(document\.currentScript\.src|[\w$]+)\s*\)/.exec(literal.after);
+    if (!dynamic && helper && isResource(value)) {
+      if (helper.baseURL) yield {value: helper.prefix + value, line, baseURL: helper.baseURL};
+    } else if (!dynamic && explicitBase && base && bases.has(base[1]) && isResource(value)) {
+      yield {value, line, baseURL: bases.get(base[1])};
+    } else if (!dynamic && !explicitBase && isResource(value) && !isOutput(literal)) {
+      yield {value, line};
+    }
+    // A complete helper call inside a template interpolation is also static,
+    // even though the surrounding HTML template is not a plain string.
+    if (value.includes('${')) {
+      for (const [name, resolver] of helpers) {
+        if (!resolver.baseURL) continue;
+        const call = new RegExp('\\$\\{\\s*' + name.replace(/[$]/g, '\\$') + '\\(\\s*(["\'])([^"\'\\r\\n]+)\\1\\s*\\)\\s*\\}', 'g');
+        for (const match of value.matchAll(call)) {
+          if (isResource(match[2])) yield {value: resolver.prefix + match[2],
+            line: line + lineAt(value, match.index) - 1, baseURL: resolver.baseURL};
+        }
+      }
+    }
     // Complete URLs embedded in HTML fragments remain checkable even when
     // the surrounding HTML is assembled by concatenating multiple strings.
     if (/<[a-z]|\b(?:src|href|poster)\s*=/i.test(value)) {
@@ -173,6 +232,7 @@ function checkProject(root, report = console.error) {
   function check(reference, source, baseFile = source) {
     const value = reference.value.trim();
     if (!isLocal(value)) return null;
+    if (reference.baseURL && new URL(value, reference.baseURL).protocol !== 'file:') return null;
     count++;
     let target;
     if (reference.module) {
@@ -193,7 +253,8 @@ function checkProject(root, report = console.error) {
       return target;
     }
     try {
-      target = path.relative(root, fileURLToPath(new URL(value, pathToFileURL(path.join(root, baseFile))))).split(path.sep).join('/');
+      target = path.relative(root, fileURLToPath(new URL(value,
+        reference.baseURL || pathToFileURL(path.join(root, baseFile))))).split(path.sep).join('/');
     } catch {
       report(`${source}:${reference.line}: invalid local URL ${value}`);
       failures++;
@@ -219,7 +280,7 @@ function checkProject(root, report = console.error) {
       if (scriptContexts.has(context)) continue;
       scriptContexts.add(context);
       const js = fs.readFileSync(path.join(root, target), 'utf8');
-      for (const dependency of javascriptReferences(js)) check(dependency, target, page);
+      for (const dependency of javascriptReferences(js, pathToFileURL(path.join(root, target)).href)) check(dependency, target, page);
     }
   }
   for (const file of styles.sort()) {

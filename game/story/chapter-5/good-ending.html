@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="../../shared/scripts/profile.js"></script>
+    <script src="../../shared/scripts/preferences.js"></script>
+    <script src="../../shared/scripts/progress.js"></script>
+    <script src="../../shared/scripts/settings.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Ending</title>
     <link rel="stylesheet" href="good-ending.css">
@@ -32,56 +37,11 @@
             cursor: pointer;
         }
     </style> -->
-    <style>
-        .button-group {
-            position: absolute;
-            right: 2vw;
-            top: 2vh;
-            z-index: 4;
-        }
-        .button-group div {
-            position: relative;
-            height: 7vh;
-            width: 7vh;
-        }
-        .button-group div:hover {
-            transform: translateX(2px) translateY(2px);
-            cursor: pointer;
-        }
-        .button-group img {
-            height: 100%;
-            width: 100%;
-        }
-        
-        .button-save {
-            cursor: pointer;
-            top: 8vh;
-        }
-        .button-return {
-            cursor: pointer;
-            top: 2vh;
-        }
-        .button-music {
-            cursor: pointer;
-            top: 5vh;
-        }
-    </style>
-    <script>
-        
-        function ReturnToIndex(){
-            window.location.href = "../../map/index.html";
-        }
-        function save_(){
-            window.location.href = "../../pages/save.html"
-        }
-    </script>
+    <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
 <body>
     <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/015-normal-ending.mp3" type="audio/mp3"></audio>
-    <div class="button-group">
-        <div class="button-return" onclick="ReturnToIndex()"><img src="../../assets/images/return.jpg"></div>
-        <div class="button-music" onclick="switch_music_state()"><img src="../../assets/images/unmute.jpg"></div>
-    </div>
+    <div class="button-group" data-settings-host></div>
     <div class="container">
         <p class="text art-font1" id="text1">我们将太上老君的配方交了出来,举国上下颇为震惊,炼药配方迅速迭代,仙丹价格也确实被打了下来,人族与妖族举行了停战条约.然而,和平仅仅持续了三年,三年后一次惨烈的边境冲突再次激发了千年的民族矛盾,最终战争又爆发了...</p>
         <p class="text art-font1" id="text2">假盘古事件一个月后,蓬莱岛莫名沉没,三个月后,遗存的结界彻底崩溃.此后我们小队便奋战在对抗怪物的第一线.</p>

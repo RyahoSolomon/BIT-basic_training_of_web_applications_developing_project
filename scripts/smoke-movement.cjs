@@ -17,16 +17,15 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
   async function startBattle(level = 1) {
     await evaluate(`(() => {
       localStorage.clear();
-      localStorage.setItem('username', 'movement-smoke-player');
-      localStorage.setItem('movement-smoke-playerachievement', JSON.stringify({
+      localStorage.setItem('username', 'test');
+      localStorage.setItem('testachievement', JSON.stringify({
         ach1: false, ach2: false, ach3: false, ach4: false,
         ach5: false, ach6: false, ach7: false, ach8: false,
       }));
       GameProgress.newGame();
       const current = JSON.parse(localStorage.current);
       current.level = ${level};
-      current.is_plot_music_on = false;
-      current.is_inwar_music_on = false;
+      GamePreferences.setVolume('music', 0);
       localStorage.setItem('current', JSON.stringify(current));
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);

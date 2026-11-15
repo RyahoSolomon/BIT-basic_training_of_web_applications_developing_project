@@ -17,16 +17,15 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     await open('game/pages/menu.html');
     await evaluate(`(() => {
       localStorage.clear();
-      localStorage.setItem('username', 'turn-flow-smoke-player');
-      localStorage.setItem('turn-flow-smoke-playerachievement', JSON.stringify({
+      localStorage.setItem('username', 'test');
+      localStorage.setItem('testachievement', JSON.stringify({
         ach1: true, ach2: true, ach3: true, ach4: true,
         ach5: true, ach6: true, ach7: true, ach8: true,
       }));
       GameProgress.newGame();
       const current = JSON.parse(localStorage.current);
       current.level = 1;
-      current.is_plot_music_on = false;
-      current.is_inwar_music_on = false;
+      GamePreferences.setVolume('music', 0);
       localStorage.setItem('current', JSON.stringify(current));
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);

@@ -8,16 +8,16 @@
 
 - [x] **01 · 页面依赖缺少回归检查**
   - 已修复两个入口失效的 Bootstrap 引用、剧情页对未引入的 jQuery 的调用、地图第六关状态变量错误，以及静态检查发现的图标和音乐路径。[第一章初始化](../game/story/chapter-1/plot.html) · [地图初始化](../game/map/index.html)
-  - 已验收：静态检查覆盖 HTML 页面的本地引用。浏览器直接打开根入口，经注册、登录和新游戏进入地图，校验自动存档后进入第一场战斗，通过跳过按钮到达胜利页，沿途无未捕获的脚本异常。[运行方法](../README.md#开发时检查页面依赖) · [静态检查](../scripts/check-pages.cjs) · [浏览器检查](../scripts/smoke-game.cjs)
+  - 已验收：静态检查覆盖 HTML 页面的本地引用。浏览器直接打开根入口，从主菜单开始新游戏并逐句读完序章进入地图，校验自动存档后进入第一场战斗，通过跳过按钮到达胜利页，沿途无未捕获的脚本异常。[运行方法](../README.md#开发时检查页面依赖) · [静态检查](../scripts/check-pages.cjs) · [浏览器检查](../scripts/smoke-game.cjs)
   - 当前静态检查还覆盖 CSS 资源和可静态识别的 JavaScript 路径，并有 [检查器自测](../scripts/check-pages.test.cjs)。目录迁移后的页面与资源由 [导航回归](../scripts/smoke-navigation.cjs) 检查，统一执行 `npm test`。
 
 - [x] **02 · 剧情文本与播放顺序由不同文件维护**
-  - 第 0–6 章的 24 个对话场景现由同一个 React 播放器读取。每句数据同时记录说话人、文本和中央字幕，选项、读完后的目标和跳过目标由场景配置指定。第一章进入战斗的按钮在读完台词后出现。[播放器源码](../src/story/player.jsx) · [第一章场景](../game/story/chapter-1/plot.js) · [序章分支](../game/story/chapter-0/plot.js)
+  - 第 0–6 章的 24 个对话场景现由同一个 React 播放器读取。每句数据同时记录说话人、文本和中央字幕，选项和读完后的目标由场景配置指定。第一章进入战斗的按钮在读完台词后出现。[播放器源码](../src/story/player.jsx) · [第一章场景](../game/story/chapter-1/plot.js) · [序章分支](../game/story/chapter-0/plot.js)
   - 已验收：在浏览器中逐句播放全部 24 个场景，验证序章与第二章的分支、选项写入的标记、第四章两条线索分支和黑屏转战斗、第五章交错字幕及第六章背景切换。剧情检查还会临时增删第一章台词，确认说话人和战斗入口正确。首句出现后的第一次点击会推进到第二句。[剧情检查](../scripts/smoke-story.cjs) · [编辑与构建方法](../README.md#编辑章节对话)
 
 - [x] **03 · 跨页面进度缺少统一的存档格式和读写入口**
-  - 新游戏、自动保存、手动保存和两种恢复入口已统一到 [progress.js](../game/shared/scripts/progress.js)，默认值、校验和版本 1 存档结构由同一份进度定义维护。页面不再枚举存档字段，[saves.js](../game/shared/scripts/saves.js) 仅负责存读档页交互。原版档案通过兼容转换恢复，账号累计成就不随读档回退。字段与兼容规则见 [存档格式](save-format.md)。
-  - 已验收：使用归档原版实际保存函数生成的 [旧档样本](../scripts/fixtures/legacy-progress.json)，验证继续游戏和手动读档恢复相同的角色等级、关卡解锁、隐藏线索、音乐开关与完美完成记录；空档、损坏数据和未知版本不会覆盖现有进度。另覆盖账号与槽位隔离、存储写入失败，以及保存失败时不再误报成功。[存储单元测试](../scripts/progress.test.cjs) · [浏览器存档回归](../scripts/smoke-progress.cjs)，统一运行 `npm run test:progress` 或 `npm test`。
+  - 新游戏、自动保存、继续游戏和文件导入导出统一到 [progress.js](../game/shared/scripts/progress.js)。游戏不再使用账号和多槽位存档，固定玩家名为 `test`；单一 `game.save` 保存进度、成就、剧情标记和设置，不兼容旧格式。字段与规则见 [存档格式](save-format.md)。
+  - 已验收：新游戏立即保存；导出和导入完整数据往返一致；空档、损坏数据、未知版本不会覆盖当前状态，存储失败尝试回滚。统一设置面板控制各页面音乐音量，静音保留之前的音量；继续游戏保留刚调整的设置。参见 [存储单元测试](../scripts/progress.test.cjs)、[浏览器存档回归](../scripts/smoke-progress.cjs) 和 [设置回归](../scripts/smoke-settings.cjs)。
 
 - [x] **04 · 战斗规则依赖页面全局变量，结算副作用混在单位方法里**
   - 伤害、首次死亡、精魂击杀数、经验与等级由 [battle-rules.js](../game/battle/scripts/battle-rules.js) 根据传入状态计算，不修改输入，也不访问页面或存储。[battle-state.js](../game/battle/scripts/battle-state.js) 应用结果、显示死亡公告与成就并负责持久化，`Unit.get_hurt()` 仅转发调用。回合末跳过死者，并在某项伤害致死后停止剩余效果；重击自损和地形伤害统一通过绕甲选项结算。接口见 [伤害与死亡结算](battle-rules.md)。

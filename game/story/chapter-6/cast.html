@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="../../shared/scripts/profile.js"></script>
+    <script src="../../shared/scripts/preferences.js"></script>
+    <script src="../../shared/scripts/progress.js"></script>
+    <script src="../../shared/scripts/settings.js"></script>
+    <script src="../../shared/scripts/audio.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>True Ending</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
@@ -87,11 +93,13 @@
             });  
         });
     </script>
+    <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
 <body>
+    <div class="button-group" data-settings-host></div>
     <div id="text2" class="centered-text">神所创造的世界，并非完美</div>
     <div class="video-container">  
-        <video id="cast" loop="loop" preload="preload" controls>  
+        <video id="cast" data-music-volume preload="auto" controls>
             <source src="../../assets/video/cast.mp4" type="video/mp4">  
         </video>  
     </div>  

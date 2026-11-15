@@ -1,5 +1,4 @@
-// Shared by the landing page, menu and story pages at any directory depth.
-let menuMusicEnabled = true;
+// Shared music playback for the menu, map, story and battles.
 const storyMusicHandoffKey = 'story-music-handoff';
 let storyMusicRestored = false;
 
@@ -43,44 +42,16 @@ function restore_story_music(audioPlayer)
 
 function get_music_state()
 {
-  let current_info = localStorage.getItem("current");
-  if(current_info == null)
-  {
-    return menuMusicEnabled;
-  }
-  current_info = JSON.parse(current_info);
-  if(current_info.is_plot_music_on == false)
-  {
-    return false;
-  }
-  else 
-  {
-    return true;
-  }
-}
-
-function switch_music_state()
-{
-  let current_info = localStorage.getItem("current");
-  current_info = JSON.parse(current_info);
-  const enabled = !get_music_state();
-  menuMusicEnabled = enabled;
-  if (current_info) {
-    current_info.is_plot_music_on = enabled;
-    localStorage.setItem("current", JSON.stringify(current_info));
-  }
-  
-  initial_music();
-}
-
-function initial_muisc_button_img(enabled = get_music_state())
-{
-  const img = document.querySelector('.button-music img');
-  img.src = new URL(enabled ? 'unmute.jpg' : 'mute.jpg', img.src).href;
+  return GamePreferences.effectiveVolume('music') > 0;
 }
 
 function initial_music()
 {
+  const volume = GamePreferences.effectiveVolume('music') / 100;
+  document.querySelectorAll('video[data-music-volume]').forEach(video => {
+    video.volume = volume;
+    video.muted = volume === 0;
+  });
   const audioPlayer = document.getElementById("audioPlayer");
   if (!audioPlayer) return;
 
@@ -88,9 +59,9 @@ function initial_music()
 
   // Read the preference before starting playback, including after navigation.
   const enabled = get_music_state();
-  initial_muisc_button_img(enabled);
+  audioPlayer.volume = volume;
   window.removeEventListener("click", retry_music_after_interaction);
-  if (!enabled)
+  if (!enabled || audioPlayer.dataset.musicSuspended === 'true')
   {
     audioPlayer.pause();
     return;
@@ -124,3 +95,5 @@ if (document.readyState === "loading") {
 } else {
   initial_music();
 }
+
+window.addEventListener('game-settings-change', initial_music);

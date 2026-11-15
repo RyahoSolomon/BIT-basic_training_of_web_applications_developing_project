@@ -1,0 +1,69 @@
+[data-settings-host] {
+    position: fixed;
+    top: 2.5vh;
+    right: 2.5vw;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    height: auto;
+    margin: 0;
+    z-index: 1000;
+}
+[data-settings-open], #game-settings button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    line-height: 1;
+    touch-action: manipulation;
+}
+[data-settings-open] { display: block; width: clamp(38px, 7vh, 78px); }
+[data-settings-open] img, #game-settings button img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    image-rendering: pixelated;
+    -webkit-user-drag: none;
+}
+[data-settings-open]:focus-visible, #game-settings :focus-visible {
+    outline: 3px solid #844b28;
+    outline-offset: 4px;
+}
+#game-settings {
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(90vw, 72vh, 480px);
+    width: min(90vw, 72dvh, 480px);
+    max-width: none;
+    max-height: none;
+    aspect-ratio: 438 / 540;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background: url('../../assets/images/settings_page.png') center / 100% 100% no-repeat;
+    color: #613d27;
+    font-family: KaiTi, STKaiti, '楷体', serif;
+    user-select: none;
+    -webkit-user-select: none;
+}
+#game-settings[open] { display: flex; flex-direction: column; align-items: center; }
+#game-settings::backdrop { background: rgb(0 0 0 / 55%); }
+#game-settings [data-settings-close] { position: absolute; width: 11%; aspect-ratio: 1; right: 5%; top: 4%; }
+#game-settings [data-settings-close] img { height: 100%; object-fit: contain; }
+#game-settings [data-settings-close]:hover img { content: url('../../assets/images/close_hover.png'); }
+#game-settings h2 { margin: 13% 0 0; font: bold clamp(18px, 4vh, 30px) Georgia, serif; letter-spacing: .08em; }
+.settings-volumes { display: grid; gap: 24%; width: 75%; margin-top: 13%; }
+.settings-volume { display: grid; grid-template-columns: 18% minmax(0, 1fr) 2.2em; column-gap: 6%; align-items: center; font-size: clamp(14px, 2.5vh, 20px); }
+#game-settings [data-volume-toggle] { grid-column: 1; grid-row: 1 / 3; }
+.settings-volume label { grid-column: 2 / 4; margin-bottom: .45em; }
+.settings-volume input { grid-column: 2; width: 100%; min-width: 0; margin: 0; accent-color: #865235; cursor: pointer; }
+.settings-volume output { grid-column: 3; text-align: right; font-variant-numeric: tabular-nums; }
+.settings-status { width: 75%; margin: auto 0 0; min-height: 2.5em; font-size: clamp(12px, 2.1vh, 16px); text-align: center; }
+.settings-actions { width: 72%; display: flex; justify-content: space-between; margin: 3% 0 12%; }
+#game-settings .settings-actions button { width: 21%; font-size: clamp(12px, 2.3vh, 18px); }
+#game-settings .settings-actions span { display: block; margin-top: .4em; }

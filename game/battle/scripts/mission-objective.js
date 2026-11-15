@@ -47,10 +47,7 @@ function mission_confirm(ingame)
   {
     start_game();
   }
-  if(current_info.is_inwar_music_on == true)
-  {
-  document.getElementById('audioPlayer').play();
-  }
+  initial_music();
 }
 
 function get_level_title()

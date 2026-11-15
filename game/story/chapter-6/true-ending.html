@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="../../shared/scripts/profile.js"></script>
+    <script src="../../shared/scripts/preferences.js"></script>
+    <script src="../../shared/scripts/progress.js"></script>
+    <script src="../../shared/scripts/settings.js"></script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Ending</title>
     <link rel="stylesheet" href="true-ending.css">
@@ -32,56 +37,11 @@
             cursor: pointer;
         }
     </style> -->
-    <style>
-        .button-group {
-            position: absolute;
-            right: 2vw;
-            top: 2vh;
-            z-index: 4;
-        }
-        .button-group div {
-            position: relative;
-            height: 7vh;
-            width: 7vh;
-        }
-        .button-group div:hover {
-            transform: translateX(2px) translateY(2px);
-            cursor: pointer;
-        }
-        .button-group img {
-            height: 100%;
-            width: 100%;
-        }
-        
-        .button-save {
-            cursor: pointer;
-            top: 8vh;
-        }
-        .button-return {
-            cursor: pointer;
-            top: 2vh;
-        }
-        .button-music {
-            cursor: pointer;
-            top: 5vh;
-        }
-    </style>
-    <script>
-        
-        function ReturnToIndex(){
-            window.location.href = "../../map/index.html";
-        }
-        function save_(){
-            window.location.href = "../../pages/save.html"
-        }
-    </script>
+    <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
 <body>
     <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/014-true-ending.mp3" type="audio/mp3"></audio>
-    <div class="button-group">
-        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../assets/images/return.jpg"></div>
-        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../assets/images/unmute.jpg"></div>
-    </div>
+    <div class="button-group" data-settings-host></div>
     <div class="container">
         <p class="text art-font1" id="text1">终于...盘古的元神被禁锢在五行灭神大阵的光束中,越来越小,逐渐燃烧殆尽...</p>
         <p class="text art-font1" id="text2">一切都结束了...人类拜托了神族的束缚,通过自己的反抗,夺回了属于这个世界的自由</p>

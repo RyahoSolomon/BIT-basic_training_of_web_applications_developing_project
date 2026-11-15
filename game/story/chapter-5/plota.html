@@ -2,6 +2,11 @@
 <html>
 <head>
 <meta charset="utf-8">
+    <script src="../../shared/scripts/profile.js"></script>
+    <script src="../../shared/scripts/preferences.js"></script>
+    <script src="../../shared/scripts/progress.js"></script>
+    <script src="../../shared/scripts/settings.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第五章</title>
 <link rel="stylesheet" type="text/css" href="plota.css">
@@ -11,24 +16,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
-<script>
-    function ReturnToIndex(){
-        window.location.href = "../../map/index.html";
-    }
-    function save_(){
-        window.location.href = "../../pages/save.html"
-    }
-</script>
     <link rel="stylesheet" href="../styles/player.css">
+    <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
 
 <body style="background-image: url('../../assets/images/background/017-holly-moutain.png');">
     <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/011-confrontation.mp3" type="audio/mp3"></audio>
-    <div class="button-group">
-        <div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../assets/images/return.jpg"></div>
-        <div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../assets/images/unmute.jpg"></div>
-        <div class="button-save"><img title = "跳过剧情" src="../../assets/images/skip.png"></div>
-    </div>
+    <div class="button-group" data-settings-host></div>
     <div id="text1" class="centered-text">盘古的元神遭到重创后,身体仍然屹立不倒...</div>
     <div id="story-player"></div>
     <script src="plota.js"></script>

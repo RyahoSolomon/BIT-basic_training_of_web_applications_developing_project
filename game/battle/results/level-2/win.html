@@ -1,6 +1,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <script src="../../../shared/scripts/profile.js"></script>
+    <script src="../../../shared/scripts/preferences.js"></script>
+    <script src="../../../shared/scripts/progress.js"></script>
+    <script src="../../../shared/scripts/settings.js"></script>
+
     <title>胜利</title>
     
     <link rel="stylesheet" type="text/css" href="../../styles/gameover-display.css">
@@ -12,9 +17,11 @@
         window.location.href = "../../../story/chapter-2/plot-after.html";
       }
     </script>
-  </head>
+    <link rel="stylesheet" href="../../../shared/styles/settings.css">
+</head>
 
   <body ondragstart='return false' oncontextmenu='self.event.returnValue=false'>
+    <div class="button-group" data-settings-host></div>
     <div class="container">
       <img src = "../../assets/images/ui/game-over-box.png" id = "gameover_box">
       <a class = "result_inform" style = "cursor: pointer;" onclick = "leave()">游戏胜利!</a>

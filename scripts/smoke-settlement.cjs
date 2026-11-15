@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const { withBrowser } = require('./smoke-browser.cjs');
 
 const battlePage = 'game/battle/index.html';
-const achievementKey = 'settlement-smoke-playerachievement';
+const achievementKey = 'testachievement';
 
 async function smoke({ evaluate, pointerClick, page, open, until }) {
   async function click(selector) {
@@ -18,7 +18,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     await open('game/pages/menu.html');
     await evaluate(`(() => {
       localStorage.clear();
-      localStorage.setItem('username', 'settlement-smoke-player');
+      localStorage.setItem('username', 'test');
       localStorage.setItem(${JSON.stringify(achievementKey)}, JSON.stringify({
         ach1: false, ach2: false, ach3: false, ach4: false,
         ach5: false, ach6: false, ach7: false, ach8: false,
@@ -26,8 +26,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       GameProgress.newGame();
       const current = JSON.parse(localStorage.current);
       current.level = ${level};
-      current.is_plot_music_on = false;
-      current.is_inwar_music_on = false;
+      GamePreferences.setVolume('music', 0);
       localStorage.setItem('current', JSON.stringify(current));
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);

@@ -2,6 +2,11 @@
 <html>
 <head>
 <meta charset="utf-8">
+    <script src="../../shared/scripts/profile.js"></script>
+    <script src="../../shared/scripts/preferences.js"></script>
+    <script src="../../shared/scripts/progress.js"></script>
+    <script src="../../shared/scripts/settings.js"></script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>第二章</title>
 <link rel="stylesheet" type="text/css" href="plot-after.css">
@@ -9,15 +14,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="../../minesweeper/styles/achievement.css">
-<script>
-    function ReturnToIndex(){
-        window.location.href = "../../map/index.html";
-    }
-    function save_(){
-        window.location.href = "../../pages/save.html"
-    }
-</script>
     <link rel="stylesheet" href="../styles/player.css">
+    <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
 
 <body style="background-image: url('../../assets/images/background/009-plain-out-of-forest.png');">
@@ -40,11 +38,7 @@
 				<p id="achievement_confirm_button_text" onclick="Shutoff()">确认</p>
 			</div>
 		</div>
-		<div class="button-group">
-			<div class="button-return" onclick="ReturnToIndex()"><img title = "返回大地图" src="../../assets/images/return.jpg"></div>
-			<div class="button-music"><img onclick = "switch_music_state()" title = "音乐开/关" src="../../assets/images/unmute.jpg"></div>
-			<div class="button-save"><img title = "跳过剧情" src="../../assets/images/skip.png"></div>
-		</div>
+		<div class="button-group" data-settings-host></div>
     <script src="branch-short.js"></script>
     <script src="../../generated/story-player.js"></script>
 		<script src="../../shared/scripts/audio.js"></script>
