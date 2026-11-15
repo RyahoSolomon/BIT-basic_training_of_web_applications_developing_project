@@ -63,6 +63,11 @@ body .text {
     left: 5%;
 }
 
+#story-player .text {
+    /* Follow the opening narration's inset, leaving room for three-line dialogue. */
+    margin-top: 0.85em;
+}
+
 #story-player {
     position: fixed;
     inset: 0;
