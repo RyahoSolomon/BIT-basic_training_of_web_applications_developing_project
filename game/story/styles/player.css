@@ -90,3 +90,29 @@ body > .centered-text2 {
     background-position: center;
     background-repeat: no-repeat;
 }
+
+[data-story-skip] {
+    display: block;
+    width: clamp(38px, 7vh, 78px);
+    aspect-ratio: 1;
+    margin-top: 1.5vh;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+
+[data-story-skip] img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1;
+    image-rendering: pixelated;
+    -webkit-user-drag: none;
+}
+
+[data-story-skip]:focus-visible {
+    outline: 3px solid #844b28;
+    outline-offset: 4px;
+}

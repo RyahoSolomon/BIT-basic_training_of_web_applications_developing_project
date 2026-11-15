@@ -35,7 +35,7 @@ const backgrounds = [
 ];
 
 async function nextBackground(event) {
-    if (!isReady || event.detail > 1) return;
+    if (leaving || !isReady || event.detail > 1) return;
     if (currentBackground < backgrounds.length - 1) {
         isReady = false;
         await loadBackground(currentBackground + 1);
@@ -53,6 +53,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     backgroundTransition = new window.StoryBackgroundTransition();
     window.addEventListener('pagehide', () => { leaving = true; });
     container.addEventListener('click', nextBackground);
+    const skip = document.createElement('button');
+    skip.type = 'button';
+    skip.setAttribute('data-story-skip', '');
+    skip.title = '跳过剧情';
+    skip.setAttribute('aria-label', '跳过剧情');
+    skip.innerHTML = '<img src="../../assets/images/skip_dialogue.png" alt="" draggable="false">';
+    skip.addEventListener('click', event => {
+        event.stopPropagation();
+        if (leaving) return;
+        leaving = true;
+        isReady = false;
+        backgroundTransition.cancel();
+        window.location.href = '../../map/index.html';
+    });
+    document.querySelector('[data-settings-host]').append(skip);
 
     const boxReady = image.complete && image.naturalWidth ? Promise.resolve()
         : new Promise(resolve => image.addEventListener('load', resolve, { once: true }));

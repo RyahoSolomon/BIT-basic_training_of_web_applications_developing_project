@@ -32,6 +32,7 @@ npm run test:movement
 npm run test:settlement
 npm run test:turn
 npm run test:settings
+npm run test:story-skip
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
 node scripts/smoke-story-presentation.cjs
@@ -61,6 +62,8 @@ node scripts/smoke-audio.cjs
 第 0–6 章的 24 个对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。
 
 场景 JS 定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 定义读完后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+
+剧情页的设置按钮下方提供 `skip_dialogue.png` 跳过按钮，执行场景的 `skip` 目标；未配置时使用 `next`。开场背景介绍跳过后返回地图。跳过会取消正在进行的背景转场，不触发被略过的选项效果。
 
 例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效，无需重新构建播放器。
 
