@@ -5,7 +5,10 @@ import '../../game/story/scripts/background-transition.js';
 
 function navigate(target) {
   if (typeof target === 'function') target();
-  else if (target) window.location.href = target;
+  else if (target) {
+    window.preserve_story_music?.(target);
+    window.location.href = target;
+  }
 }
 
 function StoryPlayer({ scene }) {

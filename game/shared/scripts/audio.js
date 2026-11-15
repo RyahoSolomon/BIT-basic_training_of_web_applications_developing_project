@@ -1,5 +1,45 @@
 // Shared by the landing page, menu and story pages at any directory depth.
 let menuMusicEnabled = true;
+const storyMusicHandoffKey = 'story-music-handoff';
+let storyMusicRestored = false;
+
+// Carry playback only to the next scene requested by the story player. Keeping
+// this separate from saved progress avoids resuming music on an unrelated visit.
+function preserve_story_music(target)
+{
+  try {
+    sessionStorage.removeItem(storyMusicHandoffKey);
+    const audioPlayer = document.getElementById("audioPlayer");
+    if (!window.storyScene || !audioPlayer || !Number.isFinite(audioPlayer.currentTime)
+        || audioPlayer.currentTime <= 0) return;
+    sessionStorage.setItem(storyMusicHandoffKey, JSON.stringify({
+      target: new URL(target, window.location.href).href,
+      source: audioPlayer.currentSrc || audioPlayer.src,
+      time: audioPlayer.currentTime,
+    }));
+  } catch {
+    // Unavailable session storage must not prevent the story from advancing.
+  }
+}
+
+function restore_story_music(audioPlayer)
+{
+  if (storyMusicRestored) return;
+  storyMusicRestored = true;
+  try {
+    const saved = sessionStorage.getItem(storyMusicHandoffKey);
+    sessionStorage.removeItem(storyMusicHandoffKey);
+    const playback = JSON.parse(saved);
+    if (!window.storyScene || !playback || playback.target !== window.location.href
+        || playback.source !== audioPlayer.src || !Number.isFinite(playback.time)
+        || playback.time <= 0) return;
+    // Setting currentTime before metadata is ready also sets the initial playback
+    // position. Do this before play(), so the beginning never briefly sounds.
+    audioPlayer.currentTime = playback.time;
+  } catch {
+    // Missing/corrupt handoffs fall back to normal playback.
+  }
+}
 
 function get_music_state()
 {
@@ -43,6 +83,8 @@ function initial_music()
 {
   const audioPlayer = document.getElementById("audioPlayer");
   if (!audioPlayer) return;
+
+  restore_story_music(audioPlayer);
 
   // Read the preference before starting playback, including after navigation.
   const enabled = get_music_state();

@@ -11,10 +11,14 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   // Do not replace play(), media data, or the browser's autoplay policy.
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
     window.__musicPlaybackEvents = [];
+    window.__musicPlaybackTimes = [];
     window.__musicDocumentId = Math.random();
     for (const type of ['play', 'playing']) {
       document.addEventListener(type, event => {
-        if (event.target.id === 'audioPlayer') window.__musicPlaybackEvents.push(type);
+        if (event.target.id === 'audioPlayer') {
+          window.__musicPlaybackEvents.push(type);
+          window.__musicPlaybackTimes.push({ type, time: event.target.currentTime });
+        }
       }, true);
     }
   ` });
@@ -26,7 +30,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     })()`));
   }
 
-  async function silent(label, { neverStarted = true } = {}) {
+  async function silent(label, { neverStarted = true, expectedTime = 0 } = {}) {
     await until('music loaded: ' + label, () => evaluate('document.getElementById("audioPlayer").readyState >= 2'));
     await delay(500);
     const state = await evaluate(`(() => {
@@ -46,7 +50,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     assert.equal(state.battleEnabled, true, label + ': story mute changed battle preference');
     if (neverStarted) {
       assert.deepEqual(state.events, [], label + ': music briefly started before being paused');
-      assert.equal(state.time, 0, label + ': music advanced while disabled');
+      assert.ok(Math.abs(state.time - expectedTime) < 0.1, label + ': paused music position changed');
     }
   }
 
@@ -145,6 +149,150 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   assert.equal(await evaluate('document.getElementById("audioPlayer").currentTime'), pausedTime,
     'A late playback attempt advanced the muted player');
   console.log('PASS  rapid toggles and later page clicks do not restart disabled music');
+
+  async function readToEnd() {
+    const lines = await evaluate('window.storyScene.lines');
+    for (const line of lines) {
+      const text = line.text.replaceAll('{player}', 'audio-smoke-player');
+      await until('audio branch dialogue: ' + text.slice(0, 30), () => evaluate(`
+        document.querySelector('#story-player .text')?.textContent === ${JSON.stringify(text)}
+        && getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'
+        && document.body.dataset.storyTransitioning !== 'true'
+      `));
+      await click('#story-player .image-container');
+    }
+  }
+
+  async function choices() {
+    await until('audio branch choices', () => evaluate(
+      'document.querySelectorAll("#story-player .button-container .button").length === 2'));
+  }
+
+  async function interactWithBackground() {
+    // Clicking the body's center can hit a dialogue box once its intro settles.
+    // Use the empty corner so granting activation never advances the story.
+    assert.ok(await evaluate(`!document.elementFromPoint(1, 1)?.closest(
+      '#story-player, .button-group, #achievement_popup, button, a')`));
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, x: 1, y: 1 });
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, x: 1, y: 1 });
+  }
+
+  async function seekPlaying(label) {
+    await interactWithBackground();
+    await playing(label);
+    await until('seekable music: ' + label, () => evaluate(
+      'document.getElementById("audioPlayer").readyState >= 2'));
+    await evaluate(`(() => {
+      const audio = document.getElementById('audioPlayer');
+      window.__musicSeeked = false;
+      audio.addEventListener('seeked', () => { window.__musicSeeked = true; }, { once: true });
+      audio.currentTime = 20;
+    })()`);
+    await until('music sought: ' + label, () => evaluate(
+      'window.__musicSeeked && document.getElementById("audioPlayer").currentTime >= 20'));
+  }
+
+  async function continued(label, minimumTime = 20) {
+    // A file:// navigation may need interaction before the browser permits play.
+    await interactWithBackground();
+    await playing(label);
+    await until('resumed playback event: ' + label, () => evaluate(
+      'window.__musicPlaybackTimes.some(event => event.type === "playing")'));
+    const state = await evaluate(`({
+      time: document.getElementById('audioPlayer').currentTime,
+      events: window.__musicPlaybackTimes,
+    })`);
+    assert.ok(state.time >= minimumTime - 0.1, label + ': music restarted from the beginning');
+    assert.ok(state.events.some(event => event.type === 'playing'), label + ': no actual playback observed');
+    assert.ok(state.events.every(event => event.time >= minimumTime - 0.1),
+      label + ': music briefly played from the beginning before seeking: ' + JSON.stringify(state.events));
+  }
+
+  async function fresh(label) {
+    await interactWithBackground();
+    await playing(label);
+    const state = await evaluate(`({
+      time: document.getElementById('audioPlayer').currentTime,
+      events: window.__musicPlaybackTimes,
+    })`);
+    assert.ok(state.time < 10, label + ': reused a previous scene position');
+    assert.ok(state.events.length > 0 && state.events[0].time < 1,
+      label + ': fresh music did not begin at the start');
+  }
+
+  const prologue = 'game/story/chapter-0/plot.html';
+  const aftermath = 'game/story/chapter-2/plot-after.html';
+  await click('.button-music img');
+  for (const [source, destinations, track] of [
+    [prologue, ['plot-b.html', 'plot-a.html'], '002-huguo-palace.mp3'],
+    [aftermath, ['branch-short.html', 'branch-long.html'], '005-kill-nut.mp3'],
+  ]) {
+    for (const [index, destination] of destinations.entries()) {
+      await open(source);
+      await readToEnd();
+      await choices();
+      await seekPlaying(source);
+      await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
+      const branch = source.replace(/[^/]+$/, destination);
+      await page(branch);
+      assert.ok(await evaluate('document.getElementById("audioPlayer").src.endsWith(' + JSON.stringify(track) + ')'));
+      await continued(branch);
+      if (destination === 'branch-short.html') {
+        await until('branch achievement popup', () => evaluate(
+          'getComputedStyle(document.getElementById("achievement_popup")).display !== "none"'));
+        await click('#achievement_popup [onclick="Shutoff()"]');
+      }
+      if (destination === 'branch-long.html') {
+        await readToEnd();
+        await page('game/story/chapter-2/branch-short.html');
+        await continued('chapter 2 long branch rejoins short branch');
+      }
+    }
+  }
+  console.log('PASS  both prologue and chapter 2 choices, including long-branch rejoin, retain music position from first playback');
+
+  // A real track change must not inherit the branch's offset, and entering the
+  // same scene later must not reuse an already consumed continuation.
+  await click('.button-save');
+  await page(mapPage);
+  assert.ok(await evaluate('!document.getElementById("audioPlayer").src.endsWith("005-kill-nut.mp3")'));
+  await fresh('map after chapter 2 branch');
+  await open('game/story/chapter-2/branch-long.html');
+  await fresh('chapter 2 branch entered independently');
+
+  await open('game/story/chapter-6/plot1.html');
+  await seekPlaying('chapter 6 before its music change');
+  await readToEnd();
+  await page('game/story/chapter-6/plot2.html');
+  assert.ok(await evaluate('document.getElementById("audioPlayer").src.endsWith("013-meeting-before-war.mp3")'));
+  await fresh('chapter 6 with a different track');
+
+  await open(prologue);
+  await readToEnd();
+  await choices();
+  await seekPlaying('prologue before muted choice');
+  await click('.button-music img');
+  const mutedTime = await evaluate('document.getElementById("audioPlayer").currentTime');
+  await click('#story-player .button-container .button:nth-child(1)');
+  await page('game/story/chapter-0/plot-b.html');
+  await silent('muted prologue branch', { expectedTime: mutedTime });
+  await click('body');
+  await silent('muted prologue branch after interaction', { expectedTime: mutedTime });
+  await click('.button-music img');
+  await continued('prologue branch enabled after muted navigation', mutedTime);
+  console.log('PASS  a muted branch stays silent and retains its position when music is enabled');
+
+  const branchDocument = await evaluate('window.__musicDocumentId');
+  await cdp.send('Page.reload');
+  await until('branch document after reload', async () => {
+    try { return await evaluate('window.__musicDocumentId !== ' + branchDocument + ' && document.readyState === "complete"'); }
+    catch (error) {
+      if (/context was destroyed|Cannot find context/.test(error.message)) return false;
+      throw error;
+    }
+  });
+  await fresh('reloaded prologue branch');
+  console.log('PASS  different tracks, independent scene visits and reloads do not reuse branch continuation');
 }
 
 withBrowser(smoke, { userGesture: false }).then(() => console.log('PASS  saved music preference')).catch(error => {
