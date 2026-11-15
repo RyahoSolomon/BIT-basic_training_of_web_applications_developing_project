@@ -19,8 +19,14 @@ function StoryPlayer({ scene }) {
   const leaving = useRef(false);
   const backgrounds = useRef(null);
   const advancing = useRef(false);
-  const player = window.GameProfile.getName();
+  const [player, setPlayer] = useState(() => window.GameProfile.getName());
   const text = value => (value || '').replaceAll('{player}', () => player);
+
+  useEffect(() => {
+    const refreshName = () => setPlayer(window.GameProfile.getName());
+    window.addEventListener('game:player-name-changed', refreshName);
+    return () => window.removeEventListener('game:player-name-changed', refreshName);
+  }, []);
 
   useEffect(() => {
     const controller = new window.StoryBackgroundTransition();

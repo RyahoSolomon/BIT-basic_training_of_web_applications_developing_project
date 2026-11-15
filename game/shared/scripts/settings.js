@@ -2,6 +2,24 @@
     'use strict';
     const base = new URL('../../', document.currentScript.src);
     const asset = name => new URL('assets/images/' + name, base).href;
+    let nameEntryLoading;
+    function loadNameEntry() {
+        if (window.GameNameEntry) return Promise.resolve(window.GameNameEntry);
+        if (!nameEntryLoading) {
+            nameEntryLoading = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = new URL('shared/scripts/player-name-entry.js', base).href;
+                script.onload = () => resolve(window.GameNameEntry);
+                script.onerror = () => {
+                    script.remove();
+                    nameEntryLoading = null;
+                    reject(new Error('名字输入框加载失败，请重试。'));
+                };
+                document.head.append(script);
+            });
+        }
+        return nameEntryLoading;
+    }
 
     // Some touch browsers do not maintain :active. Track the artwork state
     // without capturing the pointer or changing native click/scroll behavior.
@@ -46,6 +64,10 @@
         dialog.innerHTML = `
             <button type="button" data-settings-close title="关闭设置" aria-label="关闭设置"><img src="${asset('close.png')}" alt="" draggable="false"></button>
             <h2 id="settings-title">SETTINGS</h2>
+            <div class="settings-name">
+                <span>名字：<span data-player-name></span></span>
+                <button type="button" data-name-edit title="修改名字" aria-label="修改主角名字"><img src="${asset('edit.png')}" alt="" draggable="false"></button>
+            </div>
             <div class="settings-volumes">
                 ${[['sound', '音效'], ['music', '音乐']].map(([channel, label]) => `
                     <div class="settings-volume" data-channel="${channel}">
@@ -66,6 +88,7 @@
         const status = dialog.querySelector('.settings-status');
         const report = error => { status.textContent = error.message || '操作失败，请重试。'; };
         function render() {
+            dialog.querySelector('[data-player-name]').textContent = GameProfile.getName();
             for (const channel of ['sound', 'music']) {
                 const value = GamePreferences.effectiveVolume(channel);
                 const row = dialog.querySelector(`[data-channel="${channel}"]`);
@@ -92,6 +115,21 @@
         dialog.addEventListener('click', event => event.stopPropagation());
         dialog.querySelector('[data-settings-close]').addEventListener('click', () => dialog.close());
         window.addEventListener('game-settings-change', render);
+        window.addEventListener('game:player-name-changed', render);
+        dialog.querySelector('[data-name-edit]').addEventListener('click', async event => {
+            const button = event.currentTarget;
+            button.disabled = true;
+            try {
+                const nameEntry = await loadNameEntry();
+                // Loading may finish after the player has closed settings.
+                if (dialog.open) {
+                    status.textContent = '';
+                    button.disabled = false;
+                    nameEntry.open({ mode: 'rename' });
+                }
+            } catch (error) { report(error); }
+            finally { button.disabled = false; }
+        });
         for (const channel of ['sound', 'music']) {
             const row = dialog.querySelector(`[data-channel="${channel}"]`);
             row.querySelector('[data-volume-toggle]').addEventListener('click', () => {

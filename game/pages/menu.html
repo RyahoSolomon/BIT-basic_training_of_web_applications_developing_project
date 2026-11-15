@@ -10,7 +10,6 @@
     <script src="../shared/scripts/settings.js"></script>
     <link rel="stylesheet" href="../shared/styles/menu.css">
     <link rel="stylesheet" href="../shared/styles/settings.css">
-    <link rel="stylesheet" href="../shared/styles/player-name-entry.css">
     <script src="../shared/scripts/player-name-entry.js" defer></script>
     <script>
         function construct() {
@@ -49,24 +48,5 @@
         </div>
     </nav>
     <div class="button-group" data-settings-host></div>
-    <dialog id="player-name-dialog" aria-label="输入主角名字">
-        <form id="player-name-form" novalidate>
-            <div class="player-name-frame">
-                <div class="player-name-row">
-                    <input id="player-name" name="playerName" type="text" maxlength="64" required
-                        autocomplete="off" spellcheck="false" autocapitalize="off"
-                        placeholder="请输入主角名字..." aria-label="主角名字" aria-describedby="player-name-error" autofocus>
-                    <output id="player-name-count" for="player-name" aria-live="polite">0/14</output>
-                    <button type="button" data-name-close title="取消" aria-label="取消输入名字">
-                        <img src="../assets/images/close.png" alt="" draggable="false">
-                    </button>
-                    <button type="submit" data-name-confirm title="确认" aria-label="确认名字并开始游戏" disabled>
-                        <img src="../assets/images/confirm.png" alt="" draggable="false">
-                    </button>
-                </div>
-            </div>
-            <p id="player-name-error" role="status" aria-live="polite"></p>
-        </form>
-    </dialog>
 </body>
 </html>

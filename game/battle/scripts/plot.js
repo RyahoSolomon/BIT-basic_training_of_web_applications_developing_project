@@ -87,14 +87,20 @@ function initialPlotCLickListener()
   imageContainer.addEventListener('click', showNextText);
 }
 
+function renderPlotText(index) {
+  const teller = document.getElementById('name_content');
+  teller.dataset.plotIndex = index;
+  teller.textContent = getPlotTeller(index);
+  document.getElementById('plot_text_content').textContent = getPlotContent(index);
+}
+
 function showNextText() {
   //console.log("输出名字儿!" + currentTextIndex);
   if(level == 2)
   {
     if(currentTextIndex <= 8)
     {
-      document.getElementById("name_content").textContent = getPlotTeller(currentTextIndex);
-      document.getElementById("plot_text_content").textContent = getPlotContent(currentTextIndex);
+      renderPlotText(currentTextIndex);
     }
     else
     {
@@ -106,8 +112,7 @@ function showNextText() {
   {
     if(currentTextIndex <= 13)
     {
-      document.getElementById("name_content").textContent = getPlotTeller(currentTextIndex);
-      document.getElementById("plot_text_content").textContent = getPlotContent(currentTextIndex);
+      renderPlotText(currentTextIndex);
     }
     else
     {

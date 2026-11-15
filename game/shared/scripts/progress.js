@@ -2,7 +2,17 @@
 (function (root, factory) {
     const api = factory(typeof module === 'object' && module.exports ? require('./profile.js') : root.GameProfile);
     if (typeof module === 'object' && module.exports) module.exports = api;
-    else root.GameProgress = api.createStore(root.localStorage);
+    else {
+        const store = api.createStore(root.localStorage);
+        root.GameProgress = {
+            ...store,
+            renamePlayer(raw) {
+                const name = store.renamePlayer(raw);
+                root.dispatchEvent(new root.CustomEvent('game:player-name-changed', { detail: { name } }));
+                return name;
+            },
+        };
+    }
 })(typeof window === 'undefined' ? globalThis : window, function (profile) {
     'use strict';
 
@@ -209,6 +219,21 @@
             return save;
         }
 
+        function renamePlayer(raw) {
+            const name = playerName(raw, 'INVALID_NAME');
+            const saved = storage.getItem(SAVE_KEY);
+            const entries = [['playerName', name]];
+            // Rename both copies without advancing the saved checkpoint or
+            // replacing the active battle/story state with that checkpoint.
+            if (saved !== null) {
+                const save = decodeSave(saved);
+                save.playerName = name;
+                entries.push([SAVE_KEY, JSON.stringify(save)]);
+            }
+            writeAtomically(entries);
+            return name;
+        }
+
         function guarded(action) {
             return (...args) => {
                 try { return action(...args); }
@@ -223,6 +248,7 @@
             createNewProgress,
             newGame: guarded(name => apply(snapshot(createNewProgress(), 0,
                 playerName(name, 'INVALID_NAME')), { settings: true, persist: true })),
+            renamePlayer: guarded(renamePlayer),
             capture: guarded(capture),
             saveAuto: guarded(saveAuto),
             hasSave: guarded(() => {

@@ -1,5 +1,8 @@
 const assert = require('node:assert/strict');
 const { test } = require('node:test');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
 const { createStore, createNewProgress, VERSION, FORMAT, SAVE_KEY, SETTINGS_KEY } = require('../game/shared/scripts/progress.js');
 const advanced = require('./fixtures/progress.json');
 const timestamp = advanced.savedAt;
@@ -121,6 +124,85 @@ test('malicious, missing or noncanonical names are rejected before importing any
     'A"', "A'", ' A', 'A ', '一二三四五六七八', '123456789012345']) {
     expectUnchanged(storage, () => store.importSave(encoded({...advanced, playerName})), 'INVALID_SAVE');
   }
+});
+
+test('renaming changes both names while preserving the distinct live state and saved checkpoint', () => {
+  const { storage, store } = setup();
+  store.importSave(encoded({...advanced, playerName: '旧名字'}));
+  storage.setItem('current', encoded({...advanced.progress.current, user_level: {level: 6, exp: 77}}));
+  storage.setItem('testachievement', encoded({...advanced.achievements, ach3: 1}));
+  storage.setItem('testflag', '0');
+  storage.setItem(SETTINGS_KEY, encoded({music: {volume: 65, muted: false}, sound: {volume: 12, muted: true}}));
+  const before = storage.dump();
+  assert.equal(store.renamePlayer(' 新旅人_A-1 '), '新旅人_A-1');
+  const expectedSave = {...advanced, playerName: '新旅人_A-1'};
+  assert.deepEqual(storage.dump(), {...before, playerName: '新旅人_A-1', [SAVE_KEY]: encoded(expectedSave)});
+  assert.equal(store.capture().playerName, '新旅人_A-1');
+  assert.equal(store.restoreAuto().playerName, '新旅人_A-1');
+  assert.equal(JSON.parse(store.exportSave()).playerName, '新旅人_A-1');
+  assert.equal(storage.getItem('username'), 'test');
+});
+
+test('renaming without a save only changes the name and never starts or saves a run', () => {
+  for (const existingRun of [false, true]) {
+    const { storage, store } = setup();
+    if (existingRun) {
+      store.newGame('旧名字');
+      storage.removeItem(SAVE_KEY);
+    }
+    for (const name of ['一二三四五六七', '12345678901234', '𠀀'.repeat(7), '〇_A-1']) {
+      const before = storage.dump();
+      assert.equal(store.renamePlayer(name), name);
+      assert.deepEqual(storage.dump(), {...before, playerName: name});
+      assert.equal(store.hasSave(), false);
+    }
+  }
+});
+
+test('invalid names, damaged saved checkpoints and failed rename writes preserve every stored value', () => {
+  for (const withSave of [false, true]) {
+    const { storage, store } = setup();
+    if (withSave) store.importSave(encoded(advanced));
+    for (const name of [undefined, null, '', ' ', '一二三四五六七八', '123456789012345',
+      ' 1234567890123 ', '<img>', 'A\n', 'A\u200d', 'A\u202e', 'A"']) {
+      expectUnchanged(storage, () => store.renamePlayer(name), 'INVALID_NAME');
+    }
+    for (const key of withSave ? ['playerName', SAVE_KEY] : ['playerName']) {
+      storage.failNextWriteTo(key, new DOMException('Storage full', 'QuotaExceededError'));
+      expectUnchanged(storage, () => store.renamePlayer('新名字'), 'STORAGE_ERROR');
+    }
+    storage.setItem(SAVE_KEY, '{broken');
+    expectUnchanged(storage, () => store.renamePlayer('新名字'), 'INVALID_SAVE');
+  }
+  const { storage, store } = setup({[SAVE_KEY]: encoded(advanced)});
+  storage.failNextWriteTo(SAVE_KEY);
+  expectUnchanged(storage, () => store.renamePlayer('新名字'), 'STORAGE_ERROR');
+  assert.equal(storage.getItem('playerName'), null, 'Rollback removes a newly created runtime name');
+});
+
+test('browser rename broadcasts the committed name once and never notifies on failure', () => {
+  const { storage } = setup();
+  const notifications = [];
+  const browser = {
+    localStorage: storage,
+    GameProfile: require('../game/shared/scripts/profile.js'),
+    CustomEvent: class {
+      constructor(type, options) { this.type = type; this.detail = options.detail; }
+    },
+    dispatchEvent(event) {
+      notifications.push({type: event.type, name: event.detail.name,
+        runtimeName: storage.getItem('playerName'), savedName: JSON.parse(storage.getItem(SAVE_KEY)).playerName});
+    },
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../game/shared/scripts/progress.js'), 'utf8'), {window: browser});
+  browser.GameProgress.importSave(encoded(advanced));
+  assert.equal(browser.GameProgress.renamePlayer(' 新名字 '), '新名字');
+  assert.deepEqual(notifications, [{type: 'game:player-name-changed', name: '新名字',
+    runtimeName: '新名字', savedName: '新名字'}]);
+  expectUnchanged(storage, () => browser.GameProgress.renamePlayer('<script>'), 'INVALID_NAME');
+  storage.failNextWriteTo(SAVE_KEY);
+  expectUnchanged(storage, () => browser.GameProgress.renamePlayer('另一个名字'), 'STORAGE_ERROR');
+  assert.equal(notifications.length, 1);
 });
 
 test('default progress objects are independent and contain all battle/map fields', () => {

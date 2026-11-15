@@ -20,7 +20,7 @@
 
 /* Touch input gets press feedback without a persistent emulated hover. */
 @media (hover: hover) and (pointer: fine) {
-    :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:not([data-settings-close], [data-name-close], [data-name-confirm]):hover,
+    :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:not([data-settings-close], [data-name-close], [data-name-confirm], [data-name-edit]):hover,
     .index-button:hover {
         --button-hover-filter: brightness(1.12)
             drop-shadow(1px 0 0 #e4bd79) drop-shadow(-1px 0 0 #e4bd79)
@@ -33,6 +33,10 @@
 
     [data-name-confirm]:enabled:hover > img {
         content: url('../../assets/images/confirm_hover.png');
+    }
+
+    [data-name-edit]:enabled:hover > img {
+        content: url('../../assets/images/edit_hover.png');
     }
 }
 

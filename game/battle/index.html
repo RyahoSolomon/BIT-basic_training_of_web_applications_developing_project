@@ -139,5 +139,19 @@
       //loadPlots()
       load_mission_icons(false);
       //achievement_popup(4);
+      window.addEventListener('game:player-name-changed', () => {
+        displayName = GameProfile.getName();
+        for (const unit of units) {
+          if (unit.name === 'user') unit.name_cn = displayName;
+        }
+        if (map) units_display_update();
+        // Refresh only the visible labels, preserving battle and dialogue state.
+        const conditions = [...get_win_condition(), ...get_lose_condition()];
+        document.querySelectorAll('#mission_icons [data-mission-condition]').forEach((label, index) => {
+          label.textContent = conditions[index];
+        });
+        const teller = document.getElementById('name_content');
+        if (teller?.hasAttribute('data-plot-index')) renderPlotText(Number(teller.dataset.plotIndex));
+      });
   </script>
 </html>

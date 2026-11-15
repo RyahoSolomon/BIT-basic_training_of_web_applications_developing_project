@@ -1,6 +1,11 @@
 #player-name-dialog {
+    box-sizing: border-box;
+    position: fixed;
+    inset: 0;
+    margin: auto;
     width: min(90vw, 1040px);
     max-width: none;
+    max-height: none;
     padding: 0;
     border: 0;
     overflow: visible;
@@ -8,6 +13,7 @@
     color: #382415;
     font-family: KaiTi, STKaiti, '楷体', serif;
 }
+#player-name-form { margin: 0; }
 #player-name-dialog::backdrop { background: rgb(0 0 0 / 55%); }
 .player-name-frame {
     position: relative;
