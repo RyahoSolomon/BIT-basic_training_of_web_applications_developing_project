@@ -116,8 +116,3 @@ body > .centered-text2 {
     image-rendering: pixelated;
     -webkit-user-drag: none;
 }
-
-[data-story-skip]:focus-visible {
-    outline: 3px solid #844b28;
-    outline-offset: 4px;
-}

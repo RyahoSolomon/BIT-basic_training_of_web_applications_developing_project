@@ -1,3 +1,5 @@
+@import url("button-feedback.css");
+
 [data-settings-host] {
     position: fixed;
     top: 2.5vh;
@@ -28,7 +30,7 @@
     image-rendering: pixelated;
     -webkit-user-drag: none;
 }
-[data-settings-open]:focus-visible, #game-settings :focus-visible {
+#game-settings input:focus-visible {
     outline: 3px solid #844b28;
     outline-offset: 4px;
 }
@@ -55,7 +57,6 @@
 #game-settings::backdrop { background: rgb(0 0 0 / 55%); }
 #game-settings [data-settings-close] { position: absolute; width: 11%; aspect-ratio: 1; right: 9%; top: 4%; }
 #game-settings [data-settings-close] img { height: 100%; object-fit: contain; }
-#game-settings [data-settings-close]:hover img { content: url('../../assets/images/close_hover.png'); }
 #game-settings h2 { margin: 13% 0 0; font: bold clamp(18px, 4vh, 30px) Georgia, serif; letter-spacing: .08em; }
 .settings-volumes { display: grid; gap: 24%; width: 75%; margin-top: 13%; }
 .settings-volume { display: grid; grid-template-columns: 18% minmax(0, 1fr) 2.2em; column-gap: 6%; align-items: center; font-size: clamp(14px, 2.5vh, 20px); }

@@ -1,0 +1,50 @@
+/* Only the artwork moves: the button's layout and pointer target stay fixed. */
+:is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button) > img,
+.index-button > img {
+    pointer-events: none;
+    filter: var(--button-pressed-filter, var(--button-hover-filter, none));
+    transform: var(--button-pressed-transform, none);
+}
+
+:is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):focus-visible,
+.index-button a:focus-visible {
+    outline: 2px solid #f0cc84;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px #654126;
+}
+
+:is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* Touch input gets press feedback without a persistent emulated hover. */
+@media (hover: hover) and (pointer: fine) {
+    :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:not([data-settings-close], [data-name-close], [data-name-confirm]):hover,
+    .index-button:hover {
+        --button-hover-filter: brightness(1.12)
+            drop-shadow(1px 0 0 #e4bd79) drop-shadow(-1px 0 0 #e4bd79)
+            drop-shadow(0 1px 0 #e4bd79) drop-shadow(0 -1px 0 #e4bd79);
+    }
+
+    :is([data-settings-close], [data-name-close]):enabled:hover > img {
+        content: url('../../assets/images/close_hover.png');
+    }
+
+    [data-name-confirm]:enabled:hover > img {
+        content: url('../../assets/images/confirm_hover.png');
+    }
+}
+
+:is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:is(:active, [data-pointer-pressed]),
+.index-button:is(:active, [data-pointer-pressed]) {
+    --button-pressed-filter: brightness(.88);
+    --button-pressed-transform: translateY(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:is(:active, [data-pointer-pressed]),
+    .index-button:is(:active, [data-pointer-pressed]) {
+        --button-pressed-transform: none;
+    }
+}

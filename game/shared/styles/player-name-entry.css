@@ -52,10 +52,6 @@
     touch-action: manipulation;
 }
 #player-name-dialog button img { display: block; width: 100%; height: 100%; image-rendering: pixelated; -webkit-user-drag: none; }
-#player-name-dialog button:focus-visible { outline: 2px solid #63391f; outline-offset: 3px; }
-#player-name-dialog button:disabled { opacity: .4; cursor: not-allowed; }
-#player-name-dialog [data-name-close]:hover img { content: url('../../assets/images/close_hover.png'); }
-#player-name-dialog [data-name-confirm]:enabled:hover img { content: url('../../assets/images/confirm_hover.png'); }
 #player-name-error {
     position: absolute;
     top: 100%;

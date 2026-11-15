@@ -3,6 +3,39 @@
     const base = new URL('../../', document.currentScript.src);
     const asset = name => new URL('assets/images/' + name, base).href;
 
+    // Some touch browsers do not maintain :active. Track the artwork state
+    // without capturing the pointer or changing native click/scroll behavior.
+    const buttonSelector = '[data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button, .index-button';
+    let pointerPress = null;
+    function clearPointerPress() {
+        pointerPress?.button.removeAttribute('data-pointer-pressed');
+        pointerPress = null;
+    }
+    window.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'mouse' || !event.isPrimary || event.button !== 0) return;
+        const button = event.target instanceof Element ? event.target.closest(buttonSelector) : null;
+        if (!button || button.matches(':disabled')) return;
+        clearPointerPress();
+        pointerPress = { button, id: event.pointerId };
+        button.setAttribute('data-pointer-pressed', '');
+    }, { capture: true, passive: true });
+    window.addEventListener('pointermove', event => {
+        if (!pointerPress || pointerPress.id !== event.pointerId) return;
+        const button = pointerPress.button;
+        const box = button.getBoundingClientRect();
+        button.toggleAttribute('data-pointer-pressed', button.isConnected && !button.matches(':disabled') &&
+            event.clientX >= box.left && event.clientX <= box.right &&
+            event.clientY >= box.top && event.clientY <= box.bottom);
+    }, { capture: true, passive: true });
+    for (const type of ['pointerup', 'pointercancel']) {
+        window.addEventListener(type, event => {
+            if (pointerPress?.id === event.pointerId) clearPointerPress();
+        }, { capture: true, passive: true });
+    }
+    window.addEventListener('blur', clearPointerPress);
+    window.addEventListener('pagehide', clearPointerPress);
+    document.addEventListener('close', clearPointerPress, true);
+
     function mount() {
         const host = document.querySelector('[data-settings-host]');
         if (!host) return;

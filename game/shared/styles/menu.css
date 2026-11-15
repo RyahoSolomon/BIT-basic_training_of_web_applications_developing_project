@@ -46,10 +46,6 @@ body {
     min-height: 54px;
 }
 
-.index-button:hover {
-    transform: translate(2px, 2px);
-}
-
 .index-button > img {
     position: absolute;
     inset: 0;
