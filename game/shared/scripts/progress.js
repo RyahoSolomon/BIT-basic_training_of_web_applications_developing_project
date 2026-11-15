@@ -1,16 +1,16 @@
 // One local save, plus adapters for the active state used by story/battle pages.
 (function (root, factory) {
-    const api = factory();
+    const api = factory(typeof module === 'object' && module.exports ? require('./profile.js') : root.GameProfile);
     if (typeof module === 'object' && module.exports) module.exports = api;
     else root.GameProgress = api.createStore(root.localStorage);
-})(typeof window === 'undefined' ? globalThis : window, function () {
+})(typeof window === 'undefined' ? globalThis : window, function (profile) {
     'use strict';
 
     const FORMAT = 'the-origin-of-god';
     const VERSION = 1;
     const SAVE_KEY = 'game.save';
     const SETTINGS_KEY = 'game.settings';
-    const PLAYER_NAME = 'test';
+    const STORAGE_ID = 'test';
     const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
     const isBoolean = value => typeof value === 'boolean';
     const isInteger = value => Number.isSafeInteger(value) && value >= 0;
@@ -77,12 +77,21 @@
         return ['0', '1', '114'].includes(value) ? Number(value) : value;
     }
 
+    function playerName(raw, code, canonical = false) {
+        const result = profile.validateName(raw);
+        if (!result.valid || (canonical && result.name !== raw)) {
+            fail(code, result.message || '存档中的名字格式不正确。');
+        }
+        return result.name;
+    }
+
     function decodeSave(text) {
         if (text === null) fail('EMPTY_SAVE', '还没有存档，请先开始游戏。');
         const value = parse(text, 'INVALID_SAVE');
         if (!isObject(value) || value.format !== FORMAT) fail('INVALID_SAVE', '这不是有效的源神存档。');
         if (value.version !== VERSION) fail('UNSUPPORTED_VERSION', '不支持这个版本的存档。');
-        if (value.playerName !== PLAYER_NAME || typeof value.savedAt !== 'string' ||
+        const name = playerName(value.playerName, 'INVALID_SAVE', true);
+        if (typeof value.savedAt !== 'string' ||
             !Number.isFinite(Date.parse(value.savedAt)) ||
             new Date(value.savedAt).toISOString() !== value.savedAt || !isFlag(value.endingFlag)) {
             fail('INVALID_SAVE', '存档信息不完整或已损坏。');
@@ -91,7 +100,7 @@
             format: FORMAT,
             version: VERSION,
             savedAt: value.savedAt,
-            playerName: PLAYER_NAME,
+            playerName: name,
             progress: validate(value.progress, definition, 'INVALID_SAVE'),
             achievements: validate(value.achievements, achievementsDefinition, 'INVALID_SAVE'),
             endingFlag: value.endingFlag,
@@ -134,12 +143,12 @@
             return validate(normalized, achievementsDefinition, 'INVALID_PROGRESS');
         }
 
-        function snapshot(progress, endingFlag) {
+        function snapshot(progress, endingFlag, name) {
             return {
                 format: FORMAT,
                 version: VERSION,
                 savedAt: now().toISOString(),
-                playerName: PLAYER_NAME,
+                playerName: name,
                 progress: validate(progress, definition, 'INVALID_PROGRESS'),
                 achievements: readAchievements(),
                 endingFlag,
@@ -155,7 +164,8 @@
             if (rawFlag !== null && rawFlag !== '0' && rawFlag !== '1') {
                 fail('INVALID_PROGRESS', '剧情标记数据已损坏。');
             }
-            return snapshot(progress, rawFlag === '1' ? 1 : 0);
+            return snapshot(progress, rawFlag === '1' ? 1 : 0,
+                playerName(storage.getItem('playerName'), 'INVALID_PROGRESS', true));
         }
 
         function writeAtomically(entries) {
@@ -185,7 +195,7 @@
                 const values = adapter.write(save.progress[field]);
                 return adapter.keys.map((key, i) => [key, values[i]]);
             });
-            entries.push(['username', PLAYER_NAME], ['testachievement', JSON.stringify(save.achievements)],
+            entries.push(['username', STORAGE_ID], ['playerName', save.playerName], ['testachievement', JSON.stringify(save.achievements)],
                 ['testflag', String(save.endingFlag)]);
             if (settings) entries.push([SETTINGS_KEY, JSON.stringify(save.settings)]);
             if (persist) entries.push([SAVE_KEY, JSON.stringify(save)]);
@@ -211,7 +221,8 @@
 
         return {
             createNewProgress,
-            newGame: guarded(() => apply(snapshot(createNewProgress(), 0), { settings: true, persist: true })),
+            newGame: guarded(name => apply(snapshot(createNewProgress(), 0,
+                playerName(name, 'INVALID_NAME')), { settings: true, persist: true })),
             capture: guarded(capture),
             saveAuto: guarded(saveAuto),
             hasSave: guarded(() => {

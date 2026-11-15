@@ -45,11 +45,12 @@ function expectUnchanged(storage, action, code) {
 test('new game needs no account and immediately persists a complete initial save', () => {
   const { storage, store } = setup();
   assert.equal(store.hasSave(), false);
-  const save = store.newGame();
+  const save = store.newGame('test');
   assert.equal(save.format, FORMAT);
   assert.equal(save.version, VERSION);
   assert.equal(save.savedAt, timestamp);
   assert.equal(save.playerName, 'test');
+  assert.equal(storage.getItem('playerName'), 'test');
   assert.equal(storage.getItem('username'), 'test');
   assert.deepEqual(save.progress, createNewProgress());
   assert.deepEqual(save.achievements, Object.fromEntries(Array.from({length: 8}, (_, i) => ['ach' + (i + 1), 0])));
@@ -69,7 +70,7 @@ test('new game needs no account and immediately persists a complete initial save
 test('new game resets run progress and branch flag while retaining achievements and independent settings', () => {
   const { storage, store } = setup();
   store.importSave(encoded(advanced));
-  const save = store.newGame();
+  const save = store.newGame('test');
   assert.deepEqual(save.progress, createNewProgress());
   assert.deepEqual(save.achievements, advanced.achievements);
   assert.deepEqual(save.settings, advanced.settings);
@@ -77,6 +78,49 @@ test('new game resets run progress and branch flag while retaining achievements 
   assert.equal(storage.getItem('testflag'), '0');
   assert.deepEqual(JSON.parse(storage.getItem(SAVE_KEY)), save);
   assert.notDeepEqual(save.progress, advanced.progress);
+});
+
+test('new game requires an explicit valid name before changing any existing run or save', () => {
+  for (const existingRun of [false, true]) {
+    const { storage, store } = setup();
+    if (existingRun) store.importSave(encoded({...advanced, playerName: '旧名字'}));
+    for (const name of [undefined, null, '', ' ', '一二三四五六七八', '123456789012345',
+      ' 1234567890123 ', '<img>', 'A\n', 'A\u200d', 'A\u202e', 'A"']) {
+      expectUnchanged(storage, () => store.newGame(name), 'INVALID_NAME');
+    }
+    for (const [raw, name] of [[' 一二三四五六 ', '一二三四五六'], ['12345678901234', '12345678901234'],
+      ['𠀀'.repeat(7), '𠀀'.repeat(7)], ['旅人_A-1', '旅人_A-1']]) {
+      assert.equal(store.newGame(raw).playerName, name);
+      assert.equal(storage.getItem('playerName'), name);
+      assert.equal(JSON.parse(storage.getItem(SAVE_KEY)).playerName, name);
+    }
+  }
+});
+
+test('changing display names retains the fixed achievement identity and continue restores the saved name', () => {
+  const { storage, store } = setup();
+  store.importSave(encoded({...advanced, playerName: '旧名字'}));
+  const renamed = store.newGame(' 新旅人_A ');
+  assert.equal(renamed.playerName, '新旅人_A');
+  assert.deepEqual(renamed.achievements, advanced.achievements);
+  assert.deepEqual(renamed.settings, advanced.settings);
+  assert.equal(storage.getItem('username'), 'test');
+  assert.equal(storage.getItem('新旅人_Aachievement'), null);
+  storage.setItem('playerName', '临时名');
+  assert.equal(store.restoreAuto().playerName, '新旅人_A');
+  assert.equal(storage.getItem('playerName'), '新旅人_A');
+  const fresh = setup();
+  assert.equal(fresh.store.importSave(store.exportSave()).playerName, '新旅人_A');
+  assert.equal(fresh.store.capture().playerName, '新旅人_A');
+});
+
+test('malicious, missing or noncanonical names are rejected before importing any fields', () => {
+  const { storage, store } = setup();
+  store.newGame('原名字');
+  for (const playerName of [undefined, null, '', '<script>', 'A\n', 'A\u200d', 'A\u202e', 'A\u2067',
+    'A"', "A'", ' A', 'A ', '一二三四五六七八', '123456789012345']) {
+    expectUnchanged(storage, () => store.importSave(encoded({...advanced, playerName})), 'INVALID_SAVE');
+  }
 });
 
 test('default progress objects are independent and contain all battle/map fields', () => {
@@ -102,7 +146,7 @@ test('current battle boolean achievements are saved as numeric flags without loo
   storage.setItem('testachievement', encoded(battleAchievements));
   assert.deepEqual(store.capture().achievements, advanced.achievements);
   assert.deepEqual(JSON.parse(store.exportSave()).achievements, advanced.achievements);
-  assert.deepEqual(store.newGame().achievements, advanced.achievements);
+  assert.deepEqual(store.newGame('test').achievements, advanced.achievements);
   expectUnchanged(storage, () => store.importSave(encoded({...advanced, achievements: battleAchievements})), 'INVALID_SAVE');
 });
 
@@ -173,7 +217,7 @@ test('every imported field is validated before progress, achievements, settings 
   const changes = [
     value => { value.savedAt = 'yesterday'; },
     value => { value.savedAt = null; },
-    value => { value.playerName = 'another-player'; },
+    value => { value.playerName = '<script>'; },
     value => { value.progress.current.user_level.level = 0; },
     value => { value.progress.current.yuanlan_level.exp = -1; },
     value => { delete value.progress.current.yedai_level; },
@@ -194,7 +238,7 @@ test('every imported field is validated before progress, achievements, settings 
     value => { delete value.settings.sound; },
   ];
   const { storage, store } = setup();
-  store.newGame();
+  store.newGame('test');
   for (const change of changes) {
     const value = clone(advanced);
     change(value);
@@ -211,6 +255,7 @@ test('invalid active data cannot overwrite the previous good save', () => {
     ['current', encoded({...advanced.progress.current, user_level: {level: 9, exp: 0}})],
     ['level2', '114'], ['level6', '2'], ['MSYgamename', ''], ['IsFirstPlay', null],
     ['testachievement', '{'], ['testflag', '2'], [SETTINGS_KEY, '{}'],
+    ['playerName', null], ['playerName', '<script>'], ['playerName', 'A\n'], ['playerName', ' A'],
   ];
   for (const [key, value] of changes) {
     const { storage, store } = setup();
@@ -224,9 +269,9 @@ test('invalid active data cannot overwrite the previous good save', () => {
 
 test('failed import rolls back every prior write, including newly created keys and settings', () => {
   for (const empty of [false, true]) {
-    for (const failingKey of ['level3', 'username', 'testachievement', 'testflag', SETTINGS_KEY, SAVE_KEY]) {
+    for (const failingKey of ['level3', 'username', 'playerName', 'testachievement', 'testflag', SETTINGS_KEY, SAVE_KEY]) {
       const { storage, store } = setup();
-      if (!empty) store.newGame();
+      if (!empty) store.newGame('test');
       storage.failNextWriteTo(failingKey);
       expectUnchanged(storage, () => store.importSave(encoded(advanced)), 'STORAGE_ERROR');
     }
@@ -235,19 +280,20 @@ test('failed import rolls back every prior write, including newly created keys a
 
 test('failed new game, restore, auto-save and export preserve earlier state', () => {
   for (const [key, action] of [
-    ['level3', 'newGame'], [SAVE_KEY, 'newGame'], ['testflag', 'restoreAuto'],
+    ['level3', 'newGame'], ['playerName', 'newGame'], [SAVE_KEY, 'newGame'],
+    ['playerName', 'restoreAuto'], ['testflag', 'restoreAuto'],
     [SAVE_KEY, 'saveAuto'], [SAVE_KEY, 'exportSave'],
   ]) {
     const { storage, store } = setup();
     store.importSave(encoded(advanced));
     storage.failNextWriteTo(key, new DOMException('Storage full', 'QuotaExceededError'));
-    expectUnchanged(storage, store[action], 'STORAGE_ERROR');
+    expectUnchanged(storage, () => store[action]('New名字'), 'STORAGE_ERROR');
   }
 });
 
 test('rollback attempts continue even when storage also rejects one rollback write', () => {
   const { storage, store } = setup();
-  store.newGame();
+  store.newGame('test');
   const before = storage.dump();
   const setItem = storage.setItem.bind(storage);
   let failed = false;

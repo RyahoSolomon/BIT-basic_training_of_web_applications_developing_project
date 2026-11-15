@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { setTimeout: delay } = require('node:timers/promises');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
 const opening = 'game/story/chapter-0/background.html';
@@ -119,8 +120,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
   }
 
   await open('game/pages/menu.html');
-  await click('a[href="../story/chapter-0/background.html"]');
-  await page(opening);
+  await startGame({ evaluate, click, page, cdp, until });
   await skipButton();
   await click('[data-story-skip]');
   await page(map);

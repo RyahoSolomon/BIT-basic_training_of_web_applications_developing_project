@@ -4,6 +4,8 @@
 
 拉取项目后，用较新版浏览器打开根目录的 [index.html](index.html)，即可直接进入主菜单，无需注册或登录。仓库包含已打包的剧情播放器，游玩不需要安装 npm 包或启动服务器。
 
+点击主菜单“开始”会打开姓名输入框：输入有效名字后，点击确认或按回车进入游戏；关闭或按 Escape 取消，不会覆盖现有存档。允许汉字、英文字母、数字、普通空格、`_` 和 `-`，最多 14 格，汉字计 2 格；输入框实时显示计数，中文输入法选字时的回车不会提前开始游戏。姓名在输入、存档和读取处校验，并以纯文本显示。
+
 ### 文件放在哪里
 
 正式游戏文件统一放在 `game/`。主菜单与成就页面放在 `game/pages/`；剧情、地图、战棋和扫雷分别放在对应模块；跨模块资源放在 `game/assets/`，公共脚本和样式放在 `game/shared/`。完整目录规则和常用入口见 [项目目录说明](docs/project-structure.md)。
@@ -33,6 +35,7 @@ npm run test:settlement
 npm run test:turn
 npm run test:settings
 npm run test:story-skip
+npm run test:player-name
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
 node scripts/smoke-story-presentation.cjs
@@ -45,9 +48,9 @@ node scripts/smoke-audio.cjs
 
 对白播放器跳转到下一段剧情时，会临时记录音乐进度；目标剧情使用同一首音乐时从该位置继续，曲目改变时从头播放。该记录仅供紧接着的目标页使用，不写入游戏存档，也不会影响刷新或重新进入剧情。序章两个选项、第二关战后两个选项及长分支接回后续剧情均保持原曲续播。
 
-新游戏、自动保存、继续游戏与 JSON 存档导入导出统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理，只保留一份本地存档。各页面右上角的设置入口提供音乐、音效和存档操作；两种音量默认均为 50，静音后再次点击图标恢复此前音量，拖动滑块也能开启声音。音效仅预留设置，等待后续接入。下载文件名为 `save_test.json`，导入后返回地图。空档或损坏数据不会覆盖当前进度。存档格式见 [存档格式](docs/save-format.md)。
+新游戏、自动保存、继续游戏与 JSON 存档导入导出统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理，只保留一份本地存档。各页面右上角的设置入口提供音乐、音效和存档操作；两种音量默认均为 50，静音后再次点击图标恢复此前音量，拖动滑块也能开启声音。音效仅预留设置，等待后续接入。下载文件名为 `save_{主角名字}.json`，导入后返回地图。空档或损坏数据不会覆盖当前进度。存档格式见 [存档格式](docs/save-format.md)。
 
-[本地档案初始化](game/shared/scripts/profile.js) 在各页面的其他游戏脚本之前运行，将玩家名固定为 `test`，仅在缺失时补齐八项成就和结局标记。它不会生成游戏进度；从主菜单开始新游戏或导入存档后再进入地图与战斗。页面依次加载 `profile.js`、`preferences.js`、`progress.js`、`settings.js`，并使用共用 `settings.css`。
+[本地档案初始化](game/shared/scripts/profile.js) 在各页面的其他游戏脚本之前运行，提供姓名校验与安全读取，仅在缺失时补齐八项成就和结局标记。显示姓名保存在 `playerName`；内部存储 ID 仍为 `test`，更换名字不会创建多个账户或丢失累计成就。它不会生成游戏进度；从主菜单开始新游戏或导入存档后再进入地图与战斗。页面依次加载 `profile.js`、`preferences.js`、`progress.js`、`settings.js`，并使用共用 `settings.css`。
 
 伤害、死亡计数和经验由 [战斗规则模块](game/battle/scripts/battle-rules.js) 计算，页面再应用结果、显示公告与成就。同一个单位死亡只结算一次；接口与验证方式见 [伤害与死亡结算](docs/battle-rules.md)。
 

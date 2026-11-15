@@ -7,13 +7,24 @@ const mapPage = 'game/map/index.html';
 const newGameLink = 'a[onclick="return construct()"]';
 const continueLink = 'a[onclick="return load()"]';
 
-async function smoke({ evaluate, pointerClick: click, page, open }) {
+async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   const readStorage = () => evaluate('Object.fromEntries(Object.entries(localStorage))');
   const readSave = () => evaluate('JSON.parse(localStorage.getItem("game.save"))');
   const capture = () => evaluate('GameProgress.capture()');
   const withoutTime = save => { const {savedAt, ...rest} = save; return rest; };
   async function importSave(save) {
     return evaluate('GameProgress.importSave(' + JSON.stringify(JSON.stringify(save)) + ')');
+  }
+  async function start(name) {
+    await click(newGameLink);
+    await until('name dialog', () => evaluate('document.getElementById("player-name-dialog").open'));
+    await evaluate(`(() => {
+      const input = document.getElementById('player-name');
+      input.value = ${JSON.stringify(name)};
+      input.dispatchEvent(new Event('input', {bubbles: true}));
+    })()`);
+    await click('[data-name-confirm]');
+    await page('game/story/chapter-0/background.html');
   }
   async function assertRestored(expected, label) {
     await page(mapPage);
@@ -33,11 +44,17 @@ async function smoke({ evaluate, pointerClick: click, page, open }) {
   assert.equal(await evaluate('(() => {try {GameProgress.exportSave();} catch (error) {return error.code;}})()'), 'NO_PROGRESS');
 
   await click(newGameLink);
-  await page('game/story/chapter-0/background.html');
+  await until('name dialog', () => evaluate('document.getElementById("player-name-dialog").open'));
+  assert.deepEqual(await readStorage(), initialStorage, 'Opening the name dialog must not create or replace progress');
+  await click('[data-name-close]');
+  assert.deepEqual(await readStorage(), initialStorage, 'Cancelling name input must not alter the save');
+  await start('旅人_A1');
   const initial = await readSave();
   assert.equal(initial.format, 'the-origin-of-god');
   assert.equal(initial.version, 1);
-  assert.equal(initial.playerName, 'test');
+  assert.equal(initial.playerName, '旅人_A1');
+  assert.equal(await evaluate('GameProfile.getName()'), '旅人_A1');
+  assert.equal(await evaluate('localStorage.getItem("username")'), 'test');
   assert.ok(Number.isFinite(Date.parse(initial.savedAt)));
   assert.deepEqual(initial.progress.levels, Array(6).fill(0));
   assert.equal(initial.progress.isFirstPlay, true);
@@ -52,6 +69,7 @@ async function smoke({ evaluate, pointerClick: click, page, open }) {
   console.log('PASS  no-account start immediately creates one complete local save');
 
   assert.deepEqual(await importSave(advanced), advanced);
+  assert.equal(await evaluate('GameProfile.getName()'), advanced.playerName);
   assert.deepEqual(await readSave(), advanced);
   assert.deepEqual(await evaluate('JSON.parse(localStorage.getItem("game.settings"))'), advanced.settings);
   await open(menuPage);
@@ -64,6 +82,7 @@ async function smoke({ evaluate, pointerClick: click, page, open }) {
     localStorage.setItem('current', ${JSON.stringify(JSON.stringify(initial.progress.current))});
     localStorage.setItem('testachievement', ${JSON.stringify(JSON.stringify(initial.achievements))});
     localStorage.setItem('testflag', '0');
+    localStorage.setItem('playerName', '临时名');
     localStorage.setItem('game.settings', ${JSON.stringify(JSON.stringify(newSettings))});
   `);
   await click(continueLink);
@@ -119,6 +138,8 @@ async function smoke({ evaluate, pointerClick: click, page, open }) {
     ['unsupported version', JSON.stringify({...advanced, version: 2}), 'UNSUPPORTED_VERSION'],
     ['incomplete achievements', JSON.stringify({...advanced, achievements: {ach1: 1}}), 'INVALID_SAVE'],
     ['invalid settings', JSON.stringify({...advanced, settings: {...advanced.settings, sound: {volume: 0, muted: false}}}), 'INVALID_SAVE'],
+    ['malicious name', JSON.stringify({...advanced, playerName: '<script>'}), 'INVALID_SAVE'],
+    ['noncanonical name', JSON.stringify({...advanced, playerName: ' test '}), 'INVALID_SAVE'],
   ]) {
     const before = await readStorage();
     assert.equal(await evaluate(`(() => {
@@ -149,8 +170,15 @@ async function smoke({ evaluate, pointerClick: click, page, open }) {
 
   await open(menuPage);
   await click(newGameLink);
-  await page('game/story/chapter-0/background.html');
+  await until('name dialog', () => evaluate('document.getElementById("player-name-dialog").open'));
+  const beforeCancel = await readStorage();
+  await click('[data-name-close]');
+  assert.deepEqual(await readStorage(), beforeCancel, 'Cancelling a new name preserves the current run');
+  await start('新旅人_B2');
   const restarted = await readSave();
+  assert.equal(restarted.playerName, '新旅人_B2');
+  assert.equal(await evaluate('GameProfile.getName()'), '新旅人_B2');
+  assert.equal(await evaluate('localStorage.getItem("username")'), 'test');
   assert.deepEqual(restarted.progress, initial.progress);
   assert.deepEqual(restarted.achievements, exportedSave.achievements);
   assert.deepEqual(restarted.settings, exportedSave.settings);

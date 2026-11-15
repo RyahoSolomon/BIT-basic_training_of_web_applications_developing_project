@@ -2,18 +2,18 @@ function load_mission_icons(ingame)
 {
   let mission_icons = '<div id = "task_book"><img id = "mission_confirm_button" src = "assets/images/ui/task-confirm.png"><a id = "mission_confirm_text">确认</a>';
   let level_title = get_level_title(level);
-  mission_icons += '<div class = "title_container"><a class = "level_title">' + level_title + '</a></div>';
+  mission_icons += '<div class = "title_container"><a class = "level_title"></a></div>';
   mission_icons += '<div class = "subtitle_container"><a class = "mission_title">胜利条件:(任达其一)</a></div>';
   let win_conditions = get_win_condition();
   for(let i = 0; i < win_conditions.length; i ++)
   {
-    mission_icons += '<div class = "mission_info_container"><a class = "mission_info">' + win_conditions[i] + '</a></div>';
+    mission_icons += '<div class = "mission_info_container"><a class = "mission_info" data-mission-condition></a></div>';
   }
   mission_icons += '<div class = "subtitle_container"><a class = "mission_title">失败条件:(任达其一)</a></div>';
   let lose_conditions = get_lose_condition();
   for(let i = 0; i < lose_conditions.length; i ++)
   {
-    mission_icons += '<div class = "mission_info_container"><a class = "mission_info">' + lose_conditions[i] + '</a></div>';
+    mission_icons += '<div class = "mission_info_container"><a class = "mission_info" data-mission-condition></a></div>';
   }
   if(level === 2 && current_info.hidden_clue_god == false)
   {
@@ -33,6 +33,12 @@ function load_mission_icons(ingame)
   }
   mission_icons += '</div>';
   document.getElementById("mission_icons").innerHTML = mission_icons;
+  const mission = document.getElementById("mission_icons");
+  mission.querySelector('.level_title').textContent = level_title;
+  const conditions = [...win_conditions, ...lose_conditions];
+  mission.querySelectorAll('[data-mission-condition]').forEach((label, index) => {
+    label.textContent = conditions[index];
+  });
   document.getElementById("mission_confirm_text").style.position = "absolute";
   document.getElementById("mission_confirm_text").style.left = "182px";
   document.getElementById("mission_confirm_text").style.top = "420px";
@@ -128,28 +134,28 @@ function get_lose_condition()
   {
     case 0:
       {
-        lose_conditions.push("•" + username + "、鸢阑、叶岱全部死亡");
+        lose_conditions.push("•" + displayName + "、鸢阑、叶岱全部死亡");
         break;
       }
     case 1:
       {
-        lose_conditions.push("•" + username + "、鸢阑、叶岱全部死亡");
+        lose_conditions.push("•" + displayName + "、鸢阑、叶岱全部死亡");
         break;
       }
     case 2:
       {
-        lose_conditions.push("•" + username + "、鸢阑、叶岱全部死亡");
+        lose_conditions.push("•" + displayName + "、鸢阑、叶岱全部死亡");
         break;
       }
     case 3:
       {
-        lose_conditions.push("•" + username + "、鸢阑、叶岱全部死亡");
+        lose_conditions.push("•" + displayName + "、鸢阑、叶岱全部死亡");
         lose_conditions.push("•梓决死亡(带有绿色菱形标记)");
         break;
       }
     case 4:
       {
-        lose_conditions.push("•" + username + "、鸢阑、叶岱全部死亡");
+        lose_conditions.push("•" + displayName + "、鸢阑、叶岱全部死亡");
         break;
       }
     case 5:

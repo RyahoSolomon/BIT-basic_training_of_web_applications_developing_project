@@ -15,7 +15,7 @@ async function smoke({ evaluate, click, page, open }) {
         ach1: false, ach2: false, ach3: false, ach4: false,
         ach5: false, ach6: false, ach7: false, ach8: false,
       }));
-      GameProgress.newGame();
+      GameProgress.newGame('test');
       const current = JSON.parse(localStorage.current);
       current.level = ${level};
       GamePreferences.setVolume('music', 0);

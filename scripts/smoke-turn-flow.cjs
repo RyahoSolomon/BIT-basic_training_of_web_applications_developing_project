@@ -22,7 +22,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
         ach1: true, ach2: true, ach3: true, ach4: true,
         ach5: true, ach6: true, ach7: true, ach8: true,
       }));
-      GameProgress.newGame();
+      GameProgress.newGame('test');
       const current = JSON.parse(localStorage.current);
       current.level = 1;
       GamePreferences.setVolume('music', 0);

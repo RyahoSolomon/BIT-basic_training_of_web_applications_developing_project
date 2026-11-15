@@ -106,7 +106,7 @@ class Protagonist extends PlayerUnit
   {
     super(uuid);
     this.name = "user";
-    this.name_cn = username;
+    this.name_cn = displayName;
     //level:等级
     this.level = user_level.level;
     //经验

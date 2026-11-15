@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 
 async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) {
   const username = 'test';
@@ -96,8 +97,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
 
   // The normal new-game action initializes progress and the fixed player.
   await open('game/pages/menu.html');
-  await click('a[href="../story/chapter-0/background.html"]');
-  await page(background);
+  await startGame({ evaluate, click, page, cdp, until });
   await readBackgroundToEnd(true);
   console.log('PASS  all seven opening slides and repeated backgrounds');
 

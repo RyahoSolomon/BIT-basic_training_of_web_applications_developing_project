@@ -14,7 +14,6 @@
     <script>
       function leave(){
         window.localStorage.setItem('level5',1);
-        var username = window.localStorage.getItem('username');
         var current = window.localStorage.getItem('current');
         current = JSON.parse(current);
         if(current.hidden_clue_god && current.hidden_clue_poison){

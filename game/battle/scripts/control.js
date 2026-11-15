@@ -703,7 +703,7 @@ function end_round()
         {
           summon_unit_in_range(1, 7, "fay_warrior");
           summon_unit_in_range(7, 12, "fay_warrior");
-          announcement_list.push("[第" + round + "回合][妖族监国]妖族决不退缩!妖族英勇的战士们!随我帮助" + username + "保护阵法死士!");
+          announcement_list.push("[第" + round + "回合][妖族监国]妖族决不退缩!妖族英勇的战士们!随我帮助" + displayName + "保护阵法死士!");
           load_annoucement();
         }
         break;

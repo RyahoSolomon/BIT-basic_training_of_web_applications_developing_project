@@ -1,0 +1,71 @@
+#player-name-dialog {
+    width: min(90vw, 1040px);
+    max-width: none;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background: transparent;
+    color: #382415;
+    font-family: KaiTi, STKaiti, '楷体', serif;
+}
+#player-name-dialog::backdrop { background: rgb(0 0 0 / 55%); }
+.player-name-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 320 / 52;
+    background: url('../../assets/images/ui/text-box-no.png') center / contain no-repeat;
+    image-rendering: pixelated;
+}
+.player-name-row {
+    position: absolute;
+    inset: 14% 4.5%;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto repeat(2, clamp(22px, 4vw, 48px));
+    align-items: center;
+    gap: clamp(4px, 1vw, 14px);
+}
+#player-name {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    outline: none;
+    background: transparent;
+    color: #231c14;
+    font: inherit;
+    font-size: clamp(14px, 2.4vw, 32px);
+    user-select: text;
+    -webkit-user-select: text;
+}
+#player-name::placeholder { color: #8b765e; }
+#player-name-count { font-size: clamp(12px, 1.7vw, 22px); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#player-name-count.over-limit { color: #9b2d20; }
+#player-name-dialog button {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    touch-action: manipulation;
+}
+#player-name-dialog button img { display: block; width: 100%; height: 100%; image-rendering: pixelated; -webkit-user-drag: none; }
+#player-name-dialog button:focus-visible { outline: 2px solid #63391f; outline-offset: 3px; }
+#player-name-dialog button:disabled { opacity: .4; cursor: not-allowed; }
+#player-name-dialog [data-name-close]:hover img { content: url('../../assets/images/close_hover.png'); }
+#player-name-dialog [data-name-confirm]:enabled:hover img { content: url('../../assets/images/confirm_hover.png'); }
+#player-name-error {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 10px 0 0;
+    color: #ffc0b2;
+    font-size: clamp(12px, 1.4vw, 16px);
+    line-height: 1.5;
+    text-align: center;
+    text-shadow: 0 1px 2px #000;
+}
+#player-name-error:empty { display: none; }

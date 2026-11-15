@@ -4,6 +4,7 @@ const os = require('node:os');
 const path = require('node:path');
 const { setTimeout: delay } = require('node:timers/promises');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 
 const menu = 'game/pages/menu.html';
 const map = 'game/map/index.html';
@@ -80,8 +81,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await close();
     console.log('PASS  default volumes, mute restoration, zero-volume memory and live slider controls');
 
-    await click('a[href="../story/chapter-0/background.html"]');
-    await page('game/story/chapter-0/background.html');
+    await startGame({ evaluate, click, page, cdp, until });
     assert.equal(await evaluate('localStorage.username'), 'test');
     assert.ok(await evaluate('!!localStorage.getItem("game.save")'));
     await evaluate('localStorage.setItem("IsFirstPlay", "false")');
@@ -178,7 +178,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       withoutTimestamp(expected), 'Returning to menu lost current progress');
 
     await evaluate(`
-      GameProgress.newGame();
+      GameProgress.newGame('test');
       localStorage.testachievement = JSON.stringify({ach1:false,ach2:false,ach3:false,ach4:false,
         ach5:false,ach6:false,ach7:false,ach8:false});
       GamePreferences.setVolume('music', 12);

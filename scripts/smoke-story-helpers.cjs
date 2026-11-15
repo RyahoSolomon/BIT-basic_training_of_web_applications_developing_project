@@ -2,10 +2,11 @@
 async function readScene({ evaluate, pointerClick, click = pointerClick, cdp, until }) {
   await cdp.send('Page.bringToFront');
   const lines = await evaluate('window.storyScene.lines');
+  const name = await evaluate('GameProfile.getName()');
   for (const line of lines) {
     await until('dialogue ready', () => evaluate(`
-      document.querySelector('#story-player .text')?.textContent === ${JSON.stringify(line.text.replaceAll('{player}', 'test'))}
-      && (document.querySelector('#story-player .centered-text1')?.textContent || '') === ${JSON.stringify((line.caption || '').replaceAll('{player}', 'test'))}
+      document.querySelector('#story-player .text')?.textContent === ${JSON.stringify(line.text.replaceAll('{player}', name))}
+      && (document.querySelector('#story-player .centered-text1')?.textContent || '') === ${JSON.stringify((line.caption || '').replaceAll('{player}', name))}
       && getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'
       && document.body.dataset.storyTransitioning !== 'true'
     `));

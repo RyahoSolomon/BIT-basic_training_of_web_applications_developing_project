@@ -2,6 +2,7 @@
 const assert = require('node:assert/strict');
 const { setTimeout: delay } = require('node:timers/promises');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 const { openingToMap } = require('./smoke-story-helpers.cjs');
 
 const mapPage = 'game/map/index.html';
@@ -81,8 +82,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   console.log('PASS  blocked autoplay recovers after real user interaction');
 
   // No account is required; initialize progress through the menu.
-  await click('a[href="../story/chapter-0/background.html"]');
-  await page('game/story/chapter-0/background.html');
+  await startGame({ evaluate, click, page, cdp, until });
   await openingToMap({ evaluate, click, page, cdp, until });
   await click('#Level1');
   await page(storyPage);

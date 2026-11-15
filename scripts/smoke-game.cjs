@@ -2,14 +2,14 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 const { openingToMap, readScene } = require('./smoke-story-helpers.cjs');
 
 async function smoke(browser) {
   const { evaluate, click, page, cdp, until } = browser;
   await cdp.send('Page.navigate', { url: pathToFileURL(path.resolve(__dirname, '../index.html')).href });
   await page('game/pages/menu.html');
-  await click('a[href="../story/chapter-0/background.html"]');
-  await page('game/story/chapter-0/background.html');
+  await startGame(browser);
   assert.equal(await evaluate('localStorage.username'), 'test');
   await openingToMap(browser);
   const save = await evaluate('JSON.parse(localStorage.getItem("game.save"))');

@@ -52,10 +52,8 @@
     <script>
       var current_info = localStorage.getItem("current");
       var username = localStorage.getItem("username");
-      if(username == null)
-      {
-        username = 'TEST';
-      }
+      // The fixed storage profile and the displayed character name are separate.
+      var displayName = GameProfile.getName();
       initial_current_info();
       var music_library =["assets/audio/war-chess1.mp3","assets/audio/war-chess2.mp3","assets/audio/war-chess3.mp3","assets/audio/cross-your-heart.mp3","assets/audio/fractured-shrines.mp3","assets/audio/machine.mp3","assets/audio/same-old-story.mp3","assets/audio/sanddust.mp3","assets/audio/maintitles.mp3"];
       var user_level = current_info.user_level;

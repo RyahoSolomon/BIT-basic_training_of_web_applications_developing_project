@@ -19,8 +19,8 @@ function StoryPlayer({ scene }) {
   const leaving = useRef(false);
   const backgrounds = useRef(null);
   const advancing = useRef(false);
-  const player = localStorage.getItem('username') || '';
-  const text = value => (value || '').replaceAll('{player}', player);
+  const player = window.GameProfile.getName();
+  const text = value => (value || '').replaceAll('{player}', () => player);
 
   useEffect(() => {
     const controller = new window.StoryBackgroundTransition();

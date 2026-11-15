@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
 const background = 'game/story/chapter-0/background.html';
@@ -160,8 +161,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     // progress or achievements while loading.
     const username = 'test';
     await open('game/pages/menu.html');
-    await click('a[href="../story/chapter-0/background.html"]');
-    await page(background);
+    await startGame({ evaluate, click, page, cdp, until });
     const defaultFont = await checkPresentation('#overlayText');
     assert.match(defaultFont, /KaiTi|楷体/i, 'The shared default should use the KaiTi font stack');
     const slides = await evaluate('backgrounds');

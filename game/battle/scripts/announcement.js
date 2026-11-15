@@ -5,10 +5,13 @@ function load_annoucement()
   {
     announcement_list.shift();
   }
-  announcement_innerhtml = '';
+  const announcements = document.createDocumentFragment();
   for(let i = 0; i < announcement_list.length; i++)
   {
-    announcement_innerhtml += '<p id = "announcement_text">' + announcement_list[i] + '\n</p>';
+    const paragraph = document.createElement('p');
+    paragraph.id = 'announcement_text';
+    paragraph.textContent = announcement_list[i] + '\n';
+    announcements.append(paragraph);
   }
-  document.getElementById("announcement").innerHTML = announcement_innerhtml;
+  document.getElementById("announcement").replaceChildren(announcements);
 }

@@ -4,6 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { fileURLToPath, pathToFileURL } = require('node:url');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { startGame } = require('./smoke-player-helpers.cjs');
 const { openingToMap } = require('./smoke-story-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -18,7 +19,7 @@ function htmlPages(directory) {
   });
 }
 
-async function smoke({ evaluate, click, page, open, cdp, until }) {
+async function smoke({ evaluate, click, pointerClick, page, open, cdp, until }) {
   // Capture browser resource errors before a page's first script or stylesheet loads.
   await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
     window.__localResourceErrors = [];
@@ -80,8 +81,7 @@ async function smoke({ evaluate, click, page, open, cdp, until }) {
 
   // Obtain progress through the actual new-game and opening controls.
   await open('game/pages/menu.html');
-  await click('a[href="../story/chapter-0/background.html"]');
-  await page('game/story/chapter-0/background.html');
+  await startGame({ evaluate, click: pointerClick, page, cdp, until });
   await openingToMap({ evaluate, click, page, cdp, until });
   await evaluate('localStorage.setItem("IsFirstPlay", "false")');
   const fixture = await evaluate('Object.fromEntries(Object.entries(localStorage))');
