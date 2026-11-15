@@ -6,11 +6,11 @@ const { withBrowser } = require('./smoke-browser.cjs');
 
 async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) {
   const username = 'story-smoke-player';
-  const background = 'main/story/chapter0/background.html';
-  const prologue = 'main/story/chapter0/plot.html';
-  const chapter1 = 'main/story/chapter1/plot.html';
-  const battle = 'main/story/war_chess/war_chess.html';
-  const map = 'main/story/map/map.html';
+  const background = 'game/story/chapter-0/background.html';
+  const prologue = 'game/story/chapter-0/plot.html';
+  const chapter1 = 'game/story/chapter-1/plot.html';
+  const battle = 'game/battle/index.html';
+  const map = 'game/map/index.html';
   const screenshots = process.argv.includes('--screenshots')
     ? await fs.mkdtemp(path.join(os.tmpdir(), 'bit-story-preview-'))
     : null;
@@ -81,7 +81,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       assert.equal(await evaluate('currentBackground'), index,
         'Opening slides must stay in order');
       assert.equal(await evaluate('getComputedStyle(document.body).backgroundImage.includes(' +
-        JSON.stringify(slides[index].image.replace('../..', '/main')) + ')'), true);
+        JSON.stringify(slides[index].image.replace('../..', '/game')) + ')'), true);
       if (takeScreenshots && [2, 3, 5].includes(index)) {
         await screenshot('opening-slide-' + (index + 1), '#overlayText');
       }
@@ -91,17 +91,17 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
 
   // Registration and the normal new-game action initialize all progress and achievements.
-  await open('main/register.html');
+  await open('game/pages/register.html');
   await evaluate(`
     document.getElementById("username").value = ${JSON.stringify(username)};
     document.getElementById("password").value = "story-smoke";
     document.getElementById("confirm-password").value = "story-smoke";
   `);
   await click('#registerForm button[type="submit"]');
-  await page('main/login.html');
-  await open('main/_INDEX.html');
+  await page('game/pages/login.html');
+  await open('game/pages/menu.html');
   await evaluate('localStorage.setItem("username", ' + JSON.stringify(username) + ')');
-  await click('a[href="story/chapter0/background.html"]');
+  await click('a[href="../story/chapter-0/background.html"]');
   await page(background);
   await readBackgroundToEnd(true);
   console.log('PASS  all seven opening slides and repeated backgrounds');
@@ -110,7 +110,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   // the image transition before the page starts to reproduce that case reliably.
   const { identifier: noTransition } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
     source: `document.addEventListener("DOMContentLoaded", () => {
-      if (location.pathname.endsWith("/main/story/chapter0/background.html")) {
+      if (location.pathname.endsWith("/game/story/chapter-0/background.html")) {
         const style = document.createElement("style");
         style.textContent = "#slideImage { transition: none !important; }";
         document.head.appendChild(style);
@@ -129,13 +129,13 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await click('.button-save');
   await page(map);
 
-  for (const [index, destination] of ['plot_b.html', 'plot_a.html'].entries()) {
+  for (const [index, destination] of ['plot-b.html', 'plot-a.html'].entries()) {
     await open(prologue);
     await readToEnd();
     await waitChoices();
     if (index === 0) await screenshot('prologue-choices');
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
-    await page('main/story/chapter0/' + destination);
+    await page('game/story/chapter-0/' + destination);
     await readToEnd();
     await page(map);
   }
@@ -159,7 +159,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   ]) {
     const { identifier } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
       source: `document.addEventListener("DOMContentLoaded", () => {
-        if (location.pathname.endsWith("/main/story/chapter1/plot.html")) {
+        if (location.pathname.endsWith("/game/story/chapter-1/plot.html")) {
           ${mutation}
         }
       }, { once: true });`,
@@ -175,13 +175,13 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
   console.log('PASS  inserted/deleted dialogue preserves speakers and battle endpoint');
 
-  for (const [index, destination] of ['chapter2_short_difference.html', 'chapter2_long_difference.html'].entries()) {
+  for (const [index, destination] of ['branch-short.html', 'branch-long.html'].entries()) {
     await evaluate('localStorage.removeItem(' + JSON.stringify(username + 'flag') + ')');
-    await open('main/story/chapter2/plot_after.html');
+    await open('game/story/chapter-2/plot-after.html');
     await readToEnd();
     await waitChoices();
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
-    await page('main/story/chapter2/' + destination);
+    await page('game/story/chapter-2/' + destination);
     assert.equal(await evaluate('localStorage.getItem(' + JSON.stringify(username + 'flag') + ')'), index === 0 ? '1' : null);
     if (index === 0) {
       await until('achievement popup', () => evaluate('getComputedStyle(document.getElementById("achievement_popup")).display !== "none"'));
@@ -189,14 +189,14 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     }
     await readToEnd();
     if (index === 1) {
-      await page('main/story/chapter2/chapter2_short_difference.html');
+      await page('game/story/chapter-2/branch-short.html');
       await readToEnd();
     }
     await page(map);
   }
   console.log('PASS  chapter 2 branches, player-name substitution and choice side effect');
 
-  await open('main/story/chapter5/plot1.html');
+  await open('game/story/chapter-5/plot1.html');
   const lines = await readLines();
   await expectLine(lines[0]);
   await screenshot('chapter5-caption');

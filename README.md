@@ -1,30 +1,68 @@
 #### 北京理工大学(Beijing Institute of Technology) 互联网应用开发基础训练(实践周/赵丰年)课程设计
 # 源神 The Origin Of God
 ### 开始冒险
-拉取项目后直接用浏览器(最好是较新版)打开位于根目录下的index.html即可。
+
+拉取项目后，用较新版浏览器打开根目录的 [index.html](index.html) 即可。仓库包含已打包的剧情播放器，游玩不需要安装 npm 包或启动服务器。
+
+### 文件放在哪里
+
+正式游戏文件统一放在 `game/`。账号与存档页面放在 `game/pages/`；剧情、地图、战棋和扫雷分别放在对应模块；跨模块资源放在 `game/assets/`，公共脚本和样式放在 `game/shared/`。完整目录规则和常用入口见 [项目目录说明](docs/project-structure.md)。
+
+需要构建的源码位于 `src/`，构建产物位于 `game/generated/`；第三方库位于 `game/vendor/`。开发工具和美术源稿分别放在 [tools/](tools/README.md) 和 [design/](design/README.md)，与正式游戏内容分开维护。原项目已在独立分支归档，当前分支不再保留未使用的历史代码和样例副本。
 
 ### 开发时检查页面依赖
 
-在项目根目录用 Node.js 22 或更高版本运行以下两条命令，无需安装 npm 包。
+使用 Node.js 22 或更高版本，在项目根目录运行：
 
 ```sh
-node scripts/check-pages.cjs
-node scripts/smoke-game.cjs
+npm run check
+npm test
 ```
 
-第一条检查 HTML 中声明的本地脚本、样式、页面和媒体路径，失效时报告文件名和行号。第二条使用已安装的 Chrome 或 Edge，在独立的临时浏览器档案中直接打开 `index.html`，检查注册、登录、新游戏、地图自动存档和首战入口，最后通过游戏自带的跳过按钮进入胜利页。任一检查失败会返回非零退出码。如浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定其可执行文件。
+`npm run check` 检查 HTML、CSS 和可静态识别的 JavaScript 本地资源与页面路径，并运行检查器自身的测试。路径失效时会报告文件名和行号。检查不扫描美术源稿，也不会推断运行时拼接的任意 URL。
+
+`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、终局结算、回合推进、单位显示、开局、剧情、页面导航、音频和剧情显示十一个浏览器回归检查，覆盖注册、登录、新游戏、新旧存档恢复、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、胜负与成就确认、回合等待和重复操作、单位节点保留、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
+
+这些检查无需安装 npm 包，但浏览器回归需要已安装 Chrome 或 Edge。若浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定可执行文件。也可分别运行：
+
+```sh
+npm run test:progress
+npm run test:battle
+npm run test:movement
+npm run test:settlement
+npm run test:turn
+node scripts/smoke-game.cjs
+node scripts/smoke-story.cjs
+node scripts/smoke-story-presentation.cjs
+node scripts/smoke-navigation.cjs
+node scripts/smoke-audio.cjs
+```
+
+剧情、地图、菜单与结局的背景音乐由公共音频脚本在页面加载时读取存档中的开关状态后启动；关闭音乐后跳转或刷新不会重新播放。这些页面的 `<audio>` 不使用 `autoplay` 属性，以避免短暂出声。首次播放被浏览器阻止时，再等待页面点击重试。音频检查使用真实鼠标输入，并且不会把读取页面状态当作用户交互。
+
+新游戏、自动存档、手动存读档与继续游戏统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理。新版存档带有版本号，并兼容原版存档；空档或损坏数据不会覆盖当前进度。字段、旧档转换与测试样本说明见 [存档格式](docs/save-format.md)。
+
+伤害、死亡计数和经验由 [战斗规则模块](game/battle/scripts/battle-rules.js) 计算，页面再应用结果、显示公告与成就。同一个单位死亡只结算一次；接口与验证方式见 [伤害与死亡结算](docs/battle-rules.md)。
+
+玩家高亮和 AI 候选位置共用 [移动规则模块](game/battle/scripts/movement-rules.js)。AI 决策与行动显示也已分离，保留原有地形、占位、射程和随机选择规则；接口与验证方式见 [移动范围与 AI 决策](docs/movement-rules.md)。
+
+行动结束和整轮结束共用胜负与成就结算，终局停止推进战斗，成就逐个确认后再进入结果页。同一次击杀触发的满级成就与通关成就也会按序保留；规则、入口与检查方法见 [胜负与通关结算](docs/battle-settlement.md)。
+
+回合推进由 [turn-flow.js](game/battle/scripts/turn-flow.js) 管理，约 300 毫秒的行动间隔使用异步计时器，期间页面仍可响应。电脑行动只执行一次，确认后才进入下一单位；单位刷新保留现有显示节点，详见 [回合推进与单位显示](docs/turn-flow.md)。
 
 ### 编辑章节对话
 
-第 0–6 章的 24 个对话页面共用 React 播放器。每个页面原来的同名 JS 文件现在定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 与 `skip` 分别定义读完和跳过后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+第 0–6 章的 24 个对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。
 
-例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效。
+场景 JS 定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 与 `skip` 分别定义读完和跳过后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+
+例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效，无需重新构建播放器。
 
 ```js
 { speaker: "[鸢阑]", text: "我们继续出发吧。" },
 ```
 
-开场介绍和第 0–6 章的对白统一直接显示，文字与文本框一起出现；点击区域禁止选择文字，默认字体统一为楷体（依次回退到 KaiTi、楷体、STKaiti 和系统衬线字体）。共用显示规则位于 `main/css/story-player.css`，默认字体定义位于 `main/css/story-fonts.css`。
+开场介绍和第 0–6 章的对白统一直接显示，文字与文本框一起出现；点击区域禁止选择文字，默认字体统一为楷体（依次回退到 KaiTi、楷体、STKaiti 和系统衬线字体）。共用显示规则位于 `game/story/styles/player.css`，默认字体定义位于 `game/shared/styles/story-fonts.css`。
 
 需要某句使用特殊字体时，在该条记录中加 `fontFamily`；下一句没有配置就恢复默认。也可在 `window.storyScene.fontFamily` 设置整个场景的字体，单句配置优先。分支选项和 `inlineChoice` 同样支持 `fontFamily`。开场介绍可在 `background.js` 的对应 `backgrounds` 条目设置同名字段。字体必须已安装或通过页面的 `@font-face` 加载。
 
@@ -32,22 +70,19 @@ node scripts/smoke-game.cjs
 { speaker: "[法海]", text: "此事非同小可。", fontFamily: '"华文新魏", serif' },
 ```
 
-共用播放逻辑位于 `src/story-player.jsx`。修改该文件后，在根目录执行以下命令，并将重新生成的 `main/js/story-player.js` 一起提交。仓库附带已打包的播放器，可以直接打开游戏。
+共用播放逻辑位于 [src/story/player.jsx](src/story/player.jsx)。修改该文件后，在根目录执行以下命令，并将重新生成的 `game/generated/story-player.js` 及其许可证文件一起提交：
 
 ```sh
 npm ci
 npm run build:story
-node scripts/check-pages.cjs
-node scripts/smoke-game.cjs
-node scripts/smoke-story.cjs
-node scripts/smoke-story-presentation.cjs
+npm test
 ```
 
-剧情检查会验证开场七段背景介绍的文字及读完和跳过的去向；还会逐句核对说话人，走过序章和第二章的分支、第一章的战斗入口，以及第五章的字幕切换。它还会临时增删第一章的台词，验证后续说话人和进入战斗的按钮仍然正确。显示检查遍历开场与全部章节对话页，验证文字与框同步出现、没有滑入或淡入动画、没有临时滚动条、禁止选择文字，以及自定义字体与默认字体的切换。
+第一至第三章的相同剧情样式已合并到 [game/story/styles/dialogue.css](game/story/styles/dialogue.css)；场景专用样式仍与章节页面就近存放。剧情检查会逐句核对覆盖场景的说话人，走过序章与第二章分支、第一章战斗入口及第五章字幕切换，并临时增删第一章台词，确认后续说话人和按钮仍然正确。剧情显示检查另外逐帧验证开场和全部对白页的文字与框同步、视口稳定、禁止选择及字体覆盖与回退。页面导航检查另外遍历全部运行页面，核对初始资源加载及各战斗结果页的跳转。
 
 ### 项目基本介绍
 该项目为基于前端三件套(html，CSS，JavaScript)开发的简单的战棋类策略游戏，玩法改编自Worldwalker Games LLC开发的游戏**Wildermyth**，剧情改编自由Minecraft游戏中由水狼阳介企划，MTW和红石口袋联手制作的大型东方幻想RPG地图(社区内容)**盘灵古域**。
-目前该项目已停止更新，但是如果有bug issue可能会修。之后会更新打码的发布视频等内容。
+当前在保留原有玩法的基础上整理目录、修复问题并完善回归检查。尚未完成的架构改进见 [问题清单](docs/TODO.md)。
 
 ### 后记
 其实目前来看，剧情上还是有很多瑕疵，在当时编剧时没有考虑。种族之间的冲突没有铺垫的很深，尤其是神族的霸权统治。其次某昆仑修士的隐藏身份的伏笔和铺垫都不够充分和明显导致最终揭露身份的剧情时戏剧冲突没那么大。最后就是台词有点中二。谨以此作品致敬《盘灵古域》，虽然它已经是这一项目九年前的作品了。

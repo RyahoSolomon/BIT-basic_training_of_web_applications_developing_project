@@ -1,0 +1,255 @@
+function selected_attack(id)
+{
+  if(!can_player_act()) return;
+  selected_operation = "attack";
+  reset_mask();
+  let mask_innerhtml = '';
+  for(let i = 0; i < height; i++)
+  {
+    for(let j = 0; j < width; j++)
+    {
+      let distance = manhattan_distance_cal(i,j,units[id].x,units[id].y);
+      if(distance >= units[id].min_range && distance <= units[id].max_range)
+      {
+        let flag = false;
+        for(let cur = 0; cur < units_count; cur++)
+        {
+          if(units[cur].x == i && units[cur].y == j && units[cur].is_alive)
+          {
+            mask_innerhtml += '<img src = "assets/images/mask/can-attack.png" id = "' + i + '_' + j + '" onclick = "click_block(' + i + ',' + j +')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在攻击范围内\n攻击此单位">';
+            flag = true;
+          }
+        }
+        if(!flag)
+        {
+          mask_innerhtml += '<img src = "assets/images/mask/touchable.png" id ="' + i + '_' + j + '" class = "mask_img" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在攻击范围内\n无法发动攻击:此单元格上无单位">';
+        }
+      }
+    }
+  }
+  document.getElementById("mask").innerHTML = mask_innerhtml;
+  load_mask();
+}
+
+function selected_move(id)
+{
+  if(!can_player_act()) return;
+  selected_operation = "move";
+  const destinations = MovementRules.findReachableCells(read_battle_state(), id);
+  document.getElementById("mask").innerHTML = destinations.map(create_move_mask).join('');
+  load_mask();
+}
+
+function create_move_mask(cell)
+{
+  const { x, y } = cell;
+  return `<img src="assets/images/mask/can-move-on.png" id="${x}_${y}"
+    onclick="click_block(${x},${y})" class="mask_img clickable_mask"
+    onmouseenter="load_hover_mask(${x},${y})" onmouseleave="delete_hover_mask(${x},${y})"
+    title="移动到(${y + 1},${x + 1})">`;
+}
+
+function selected_defend()
+{
+  if(!can_player_act()) return;
+  selected_operation = "defend";
+  reset_mask();
+  let armor_change_value = 4;
+  if(units[current_act_unit].level >= 6)
+  {
+    armor_change_value += 2;
+  }
+  if(units[current_act_unit].defending == true)
+  {
+    units[current_act_unit].defending = false;
+    units[current_act_unit].max_armor -= armor_change_value;
+    if(units[current_act_unit].armor > units[current_act_unit].max_armor)
+    {
+      units[current_act_unit].armor = units[current_act_unit].max_armor;
+    }
+    units[current_act_unit].speed += 1;
+    units_display_update();
+    load_items();
+  }
+  else
+  {
+    units[current_act_unit].defending = true;
+    units[current_act_unit].max_armor += armor_change_value;
+    units[current_act_unit].armor = units[current_act_unit].max_armor;
+    units[current_act_unit].speed -= 1;
+    units_display_update();
+    load_items();
+    document.getElementById("selected_box").innerHTML = '';
+    document.getElementById("operation_hover_initial_mask").innerHTML = '';
+    clear_operation_hover_mask();
+    end_turn();
+  }
+}
+
+function selected_trap()
+{
+  if(!can_player_act()) return;
+  selected_operation = "trap";
+  reset_mask();
+  let skill_attack = units[current_act_unit].attack;
+  let mask_innerhtml = '';
+  let skill_range = parseInt(units[current_act_unit].max_range);
+  if(units[current_act_unit].level >= 6)
+  {
+    skill_range += 1;
+    skill_attack += 2;
+  }
+  for(let i = 0; i < height; i++)
+  {
+    for(let j = 0; j < width; j++)
+    {
+      let distance = manhattan_distance_cal(i,j,units[current_act_unit].x,units[current_act_unit].y);
+      if(distance <= skill_range)
+      {
+        if(is_unit_on(i,j))
+        {
+          continue;
+        }
+        if(is_item_on(i,j))
+        {
+          continue;
+        }
+        mask_innerhtml += '<img src = "assets/images/mask/can-place-item-on.png" id = "' + i + '_' + j + '" onclick = "place_trap_on(' + i + ',' + j + ',' + skill_attack + ')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在此处布置捕兽夹陷阱">';
+      }
+    }
+  }
+  document.getElementById("mask").innerHTML = mask_innerhtml;
+  load_mask();
+}
+
+function selected_ice_storm()
+{
+  if(!can_player_act()) return;
+  selected_operation = "ice_storm";
+  reset_mask();
+  let mask_innerhtml = '';
+  let skill_range = units[current_act_unit].max_range + 3;
+  let skill_attack = units[current_act_unit].attack - 1;
+  if(units[current_act_unit].level >= 6)
+  {
+    skill_range += 1;
+    skill_attack += 1;
+  }
+  for(let i = 0; i < height; i++)
+  {
+    for(let j = 0; j < width; j++)
+    {
+      //console.log("当前搜寻:" + i + "," + j);
+      let distance = manhattan_distance_cal(i,j,units[current_act_unit].x,units[current_act_unit].y);
+      //console.log("当前位置:" + i + "," + j);
+      if(distance <= skill_range)
+      {
+        //console.log("可行");
+        mask_innerhtml += '<img src = "assets/images/mask/skill-range-mask.png" id = "' + i + '_' + j + '" onclick = "use_ice_storm(' + i + ',' + j + ',' + skill_attack + ')" class = "mask_img clickable_mask" onmouseenter = "load_magic_storm_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "以此单元格为中心释放魔法风暴">';
+      }
+    }
+  }
+  document.getElementById("mask").innerHTML = mask_innerhtml;
+  load_mask();
+}
+
+function selected_whack()
+{
+  if(!can_player_act()) return;
+  selected_operation = "whack";
+  reset_mask();
+  let mask_innerhtml = '';
+  for(let i = 0; i < height; i++)
+  {
+    for(let j = 0; j < width; j++)
+    {
+      let distance = manhattan_distance_cal(i,j,units[current_act_unit].x,units[current_act_unit].y);
+      if(distance >= units[current_act_unit].min_range && distance <= units[current_act_unit].max_range)
+      {
+        let flag = false;
+        for(let cur = 0; cur < units_count; cur++)
+        {
+          if(units[cur].x == i && units[cur].y == j && units[cur].is_alive)
+          {
+            mask_innerhtml += '<img src = "assets/images/mask/can-attack.png" id = "' + i + '_' + j + '" onclick = "whack(' + i + ',' + j + ',' + (units[current_act_unit].attack + 2) + ')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在攻击范围内\n对此单位发动向死则生">';
+            flag = true;
+            break;
+          }
+        }
+        if(!flag)
+        {
+          mask_innerhtml += '<img src = "assets/images/mask/whack-range-mask.png" id ="' + i + '_' + j + '" class = "mask_img" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在攻击范围内\n无法发动攻击:此单元格上无可攻击单位">';
+        }
+      }
+    }
+  }
+  document.getElementById("mask").innerHTML = mask_innerhtml;
+  load_mask();
+}
+
+function selected_poison()
+{
+  if(!can_player_act()) return;
+  selected_operation = "poison";
+  reset_mask();
+  let mask_innerhtml = '';
+  let skill_range = units[current_act_unit].max_range;
+  for(let i = 0; i < height; i++)
+  {
+    for(let j = 0; j < width; j++)
+    {
+      //console.log("当前搜寻:" + i + "," + j);
+      let distance = manhattan_distance_cal(i,j,units[current_act_unit].x,units[current_act_unit].y);
+      if(distance <= skill_range)
+      {
+        //console.log("可行");
+        mask_innerhtml += '<img src = "assets/images/mask/touchable.png" id = "' + i + '_' + j + '" onclick = "poison_cloud(' + i + ',' + j + ',' + (units[current_act_unit].attack - 1) + ')" class = "mask_img clickable_mask" onmouseenter = "load_poison_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "以此单元格为中心释放秘法毒云">';
+      }
+    }
+  }
+  document.getElementById("mask").innerHTML = mask_innerhtml;
+  load_mask();
+}
+
+function selected_buff()
+{
+  if(!can_player_act()) return;
+  selected_operation = "buff";
+  reset_mask();
+  let mask_innerhtml = '';
+  for(let i = 0; i < height; i++)
+  {
+    for(let j = 0; j < width; j++)
+    {
+      let distance = manhattan_distance_cal(i, j, units[current_act_unit].x, units[current_act_unit].y);
+      if(distance <= units[current_act_unit].max_range)
+      {
+        let flag = false;
+        for(let cur = 0; cur < units_count; cur++)
+        {
+          if(units[cur].x == i && units[cur].y == j && units[cur].side == units[current_act_unit].side && units[cur].is_alive)
+          {
+            mask_innerhtml += '<img src = "assets/images/mask/can-get-reinforce.png" id = "' + i + '_' + j + '" onclick = "reinforce(' + cur + ')" class = "mask_img clickable_mask" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在施法范围内\n对此单位释放昆仑护体仙术">';
+            flag = true;
+            break;
+          }
+        }
+        if(!flag)
+        {
+          mask_innerhtml += '<img src = "assets/images/mask/touchable.png" id ="' + i + '_' + j + '" class = "mask_img" onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')" title = "在施法范围内\n无法释放昆仑护体仙术:此单元格上没有友方单位">';
+        }
+      }
+    }
+  }
+  document.getElementById("mask").innerHTML = mask_innerhtml;
+  load_mask();
+}
+
+function selected_skip()
+{
+  if(!can_player_act()) return;
+  document.getElementById("selected_box").innerHTML = '';
+  document.getElementById("operation_hover_initial_mask").innerHTML = '';
+  clear_operation_hover_mask();
+  end_turn();
+}

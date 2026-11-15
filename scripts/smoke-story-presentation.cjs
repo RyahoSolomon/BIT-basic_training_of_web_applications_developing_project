@@ -5,10 +5,10 @@ const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
 
 const root = path.resolve(__dirname, '..');
-const background = 'main/story/chapter0/background.html';
-const prologue = 'main/story/chapter0/plot.html';
+const background = 'game/story/chapter-0/background.html';
+const prologue = 'game/story/chapter-0/plot.html';
 
-async function storyPages(directory = path.join(root, 'main/story')) {
+async function storyPages(directory = path.join(root, 'game/story')) {
   const pages = [];
   for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
     const file = path.join(directory, entry.name);
@@ -158,17 +158,17 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     // Use normal registration/new-game initialization for chapters that update
     // progress or achievements while loading.
     const username = 'presentation-smoke-player';
-    await open('main/register.html');
+    await open('game/pages/register.html');
     await evaluate(`
       document.getElementById('username').value = ${JSON.stringify(username)};
       document.getElementById('password').value = 'presentation-smoke';
       document.getElementById('confirm-password').value = 'presentation-smoke';
     `);
     await click('#registerForm button[type="submit"]');
-    await page('main/login.html');
-    await open('main/_INDEX.html');
+    await page('game/pages/login.html');
+    await open('game/pages/menu.html');
     await evaluate('localStorage.setItem("username", ' + JSON.stringify(username) + ')');
-    await click('a[href="story/chapter0/background.html"]');
+    await click('a[href="../story/chapter-0/background.html"]');
     await page(background);
     const defaultFont = await checkPresentation('#overlayText');
     assert.match(defaultFont, /KaiTi|楷体/i, 'The shared default should use the KaiTi font stack');
@@ -207,7 +207,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     for (const sceneFont of [null, 'sans-serif']) {
       const { identifier: fixture } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
         source: `document.addEventListener('DOMContentLoaded', () => {
-          if (!location.pathname.endsWith('/main/story/chapter0/plot.html')) return;
+          if (!location.pathname.endsWith('/game/story/chapter-0/plot.html')) return;
           window.storyScene.fontFamily = ${JSON.stringify(sceneFont)};
           window.storyScene.lines[0].fontFamily = 'monospace';
           window.storyScene.lines[0].caption = 'Custom-font caption';
@@ -228,7 +228,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     }
     const { identifier: backgroundFixture } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
       source: `document.addEventListener('DOMContentLoaded', () => {
-        if (location.pathname.endsWith('/main/story/chapter0/background.html')) {
+        if (location.pathname.endsWith('/game/story/chapter-0/background.html')) {
           backgrounds[0].fontFamily = 'monospace';
         }
       }, { once: true });`,

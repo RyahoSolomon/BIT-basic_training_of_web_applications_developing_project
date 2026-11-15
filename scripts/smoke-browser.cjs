@@ -63,7 +63,7 @@ async function connect(url, onEvent) {
   return { send, close: () => ws.close() };
 }
 
-async function withBrowser(run) {
+async function withBrowser(run, { userGesture = true } = {}) {
   const browser = findBrowser();
   const profile = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'bit-game-smoke-'));
   let chrome, cdp, launchError, stopped;
@@ -103,7 +103,7 @@ async function withBrowser(run) {
       urls: ['*://fonts.googleapis.com/*', '*://fonts.gstatic.com/*'],
     });
     async function evaluate(expression) {
-      const result = await cdp.send('Runtime.evaluate', {expression, returnByValue: true, userGesture: true});
+      const result = await cdp.send('Runtime.evaluate', {expression, returnByValue: true, userGesture});
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
       return result.result.value;
     }
