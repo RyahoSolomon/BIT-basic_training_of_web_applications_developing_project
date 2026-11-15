@@ -7,6 +7,7 @@ html, body {
     height: 100%;
     margin: 0;
     overflow: hidden;
+    background-color: #000;
 }
 
 body {
@@ -30,6 +31,7 @@ body .button-text {
 
 body .image-container {
     position: fixed;
+    z-index: 1;
     transition: none;
     animation: none;
 }
@@ -45,4 +47,32 @@ body #slideImage {
 body .topLeftText,
 body .text {
     opacity: 1;
+}
+
+#story-player {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+#story-player .image-container,
+#story-player .button-container {
+    pointer-events: auto;
+}
+
+body > .centered-text,
+body > .centered-text2 {
+    z-index: 2;
+}
+
+.story-transition-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }

@@ -21,7 +21,7 @@ npm test
 
 `npm run check` 检查 HTML、CSS 和可静态识别的 JavaScript 本地资源与页面路径，并运行检查器自身的测试。路径失效时会报告文件名和行号。检查不扫描美术源稿，也不会推断运行时拼接的任意 URL。
 
-`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、终局结算、回合推进、单位显示、开局、剧情、页面导航、音频和剧情显示十一个浏览器回归检查，覆盖注册、登录、新游戏、新旧存档恢复、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、胜负与成就确认、回合等待和重复操作、单位节点保留、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
+`npm test` 运行上述检查、存档与战斗规则单元测试，以及存档、战斗、移动、终局结算、回合推进、单位显示、开局、剧情、页面导航、音频、剧情显示和背景过渡十二个浏览器回归检查，覆盖注册、登录、新游戏、新旧存档恢复、损坏数据保护、伤害与死亡结算、玩家与 AI 移动、胜负与成就确认、回合等待和重复操作、单位节点保留、战斗入口、剧情分支、页面资源与跳转，以及关闭音乐后的跨页与刷新行为。浏览器检查使用独立的临时档案，不使用日常浏览器中的游戏存档。任一检查失败会返回非零退出码。
 
 这些检查无需安装 npm 包，但浏览器回归需要已安装 Chrome 或 Edge。若浏览器未安装在常见位置，可用环境变量 `BROWSER_PATH` 指定可执行文件。也可分别运行：
 
@@ -34,6 +34,7 @@ npm run test:turn
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
 node scripts/smoke-story-presentation.cjs
+node scripts/smoke-story-transitions.cjs
 node scripts/smoke-navigation.cjs
 node scripts/smoke-audio.cjs
 ```
@@ -70,7 +71,29 @@ node scripts/smoke-audio.cjs
 { speaker: "[法海]", text: "此事非同小可。", fontFamily: '"华文新魏", serif' },
 ```
 
-共用播放逻辑位于 [src/story/player.jsx](src/story/player.jsx)。修改该文件后，在根目录执行以下命令，并将重新生成的 `game/generated/story-player.js` 及其许可证文件一起提交：
+每句可用 `background` 指定背景图片，用 `transition` 指定进入该句时的背景过渡；开场 `background.js` 的条目继续用 `image` 指定图片，同样支持 `transition`。
+
+| `transition` 值 | 效果 |
+| --- | --- |
+| `"black"`（默认） | 旧背景渐入黑场，在全黑时切图，再从黑场显示新背景 |
+| `"white"` | 旧背景渐入白场，在全白时切图，再从白场显示新背景 |
+| `"crossfade"` | 保留旧背景，将新背景从透明逐渐叠加至不透明 |
+
+```js
+// 普通章节：省略 transition 时，换背景默认使用黑场。
+{ speaker: "[鸢阑]", text: "我们到了。", background: "../../assets/images/background/003.png" },
+{ speaker: "[法海]", text: "眼前忽然一亮。", background: "../../assets/images/background/004.png", transition: "white" },
+{ speaker: "{player}", text: "远处的景象逐渐清晰。", background: "../../assets/images/background/005.png", transition: "crossfade" },
+
+// 开场介绍：在 backgrounds 中给对应条目加 transition。
+{ image: "../../assets/images/background/002.png", text: "女娲创造了人族……", transition: "crossfade" },
+```
+
+过渡约 600 毫秒，只作用于背景，文字和文本框保持固定。新图加载并解码完成后才开始过渡，期间忽略重复翻页。仅换台词且没有配置 `background` 或 `transition` 时直接更新文字；空背景继承当前图片，显式指定 `transition` 可给同一背景加转场。开场条目均配置了 `image`，所以每段默认都有黑场过渡。开场字幕后的 `intro.background` 也使用同一逻辑，可用 `intro.transition` 指定效果，首句的设置优先。
+
+图片加载失败或超过 15 秒时保留旧背景并继续显示台词；系统开启减少动态效果时直接切换到已加载的背景。共用实现位于 `game/story/scripts/background-transition.js`，修改后需要重新构建剧情播放器。
+
+共用播放逻辑位于 [src/story/player.jsx](src/story/player.jsx)。修改播放器或背景过渡实现后，在根目录执行以下命令，并将重新生成的 `game/generated/story-player.js` 及其许可证文件一起提交：
 
 ```sh
 npm ci

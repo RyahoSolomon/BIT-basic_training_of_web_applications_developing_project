@@ -1,5 +1,7 @@
 let currentBackground = 0;
 let isReady = false;
+let backgroundTransition;
+let leaving = false;
 
 const backgrounds = [
     {
@@ -32,36 +34,47 @@ const backgrounds = [
     }
 ];
 
-function nextBackground(event) {
+async function nextBackground(event) {
     if (!isReady || event.detail > 1) return;
     if (currentBackground < backgrounds.length - 1) {
-        currentBackground++;
-        loadBackground(currentBackground);
+        isReady = false;
+        await loadBackground(currentBackground + 1);
+        if (!leaving) isReady = true;
     }else{
+        leaving = true;
+        backgroundTransition.cancel();
         window.location.href = "plot.html";
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const image = document.getElementById('slideImage');
     const container = document.querySelector('.image-container');
+    backgroundTransition = new window.StoryBackgroundTransition();
+    window.addEventListener('pagehide', () => { leaving = true; });
+    container.addEventListener('click', nextBackground);
 
-    // 加载初始背景
-    loadBackground(currentBackground);
+    const boxReady = image.complete && image.naturalWidth ? Promise.resolve()
+        : new Promise(resolve => image.addEventListener('load', resolve, { once: true }));
 
-    // 框图加载后，整组文字和框同时出现。
-    function showDialogue() {
+    // 背景与框图均就绪后，整组文字和框同时出现。
+    await Promise.all([boxReady, loadBackground(0)]);
+    if (!leaving) {
         container.style.visibility = 'visible';
         isReady = true;
     }
-    if (image.complete && image.naturalWidth) showDialogue();
-    else image.addEventListener('load', showDialogue, { once: true });
-    container.addEventListener('click', nextBackground);
 });
 
-function loadBackground(index) {
+async function loadBackground(index) {
     const overlayText = document.getElementById('overlayText');
-    document.body.style.backgroundImage = `url(${backgrounds[index].image})`;
-    overlayText.textContent = backgrounds[index].text;
-    overlayText.style.setProperty('--story-font-family', backgrounds[index].fontFamily || '');
+    const slide = backgrounds[index];
+    await backgroundTransition.show(slide.image, {
+        transition: slide.transition,
+        onCommit: () => {
+            currentBackground = index;
+            overlayText.textContent = slide.text;
+            overlayText.style.setProperty('--story-font-family', slide.fontFamily || '');
+        },
+    });
+    if (!leaving) backgroundTransition.preload(backgrounds[index + 1]?.image).catch(() => {});
 }

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
+import '../../game/story/scripts/background-transition.js';
 
 function navigate(target) {
   if (typeof target === 'function') target();
@@ -12,24 +14,42 @@ function StoryPlayer({ scene }) {
   const [finished, setFinished] = useState(false);
   const [boxReady, setBoxReady] = useState(false);
   const leaving = useRef(false);
+  const backgrounds = useRef(null);
+  const advancing = useRef(false);
   const player = localStorage.getItem('username') || '';
   const text = value => (value || '').replaceAll('{player}', player);
 
   useEffect(() => {
+    const controller = new window.StoryBackgroundTransition();
+    backgrounds.current = controller;
+    let disposed = false;
     const introduction = document.querySelector(scene.intro?.selector || '#text1');
-    const timer = setTimeout(() => {
-      if (introduction) introduction.hidden = true;
-      if (scene.intro?.background) {
-        document.body.style.backgroundImage = 'url("' + scene.intro.background + '")';
-      }
-      setReady(true);
+    const first = scene.lines[0] || {};
+    const firstImage = first.background || scene.intro?.background || controller.currentImage();
+    controller.preload(firstImage).catch(() => {});
+    const timer = setTimeout(async () => {
+      if (disposed || leaving.current) return;
+      await controller.show(firstImage, {
+        transition: first.transition || scene.intro?.transition,
+        onCommit: () => { if (introduction) introduction.hidden = true; },
+      });
+      if (!disposed && !leaving.current) setReady(true);
     }, introduction ? 2000 : 0);
-    return () => clearTimeout(timer);
+    return () => {
+      disposed = true;
+      clearTimeout(timer);
+      controller.destroy();
+    };
   }, [scene]);
+
+  useEffect(() => {
+    backgrounds.current?.preload(scene.lines[index + 1]?.background).catch(() => {});
+  }, [scene, index]);
 
   function leave(target, before) {
     if (leaving.current) return;
     leaving.current = true;
+    backgrounds.current?.cancel();
     before?.();
     navigate(target);
   }
@@ -41,10 +61,24 @@ function StoryPlayer({ scene }) {
     return () => button?.removeEventListener('click', skip);
   }, [scene]);
 
-  function advance(event) {
-    if (!ready || !boxReady || finished || leaving.current || event.detail > 1) return;
+  async function advance(event) {
+    if (!ready || !boxReady || finished || leaving.current || advancing.current || event.detail > 1) return;
     if (index + 1 < scene.lines.length) {
-      setIndex(index + 1);
+      const nextIndex = index + 1;
+      const next = scene.lines[nextIndex];
+      advancing.current = true;
+      try {
+        if (next.background || next.transition) {
+          await backgrounds.current.show(next.background, {
+            transition: next.transition,
+            onCommit: () => flushSync(() => setIndex(nextIndex)),
+          });
+        } else {
+          setIndex(nextIndex);
+        }
+      } finally {
+        advancing.current = false;
+      }
     } else {
       setFinished(true);
       if (!scene.choices && !scene.inlineChoice) leave(scene.next);

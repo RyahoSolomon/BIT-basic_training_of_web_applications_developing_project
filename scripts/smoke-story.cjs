@@ -27,6 +27,8 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
 
   async function readLines() {
+    // The first-battle guide opens another tab; resume painting before reading.
+    await cdp.send('Page.bringToFront');
     await until('first dialogue', () => evaluate('!!document.querySelector("#story-player .text")'));
     return evaluate('window.storyScene.lines');
   }
@@ -40,6 +42,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       && document.querySelector("#story-player .topLeftText")?.textContent.trim() === ${JSON.stringify(speaker)}
       && getComputedStyle(document.querySelector("#story-player .image-container")).visibility === "visible"
       && getComputedStyle(document.querySelector("#story-player .text")).opacity === "1"
+      && document.body.dataset.storyTransitioning !== "true"
       && (document.querySelector("#story-player .centered-text1")?.textContent.trim() || "") === ${JSON.stringify(caption)}
     `));
     assert.equal(await evaluate('document.querySelectorAll("#story-player .text").length'), 1);
@@ -75,6 +78,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
         const text = document.getElementById("overlayText");
         const style = getComputedStyle(text);
         return text.textContent === ${JSON.stringify(slides[index].text)}
+          && document.body.dataset.storyTransitioning !== "true"
           && style.visibility === "visible" && Number(style.opacity) === 1
           && style.display !== "none" && text.getBoundingClientRect().height > 0;
       })()`));

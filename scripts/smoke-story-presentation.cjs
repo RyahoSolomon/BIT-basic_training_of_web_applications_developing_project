@@ -89,6 +89,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       && document.getElementById('slideImage')?.complete
       && document.getElementById('slideImage')?.naturalWidth > 0
       && window.presentationSmoke?.visibleFrames > 0
+      && document.body.dataset.storyTransitioning !== 'true'
     `));
   }
 
