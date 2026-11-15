@@ -42,11 +42,25 @@ body #slideImage {
     animation: none;
     -webkit-user-drag: none;
     pointer-events: none;
+    image-rendering: pixelated;
 }
 
 body .topLeftText,
 body .text {
     opacity: 1;
+}
+
+#story-player .topLeftText {
+    /* The nameplate occupies the top 16 pixels of the 68-pixel dialogue image. */
+    height: calc(100% * 16 / 68);
+    display: flex;
+    align-items: center;
+    text-shadow: none;
+}
+
+#story-player .topLeftText,
+#story-player .text {
+    left: 5%;
 }
 
 #story-player {
