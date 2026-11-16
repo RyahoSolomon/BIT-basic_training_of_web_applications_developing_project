@@ -355,6 +355,29 @@ test('continue restores progress and achievements without overwriting newer glob
   assert.equal(storage.getItem(SETTINGS_KEY), null, 'Continue does not initialize settings from an older save either');
 });
 
+test('reading a saved checkpoint validates it without restoring or saving the live state', () => {
+  const { storage, store } = setup();
+  expectUnchanged(storage, store.readAuto, 'EMPTY_SAVE');
+  store.importSave(encoded(advanced));
+  storage.setItem('current', '{unfinished');
+  storage.setItem('level1', '0');
+  storage.setItem(SETTINGS_KEY, '{broken');
+  const before = storage.dump();
+  const saved = store.readAuto();
+  assert.deepEqual(saved, advanced);
+  saved.progress.levels[0] = 0;
+  assert.deepEqual(store.readAuto(), advanced, 'The returned snapshot cannot change the stored save');
+  assert.deepEqual(storage.dump(), before, 'Reading must not touch the save or any live fields');
+  for (const [value, code] of [
+    ['{broken', 'INVALID_SAVE'],
+    [encoded({...advanced, progress: {...advanced.progress, levels: [1, 1]}}), 'INVALID_SAVE'],
+    [encoded({...advanced, version: VERSION + 1}), 'UNSUPPORTED_VERSION'],
+  ]) {
+    storage.setItem(SAVE_KEY, value);
+    expectUnchanged(storage, store.readAuto, code);
+  }
+});
+
 test('missing progress, malformed saves and unsupported versions never write anything', () => {
   const { storage, store } = setup();
   for (const action of [store.capture, store.saveAuto, store.exportSave]) {

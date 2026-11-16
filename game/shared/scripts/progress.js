@@ -286,6 +286,7 @@
                     throw error;
                 }
             }),
+            readAuto: guarded(() => decodeSave(storage.getItem(SAVE_KEY))),
             restoreAuto: guarded(() => apply(decodeSave(storage.getItem(SAVE_KEY)))),
             exportSave: guarded(() => JSON.stringify(saveAuto(), null, 2)),
             importSave: guarded(text => {

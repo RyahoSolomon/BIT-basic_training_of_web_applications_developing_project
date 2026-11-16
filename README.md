@@ -31,6 +31,7 @@ npm test
 
 ```sh
 npm run test:progress
+npm run test:menu
 npm run test:battle
 npm run test:movement
 npm run test:settlement
@@ -55,6 +56,8 @@ node scripts/smoke-audio.cjs
 新游戏、自动保存、继续游戏与 JSON 存档导入导出统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理，只保留一份本地存档。各页面右上角的设置入口提供音乐、音效和存档操作；两种音量默认均为 50，静音后再次点击图标恢复此前音量，拖动滑块也能开启声音。音效仅预留设置，等待后续接入。下载文件名为 `save_{主角名字}.json`，导入后返回地图。空档或损坏数据不会覆盖当前进度。存档格式见 [存档格式](docs/save-format.md)。
 
 主菜单的设置不显示角色姓名和改名按钮，无论是否已有存档；进入游戏后，设置中显示当前姓名并允许修改。未输入姓名时不预设显示名字，点击“开始”后由玩家填写。
+
+主菜单背景根据唯一存档中的通关记录，显示下一关战前剧情的首张对话背景，重打旧关不会让背景倒退。在 [主菜单背景配置](game/pages/menu-backgrounds.js) 中修改图片路径即可，无需构建：`chapters` 按第一至第六关排列，`newGame` 配置无存档或存档不可读时的背景（默认第一关），`mainComplete` 配置主线通关但隐藏关未解锁时的背景（默认第五关），`allComplete` 配置全部通关后的背景（默认第六关）。图片路径相对于 `game/pages/menu.html`。前五关完成且隐藏关已解锁时使用第六关背景；读取背景不恢复或改写存档，只加载所选的一张背景图。
 
 [本地档案初始化](game/shared/scripts/profile.js) 在各页面的其他游戏脚本之前运行，提供姓名校验与安全读取，仅在缺失时补齐七项成就和结局标记。显示姓名保存在 `playerName`；内部存储 ID 仍为 `test`，更换名字不会创建多个账户或丢失累计成就。它不会生成游戏进度；从主菜单开始新游戏或导入存档后再进入地图与战斗。页面依次加载 `profile.js`、`preferences.js`、`progress.js`、`settings.js`，并使用共用 `settings.css`。
 

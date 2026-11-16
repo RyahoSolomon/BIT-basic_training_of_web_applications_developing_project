@@ -16,7 +16,7 @@ body {
     min-height: 100vh;
     padding: 4vh 1rem;
     font-family: "genshin", sans-serif;
-    background: #111 url("../../assets/images/background/005-huguo-palace.png") center / cover fixed;
+    background: #111 var(--menu-background, none) center / cover fixed;
 }
 
 .header {
