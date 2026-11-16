@@ -3,6 +3,16 @@
   position: fixed;
 }
 
+.unit.unit-acted
+{
+  filter: grayscale(1);
+}
+
+#hover_initial_mask .selectable-unit
+{
+  cursor: pointer;
+}
+
 #units
 {
   margin:0 auto;

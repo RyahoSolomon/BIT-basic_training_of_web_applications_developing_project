@@ -2,12 +2,37 @@
 // 每次行动和等待任务都有标识，旧按钮与已取消的计时器不能推进新行动。
 const battle_turn_flow = {
     id: 0, actor: null, phase: 'ready', timer: null, waitId: 0, suspended: false,
+    completed: new Set(), moved: new Set(),
 };
 const TURN_DELAY_MS = 300;
 
 function can_player_act() {
     return !battle_turn_flow.suspended && battle_turn_flow.phase === 'player' &&
-        battle_turn_flow.actor === units[current_act_unit] && battle_turn_flow.actor.is_alive;
+        battle_turn_flow.actor === units[current_act_unit] && battle_turn_flow.actor.is_alive &&
+        !has_unit_acted(battle_turn_flow.actor);
+}
+
+function has_unit_acted(unit) {
+    return battle_turn_flow.completed.has(unit);
+}
+
+function can_select_player_unit(id) {
+    const unit = units[id];
+    return can_player_act() && !!unit && unit.is_alive && unit.commander_type === 'player' &&
+        !has_unit_acted(unit) && !document.querySelector(
+            '#mission_icons > *, #plot > *, #achievement_popup > *, dialog[open]');
+}
+
+function select_player_unit(id) {
+    if (!can_select_player_unit(id) || id === current_act_unit) return false;
+    current_act_unit = id;
+    start_turn();
+    return true;
+}
+
+function select_player_unit_at(x, y) {
+    const id = units.findIndex(unit => unit.is_alive && unit.x === x && unit.y === y);
+    return select_player_unit(id);
 }
 
 function clear_turn_controls() {
@@ -23,7 +48,7 @@ function start_turn() {
     const flow = battle_turn_flow;
     if (flow.suspended || flow.phase === 'waiting' || flow.phase === 'ended') return;
     const actor = units[current_act_unit];
-    if (!actor || !actor.is_alive) return;
+    if (!actor || !actor.is_alive || has_unit_acted(actor)) return;
     // 重复开始不能重置玩家移动次数，也不能让同一电脑单位再攻击一次。
     if (flow.phase !== 'ready' && flow.actor === actor) return;
     flow.id++;
@@ -34,7 +59,8 @@ function start_turn() {
     units_display_update();
     load_items();
     if (flow.phase === 'player') {
-        have_moved = false;
+        // 移动次数属于角色；切换头像不会恢复移动，也不会结束其他角色的行动。
+        have_moved = flow.moved.has(actor);
         selected_box_update();
         actor.commander.initial_UI(current_act_unit);
     } else {
@@ -83,6 +109,7 @@ function end_turn() {
 
 function finish_current_turn() {
     if (settle_battle()) return;
+    battle_turn_flow.completed.add(units[current_act_unit]);
     battle_turn_flow.phase = 'waiting';
     clear_turn_controls();
     units_display_update();
@@ -107,16 +134,22 @@ function schedule_next_turn() {
         if (flow.waitId !== waitId || flow.id !== turnId || flow.suspended || flow.phase !== 'waiting') return;
         flow.timer = null;
         if (settle_battle()) return;
-        do {
-            current_act_unit++;
-            if (current_act_unit >= units_count) {
-                if (end_round()) return;
-                current_act_unit = 0;
-            }
-        } while (!units[current_act_unit].is_alive);
+        let next = next_pending_unit();
+        if (next === -1) {
+            if (end_round()) return;
+            flow.completed.clear();
+            flow.moved.clear();
+            next = next_pending_unit();
+        }
+        if (next === -1) return;
+        current_act_unit = next;
         flow.phase = 'ready';
         start_turn();
     }, TURN_DELAY_MS);
+}
+
+function next_pending_unit() {
+    return units.findIndex(unit => unit.is_alive && !has_unit_acted(unit));
 }
 
 function stop_turn_flow() {

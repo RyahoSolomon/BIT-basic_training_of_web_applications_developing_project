@@ -94,7 +94,7 @@ function initial_board()
     for(let j = 0; j < width; j++)
     {
       board_html_value += '<img id = "block_'+i+'_'+j+'" class = "block" src = "' + id_img_mapping(map[i][j]) + '" alt = "block:(' + i + ',' + j + ')">';
-      hover_initial_html+= '<img id = "hover_initial_mask_' + i + '_' + j +'" src = "assets/images/mask/transparent-block-mask.png"  onmouseenter = "load_hover_mask(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')">';
+      hover_initial_html+= '<img id = "hover_initial_mask_' + i + '_' + j +'" src = "assets/images/mask/transparent-block-mask.png" onclick = "select_player_unit_at(' + i + ',' + j + ')" onmouseenter = "load_hover_mask(' + i + ',' + j + '); update_unit_hover_cell(' + i + ',' + j + ')" onmouseleave = "delete_hover_mask(' + i + ',' + j + ')">';
     }
   }
   //console.log(board_html_value);

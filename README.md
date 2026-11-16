@@ -69,6 +69,8 @@ node scripts/smoke-audio.cjs
 
 回合推进由 [turn-flow.js](game/battle/scripts/turn-flow.js) 管理，约 300 毫秒的行动间隔使用异步计时器，期间页面仍可响应。电脑行动只执行一次，确认后才进入下一单位；单位刷新保留现有显示节点，详见 [回合推进与单位显示](docs/turn-flow.md)。
 
+玩家行动时可点击棋盘上的角色头像切换当前角色，自行安排三人的行动顺序。移动后可以切换，再切回仍可攻击，但不能重复移动；结束行动的角色头像置灰，下一轮恢复。电脑和友方 NPC 仍按原顺序行动，攻击或辅助技能的目标点击保持原用途。
+
 ### 编辑章节对话
 
 第 0–6 章的对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。序章 `plot.html` 和第二关 `plot-after.html` 已将整段分支剧情合并为同页节点，分支对白直接存放在对应剧情包中。

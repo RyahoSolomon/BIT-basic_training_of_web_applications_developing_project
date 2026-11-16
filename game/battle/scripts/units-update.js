@@ -76,6 +76,7 @@ function update_unit_display_view(view, unit, id)
   set_unit_display_text(nodes.reinforce_info, String(unit.reinforce));
 
   const player = unit.commander_type === 'player';
+  nodes.unit.classList.toggle('unit-acted', player && has_unit_acted(unit));
   nodes.exp_icon.hidden = nodes.level_info.hidden = nodes.exp_info.hidden = !player;
   if(player)
   {
@@ -95,6 +96,38 @@ function get_unit_hover_info(unit)
     '\n中毒层数:' + unit.poison + ' 昆仑护体仙术层数:' + unit.reinforce;
 }
 
+function update_unit_hover_cell(x, y, occupants)
+{
+  // 弹层关闭后再次悬浮时重读操作状态，避免沿用弹层打开时的提示与鼠标样式。
+  if(!occupants)
+  {
+    occupants = [];
+    for(let id = 0; id < units_count; id++)
+    {
+      if(units[id].is_alive && units[id].x === x && units[id].y === y) occupants.push(id);
+    }
+  }
+  let text = get_block_info(map[x][y]);
+  let selectable = false;
+  for(const id of occupants)
+  {
+    const unit = units[id];
+    text += get_unit_hover_info(unit);
+    if(unit.commander_type === 'player')
+    {
+      const canSelect = can_select_player_unit(id);
+      const current = id === current_act_unit && can_player_act();
+      const status = has_unit_acted(unit) ? '本轮已行动' :
+        current ? '当前行动' : canSelect ? '点击头像切换行动角色' : '等待行动';
+      text += '\n' + status;
+      selectable = canSelect && !current;
+    }
+  }
+  const mask = document.getElementById('hover_initial_mask_' + x + '_' + y);
+  if(mask.title !== text) mask.title = text;
+  mask.classList.toggle('selectable-unit', selectable);
+}
+
 function units_display_update()
 {
   const container = document.getElementById('units');
@@ -109,7 +142,7 @@ function units_display_update()
     }
   }
 
-  const hoverText = map.map(row => row.map(get_block_info));
+  const occupants = map.map(row => row.map(() => []));
   for(let id = 0; id < units_count; id++)
   {
     const unit = units[id];
@@ -121,14 +154,13 @@ function units_display_update()
       unit_display_views.set(unit, view);
     }
     update_unit_display_view(view, unit, id);
-    hoverText[unit.x][unit.y] += get_unit_hover_info(unit);
+    occupants[unit.x][unit.y].push(id);
   }
   for(let x = 0; x < height; x++)
   {
     for(let y = 0; y < width; y++)
     {
-      const mask = document.getElementById('hover_initial_mask_' + x + '_' + y);
-      if(mask.title !== hoverText[x][y]) mask.title = hoverText[x][y];
+      update_unit_hover_cell(x, y, occupants[x][y]);
     }
   }
 }
@@ -408,7 +440,7 @@ function initial_units(level)
         units[units_count].uuid = units_count;
         units_count++;
         break;
-      }  
+      }
     case 5:
       {
         units[units_count]=new Protagonist(0);

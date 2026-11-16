@@ -164,6 +164,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     await startBattle(1);
     await arrange(`
       current_act_unit = 1;
+      battle_turn_flow.completed.add(units[0]);
       achievements.ach4 = true;
       if (${JSON.stringify(cause)} === 'bleeding') {
         units[1].health = 1;

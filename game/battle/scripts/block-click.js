@@ -43,6 +43,7 @@ function move_selected_unit(x, y)
   unit.x = x;
   unit.y = y;
   have_moved = true;
+  battle_turn_flow.moved.add(unit);
   selected_operation = "";
   units_display_update();
   load_items();
