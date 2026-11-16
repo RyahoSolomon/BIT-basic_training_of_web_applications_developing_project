@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     backgroundTransition = new window.StoryBackgroundTransition();
     window.addEventListener('pagehide', () => { leaving = true; });
     container.addEventListener('click', nextBackground);
+    window.StoryAdvanceInput.bind(nextBackground);
     const skip = document.createElement('button');
     skip.type = 'button';
     skip.setAttribute('data-story-skip', '');

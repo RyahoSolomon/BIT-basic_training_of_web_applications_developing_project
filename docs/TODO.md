@@ -114,11 +114,11 @@
 
 ## 剧情阅读与流程
 
-- [ ] **18 · 支持键盘推进对白，并显示继续提示**
+- [x] **18 · 支持键盘推进对白**
 
-  目前普通对白按 Space、Enter 都不推进。支持这两个按键，并在对话框角落显示小箭头或“继续”提示；输入名字、打开设置和选择分支时避免误推进。
+  开场背景介绍、普通对白和节点剧情已支持 Space、Enter 单次推进。长按不会连续跳句，转场期间的输入不会积压；设置、姓名输入、输入法选字、分支选项和成就弹窗均避免误推进。继续提示暂不显示，待位置确定后再加入。
 
-  相关位置：[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)。
+  相关位置：[共享键盘输入](../game/story/scripts/advance-input.js)、[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)、[开场背景介绍](../game/story/chapter-0/background.js)。验证：`npm run test:story-keyboard`。
 
 - [ ] **19 · 增加只读的对白回看记录**
 

@@ -38,6 +38,7 @@ npm run test:settlement
 npm run test:turn
 npm run test:settings
 npm run test:story-skip
+npm run test:story-keyboard
 npm run test:player-name
 node scripts/smoke-game.cjs
 node scripts/smoke-story.cjs
@@ -74,6 +75,8 @@ node scripts/smoke-audio.cjs
 ### 编辑章节对话
 
 第 0–6 章的对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。序章 `plot.html` 和第二关 `plot-after.html` 已将整段分支剧情合并为同页节点，分支对白直接存放在对应剧情包中。
+
+开场背景介绍、普通对白和节点剧情支持点击、空格或回车继续。按住按键不会连续跳句，转场期间的按键也不会积压到下一句。设置、姓名输入、输入法选字与成就弹窗不会推进底层对白；出现剧情选项时不会自动选择，仍需点击选项，或用 Tab 聚焦按钮后按空格、回车确认。纯键盘首次阅读也会在浏览器允许交互后启动音乐，并遵守静音设置。
 
 场景 JS 定义 `window.storyScene`。线性剧情在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`inlineChoice` 定义对话框内的最后一个按钮，`next` 定义读完后的目标；分支选项统一使用下述节点结构。添加或删除一句时，将说话人与台词作为同一条记录编辑。
 

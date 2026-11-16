@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal, flushSync } from 'react-dom';
+import { useAdvanceInput } from './use-advance-input.js';
 
 function music(source) {
   const audio = document.getElementById('audioPlayer');
@@ -157,6 +158,8 @@ export default function GraphPlayer({ scene }) {
       setError(failure.message || '无法保存选择，请重试。');
     }
   }
+
+  useAdvanceInput(advance);
 
   function closeAward(event) {
     if (!pendingAwards.current.length || event.detail > 1) return;

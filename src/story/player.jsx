@@ -4,6 +4,7 @@ import { createPortal, flushSync } from 'react-dom';
 import '../../game/story/scripts/background-transition.js';
 import GraphPlayer from './graph-player.jsx';
 import { validateGraph } from './graph-model.mjs';
+import { useAdvanceInput } from './use-advance-input.js';
 
 function navigate(target) {
   if (typeof target === 'function') target();
@@ -92,6 +93,8 @@ function StoryPlayer({ scene }) {
     event.stopPropagation();
     leave(target);
   }
+
+  useAdvanceInput(advance);
 
   const line = scene.lines[index] || {};
   const choice = finished ? scene.inlineChoice : null;
