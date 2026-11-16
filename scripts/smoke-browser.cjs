@@ -139,7 +139,16 @@ async function withBrowser(run, { userGesture = true } = {}) {
       await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...point });
     }
     async function open(file) {
-      await cdp.send('Page.navigate', {url: pathToFileURL(path.join(root, file)).href});
+      const navigation = await cdp.send('Page.navigate', {url: pathToFileURL(path.join(root, file)).href});
+      if (navigation.errorText) throw new Error('Navigation failed for ' + file + ': ' + navigation.errorText);
+      if (navigation.isDownload) throw new Error('Expected a document but navigation downloaded ' + file);
+      assert.ok(navigation.loaderId, 'Expected a new document navigation for ' + file);
+      // A repeated URL can already match the old, complete document. Wait for
+      // this navigation's loader to commit before checking DOM readiness.
+      await until('new document for ' + file, async () => {
+        const { frameTree } = await cdp.send('Page.getFrameTree');
+        return frameTree.frame.id === navigation.frameId && frameTree.frame.loaderId === navigation.loaderId;
+      });
       await page(file);
     }
     await run({ evaluate, click, pointerClick, page, open, cdp, until });

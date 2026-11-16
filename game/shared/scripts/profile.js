@@ -18,15 +18,14 @@
     const storage = root.localStorage;
     storage.setItem('username', 'test');
     if (storage.getItem('testachievement') === null) {
-        storage.setItem('testachievement', JSON.stringify({
-            ach1: 0, ach2: 0, ach3: 0, ach4: 0,
-            ach5: 0, ach6: 0, ach7: 0, ach8: 0,
-        }));
+        storage.setItem('testachievement', JSON.stringify(
+            Object.fromEntries(api.achievementKeys.map(key => [key, 0]))));
     }
     if (storage.getItem('testflag') === null) storage.setItem('testflag', '0');
 })(typeof window === 'undefined' ? globalThis : window, function () {
     'use strict';
 
+    const achievementKeys = Object.freeze(['ach1', 'ach2', 'ach3', 'ach4', 'ach6', 'ach7', 'ach8']);
     const ideograph = /[\p{Unified_Ideograph}〇]/u;
     const disallowed = /[^\p{Unified_Ideograph}〇A-Za-z0-9 _-]/u;
 
@@ -48,5 +47,5 @@
         return { valid: true, name, count, message: '' };
     }
 
-    return { countName, validateName };
+    return { achievementKeys, countName, validateName };
 });

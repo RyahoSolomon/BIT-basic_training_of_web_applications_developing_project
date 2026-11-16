@@ -47,7 +47,7 @@
         isFirstPlay: field(true, isBoolean),
     };
     const achievementsDefinition = Object.fromEntries(
-        Array.from({ length: 8 }, (_, index) => ['ach' + (index + 1), field(0, isFlag)]));
+        profile.achievementKeys.map(key => [key, field(0, isFlag)]));
     const audioSetting = () => ({
         volume: field(50, value => Number.isInteger(value) && value >= 1 && value <= 100),
         muted: field(false, isBoolean),

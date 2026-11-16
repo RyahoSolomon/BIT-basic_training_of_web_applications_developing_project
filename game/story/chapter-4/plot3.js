@@ -1,5 +1,3 @@
-// 原稿末句未播放，原流程在两个分支结束后直接进入护山大阵。
-// 前面就是梓决岛主所说的护山大阵了!做好准备吧!我们要找到所有阵眼!
 const sharedLines = [
   {
     "speaker": "[叶岱]",
@@ -56,7 +54,7 @@ window.storyScene = {
     ...sharedLines,
     ...(current?.hidden_clue_poison ? shortLines : longLines)
   ],
-  "next": "../../minesweeper/index.html",
-  "skip": "../../minesweeper/index.html",
+  "next": "../../map/index.html",
+  "skip": "../../map/index.html",
   "boxImage": "../../assets/images/ui/text-box.png"
 };

@@ -1,6 +1,6 @@
 // 存储中的成就键与展示编号只在此对应，避免不同结算入口提示错位。
 const ACHIEVEMENT_IDS = Object.freeze({
-  ach1: 0, ach2: 1, ach3: 2, ach4: 3, ach5: 4, ach6: 5, ach7: 6, ach8: 7,
+  ach1: 0, ach2: 1, ach3: 2, ach4: 3, ach6: 5, ach7: 6, ach8: 7,
 });
 const achievement_popup_queue = [];
 const achievement_popup_waiters = [];
@@ -54,18 +54,7 @@ function initial_achievements()
 {
   if(achievements == null)
   {
-    //console.log("成就读取失败");
-    achievements = 
-    {
-      ach1: false,
-      ach2: false,
-      ach3: false,
-      ach4: false,
-      ach5: false,
-      ach6: false,
-      ach7: false,
-      ach8: false,
-    }
+    achievements = Object.fromEntries(GameProfile.achievementKeys.map(key => [key, false]));
     localStorage.setItem("achievements",JSON.stringify(achievements));
   }
   else
@@ -93,10 +82,6 @@ function get_achievement_title(id)
     case 3:
       {
         return "向死则生";//
-      }
-    case 4:
-      {
-        return "正经人谁从左上角开始扫雷啊!";
       }
     case 5:
       {
@@ -132,10 +117,6 @@ function get_achievement_content(id)
     case 3:
       {
         return "在只剩一名角色的情况下,通过一道关卡.";
-      }
-    case 4:
-      {
-        return "在躲避陷阱阵法的过程中,第一下翻开格子便踏入陷阱.";
       }
     case 5:
       {

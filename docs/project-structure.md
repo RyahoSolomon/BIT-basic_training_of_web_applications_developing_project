@@ -12,7 +12,6 @@ game/
     styles/                        剧情模块共用样式
   map/                             地图入口、样式和专用资源
   battle/                          战棋入口、脚本、样式、资源和结果页
-  minesweeper/                     扫雷入口、脚本、样式和专用资源
   assets/                          跨模块图片、字体、音乐和视频
   shared/                          页面共用脚本和样式
   vendor/                          第三方库及其随附内容
@@ -41,7 +40,6 @@ design/                            可编辑的美术源稿
 | 单位显示节点与数值刷新 | [units-update.js](../game/battle/scripts/units-update.js) |
 | 玩家与 AI 共用移动规则 | [movement-rules.js](../game/battle/scripts/movement-rules.js) |
 | AI 候选评估与决策 | [ai-rules.js](../game/battle/scripts/ai-rules.js) |
-| 扫雷 | [game/minesweeper/index.html](../game/minesweeper/index.html) |
 | 第一章场景 | [game/story/chapter-1/plot.js](../game/story/chapter-1/plot.js) |
 | 剧情播放器源码 | [src/story/player.jsx](../src/story/player.jsx) |
 | 公共音频控制 | [game/shared/scripts/audio.js](../game/shared/scripts/audio.js) |
@@ -54,7 +52,7 @@ design/                            可编辑的美术源稿
 
 ## 新文件的存放规则
 
-1. **先确定归属模块。** 只服务于地图、战棋或扫雷的脚本、样式、资源放在各自模块的 `scripts/`、`styles/`、`assets/` 下；战棋结算页放在 `game/battle/results/level-*/`。
+1. **先确定归属模块。** 只服务于地图或战棋的脚本、样式、资源放在各自模块的 `scripts/`、`styles/`、`assets/` 下；战棋结算页放在 `game/battle/results/level-*/`。
 2. **章节内容就近放置。** 章节 HTML、同名场景 JS 和专用 CSS 放在同一个 `chapter-*` 目录。场景 JS 保存 `window.storyScene` 数据，不复制播放器实现。多章共用的样式放在 `game/story/styles/`，共用剧情脚本放在 `game/story/scripts/`。
 3. **共享内容只有一份。** 跨模块使用的图片、字体、音频、视频分别放在 `game/assets/images/`、`fonts/`、`audio/`、`video/`。公共页面逻辑与样式放在 `game/shared/scripts/`、`styles/`。不要为调整相对路径复制整份脚本或素材。
 4. **区分源码与产物。** 播放器源码维护在 `src/story/player.jsx`，通过 `npm run build:story` 输出到 `game/generated/`。直接引用已生成脚本的页面不需要改为加载 JSX；生成文件和许可证随仓库提交，以支持直接打开游戏。

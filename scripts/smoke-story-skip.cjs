@@ -10,14 +10,13 @@ const opening = 'game/story/chapter-0/background.html';
 const prologue = 'game/story/chapter-0/plot.html';
 const map = 'game/map/index.html';
 const battle = 'game/battle/index.html';
-const mines = 'game/minesweeper/index.html';
 const expectedRoutes = {
   'chapter-0/plot.html': map,
   'chapter-1/plot.html': battle, 'chapter-1/plot-after.html': map,
   'chapter-2/plot.html': battle, 'chapter-2/plot-after.html': map,
   'chapter-3/plot.html': battle, 'chapter-3/plot-next.html': battle,
   'chapter-3/plot-after.html': map, 'chapter-3/plot-end.html': map,
-  'chapter-4/plot1.html': battle, 'chapter-4/plot2.html': battle, 'chapter-4/plot3.html': mines,
+  'chapter-4/plot1.html': battle, 'chapter-4/plot2.html': battle, 'chapter-4/plot3.html': map,
   'chapter-5/plot1.html': battle, 'chapter-5/plota.html': map,
   'chapter-5/plotb.html': map, 'chapter-5/bad-ending.html': map,
   'chapter-6/plot1.html': battle, 'chapter-6/plot2.html': battle,
@@ -158,7 +157,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     assert.equal(await evaluate('storyScene.lines.length'), poison ? 3 : 8);
     await skipButton();
     await click('[data-story-skip]');
-    await page(mines);
+    await page(map);
     assert.equal(await evaluate('JSON.parse(localStorage.current).hidden_clue_poison'), poison);
   }
   for (const file of ['plota', 'plotb']) {
@@ -169,7 +168,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     await click('[data-story-skip]');
     await page(map);
   }
-  console.log('PASS  chapter 4 clue variants reach minesweeper and chapter 5 skips retain their map destinations');
+  console.log('PASS  chapter 4 clue variants return to the map and chapter 5 skips retain their map destinations');
 
   for (const file of [opening, prologue]) {
     await reset();

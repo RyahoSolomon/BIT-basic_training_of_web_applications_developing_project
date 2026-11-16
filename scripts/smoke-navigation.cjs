@@ -5,7 +5,7 @@ const path = require('node:path');
 const { fileURLToPath, pathToFileURL } = require('node:url');
 const { withBrowser } = require('./smoke-browser.cjs');
 const { startGame } = require('./smoke-player-helpers.cjs');
-const { openingToMap } = require('./smoke-story-helpers.cjs');
+const { openingToMap, readScene } = require('./smoke-story-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
 const mapPage = 'game/map/index.html';
@@ -104,26 +104,72 @@ async function smoke({ evaluate, click, pointerClick, page, open, cdp, until }) 
   }
   console.log('PASS  ' + pages.length + ' runtime pages, local resources and initial story images');
 
-  await reset();
-  await open('game/minesweeper/index.html');
-  await click('button[onclick="start()"]');
-  assert.equal(await evaluate('document.querySelectorAll("#ground .blocks").length'), 225);
-  // Use the built-in first-cell mine outcome to exercise dynamically inserted images.
-  await evaluate(`(() => {
-    const random = Math.random;
-    try {
-      Math.random = () => 0;
-      document.querySelector('#ground .blocks').dispatchEvent(new MouseEvent('mousedown', {button: 0}));
-    } finally { Math.random = random; }
-  })()`);
-  await until('revealed mine', () => evaluate('!!document.querySelector("#ground img")'));
-  await resources('minesweeper revealed mine');
-  await click('[data-settings-open]');
-  await click('[data-menu-leave]');
-  await page('game/pages/menu.html');
-  await click('a[onclick="return load()"]');
-  await page(mapPage);
-  console.log('PASS  minesweeper startup, dynamic mine image and settings/menu continuation');
+  // Both authored post-battle variants must finish on the map with chapter 5
+  // available; simply changing the skip destination would miss this route.
+  for (const poison of [false, true]) {
+    await reset();
+    await evaluate(`(() => {
+      const current = JSON.parse(localStorage.current);
+      current.level = 3;
+      current.hidden_clue_poison = ${poison};
+      current.hidden_clue_god = ${poison};
+      localStorage.current = JSON.stringify(current);
+      for (let level = 1; level <= 4; level++) localStorage.setItem('level' + level, '1');
+      localStorage.MSYgamename = '第四章';
+    })()`);
+    await open('game/story/chapter-4/plot3.html');
+    assert.equal(await evaluate('storyScene.lines.length'), poison ? 3 : 8);
+    await readScene({ evaluate, click: pointerClick, cdp, until });
+    await page(mapPage);
+    const saved = await evaluate('JSON.parse(localStorage.getItem("game.save"))');
+    assert.equal(saved.progress.levels[3], 1);
+    assert.equal(saved.progress.current.hidden_clue_poison, poison);
+    assert.equal(saved.progress.current.hidden_clue_god, poison);
+    await pointerClick('#Level5');
+    await page('game/story/chapter-5/plot1.html');
+    assert.equal(await evaluate('JSON.parse(localStorage.current).level'), 4);
+    assert.equal(await evaluate('localStorage.MSYgamename'), '第五章');
+  }
+  console.log('PASS  both chapter 4 endings naturally return to the map and continue into chapter 5');
+
+  const achievementKeys = ['ach1', 'ach2', 'ach3', 'ach4', 'ach6', 'ach7', 'ach8'];
+  for (const unlocked of [[], ['ach2', 'ach4', 'ach6', 'ach8'], ['ach1', 'ach3', 'ach7']]) {
+    await reset();
+    await evaluate('localStorage.testachievement = ' + JSON.stringify(JSON.stringify(
+      Object.fromEntries(achievementKeys.map(key => [key, Number(unlocked.includes(key))])))));
+    await evaluate('window.__achievementDocumentBeforeOpen = true');
+    await open('game/pages/achievements.html');
+    assert.equal(await evaluate('window.__achievementDocumentBeforeOpen'), undefined,
+      'Opening the same URL must wait for the new document before reading its cards');
+    const cards = await evaluate(`Array.from(document.querySelectorAll('.exh_border')).map(card => ({
+      key: card.dataset.achievement, title: card.querySelector('.exh').textContent.trim(),
+      description: card.querySelector('.exh_back').textContent.trim(),
+      unlocked: card.style.backgroundImage.includes('ach-front.png'),
+    }))`);
+    assert.deepEqual(cards.map(card => card.key), achievementKeys);
+    for (const card of cards) assert.equal(card.unlocked, unlocked.includes(card.key),
+      card.key + ': achievement status was mapped to a different card');
+    const hidden = cards.find(card => card.key === 'ach3');
+    assert.equal(hidden.title, unlocked.includes('ach3') ? '铲除神族' : '隐藏成就');
+    assert.equal(hidden.description, unlocked.includes('ach3') ? '用主角或者鸢阑击杀叶岱' : '隐藏成就详情将在解锁后显示');
+    assert.equal(cards.find(card => card.key === 'ach6').title, '神所创造的世界 并非完美');
+    assert.equal(cards.find(card => card.key === 'ach7').title, '唯我独尊');
+    assert.equal(cards.find(card => card.key === 'ach8').title, '杀人如麻 以杀证道');
+    // The existing card CSS transitions background images for 600 ms. Check
+    // the assigned state above immediately, then observe the settled rendering.
+    await until('achievement card transitions finish', () => evaluate(`
+      Array.from(document.querySelectorAll('.exh_border')).every(card => {
+        getComputedStyle(card).backgroundImage;
+        return card.getAnimations().every(animation => animation.playState === 'finished' || animation.playState === 'idle');
+      })
+    `));
+    const rendered = await evaluate(`Array.from(document.querySelectorAll('.exh_border')).map(card => ({
+      key: card.dataset.achievement, unlocked: getComputedStyle(card).backgroundImage.includes('ach-front.png'),
+    }))`);
+    for (const card of rendered) assert.equal(card.unlocked, unlocked.includes(card.key),
+      card.key + ': settled card rendering disagrees with the achievement state');
+  }
+  console.log('PASS  all seven achievement cards retain their own unlock state and hidden achievement text');
 
   const winTargets = [
     'game/story/chapter-1/plot-after.html',

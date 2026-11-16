@@ -56,7 +56,7 @@ test('new game needs no account and immediately persists a complete initial save
   assert.equal(storage.getItem('playerName'), 'test');
   assert.equal(storage.getItem('username'), 'test');
   assert.deepEqual(save.progress, createNewProgress());
-  assert.deepEqual(save.achievements, Object.fromEntries(Array.from({length: 8}, (_, i) => ['ach' + (i + 1), 0])));
+  assert.deepEqual(save.achievements, Object.fromEntries(['ach1', 'ach2', 'ach3', 'ach4', 'ach6', 'ach7', 'ach8'].map(key => [key, 0])));
   assert.equal(save.endingFlag, 0);
   assert.deepEqual(save.settings, {music: {volume: 50, muted: false}, sound: {volume: 50, muted: false}});
   assert.deepEqual(JSON.parse(storage.getItem(SAVE_KEY)), save);

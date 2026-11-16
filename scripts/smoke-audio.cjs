@@ -149,7 +149,22 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   console.log('PASS  rapid toggles and later page clicks do not restart disabled music');
 
   async function readToEnd(nodeId) {
-    const lines = await dialogueLines({ evaluate, until }, nodeId);
+    let lines;
+    try {
+      lines = await dialogueLines({ evaluate, until }, nodeId);
+    } catch (error) {
+      const state = await evaluate(`({
+        node: document.getElementById('story-player')?.dataset.storyNode,
+        transitioning: document.body.dataset.storyTransitioning,
+        intro: document.querySelector('[data-story-intro]')?.textContent,
+        text: document.querySelector('#story-player .text')?.textContent,
+        choices: Array.from(document.querySelectorAll('[data-story-choice]')).map(button => button.dataset.storyChoice),
+        award: !!document.querySelector('[data-story-achievement-close]'),
+        visibility: document.visibilityState,
+        animations: document.getAnimations().map(animation => ({ playState: animation.playState, currentTime: animation.currentTime })),
+      })`);
+      throw new Error(error.message + ': ' + JSON.stringify(state), { cause: error });
+    }
     for (const line of lines) {
       const text = line.text.replaceAll('{player}', 'test');
       await until('audio branch dialogue: ' + text.slice(0, 30), () => evaluate(`
@@ -186,8 +201,11 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       audio.addEventListener('seeked', () => { window.__musicSeeked = true; }, { once: true });
       audio.currentTime = 20;
     })()`);
-    await until('music sought: ' + label, () => evaluate(
-      'window.__musicSeeked && document.getElementById("audioPlayer").currentTime >= 20'));
+    // seeked can precede the audio clock restarting. Establish actual playback
+    // before measuring whether a later choice interrupts that playback.
+    await until('music sought and advancing: ' + label, () => evaluate(
+      'window.__musicSeeked && !document.getElementById("audioPlayer").paused'
+      + ' && document.getElementById("audioPlayer").currentTime > 20'));
   }
 
   async function continued(label, minimumTime = 20) {
@@ -234,14 +252,27 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       sameDocument: document === window.__heldDocument,
       sameAudio: document.getElementById('audioPlayer') === window.__heldAudio,
       paused: __heldAudio.paused,
+      readyState: __heldAudio.readyState,
+      networkState: __heldAudio.networkState,
+      ended: __heldAudio.ended,
+      error: __heldAudio.error && { code: __heldAudio.error.code, message: __heldAudio.error.message },
+      music: GamePreferences.get().music,
+      musicSuspended: __heldAudio.dataset.musicSuspended || null,
+      time: __heldAudio.currentTime,
+      duration: __heldAudio.duration,
+      loop: __heldAudio.loop,
+      muted: __heldAudio.muted,
+      volume: __heldAudio.volume,
+      visibility: document.visibilityState,
+      node: document.getElementById('story-player')?.dataset.storyNode,
       elapsed: (performance.now() - __branchPlayback.clock) / 1000,
       advanced: __heldAudio.currentTime - __branchPlayback.time,
       events: __musicPlaybackTimes.slice(__branchPlayback.events),
     })`);
     assert.equal(state.sameDocument, true, label + ': document was replaced');
     assert.equal(state.sameAudio, true, label + ': audio element was replaced');
-    assert.equal(state.paused, false, label + ': playback stopped');
-    assert.deepEqual(state.events, [], label + ': audio was restarted, reloaded or sought');
+    assert.equal(state.paused, false, label + ': playback stopped: ' + JSON.stringify(state));
+    assert.deepEqual(state.events, [], label + ': audio was restarted, reloaded or sought: ' + JSON.stringify(state));
     assert.ok(state.advanced > 0 && Math.abs(state.advanced - state.elapsed) < 0.5,
       label + ': playback did not advance continuously: ' + JSON.stringify(state));
   }

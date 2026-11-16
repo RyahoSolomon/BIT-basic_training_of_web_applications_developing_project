@@ -120,7 +120,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       localStorage.level1 = '1';
       localStorage.level2 = '1';
       localStorage.testachievement = JSON.stringify({ach1: false, ach2: true, ach3: false, ach4: false,
-        ach5: false, ach6: false, ach7: false, ach8: true});
+        ach6: false, ach7: false, ach8: true});
       localStorage.testflag = '1';
     })()`);
     const expected = await evaluate('JSON.parse(GameProgress.exportSave())');
@@ -180,7 +180,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await evaluate(`
       GameProgress.newGame('test');
       localStorage.testachievement = JSON.stringify({ach1:false,ach2:false,ach3:false,ach4:false,
-        ach5:false,ach6:false,ach7:false,ach8:false});
+        ach6:false,ach7:false,ach8:false});
       GamePreferences.setVolume('music', 12);
       GamePreferences.setVolume('sound', 20);
     `);

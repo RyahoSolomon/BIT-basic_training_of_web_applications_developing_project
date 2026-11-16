@@ -24,7 +24,7 @@
     "chapterName": "序章",
     "isFirstPlay": true
   },
-  "achievements": { "ach1": 0, "ach2": 0, "ach3": 0, "ach4": 0, "ach5": 0, "ach6": 0, "ach7": 0, "ach8": 0 },
+  "achievements": { "ach1": 0, "ach2": 0, "ach3": 0, "ach4": 0, "ach6": 0, "ach7": 0, "ach8": 0 },
   "endingFlag": 0,
   "settings": {
     "music": { "volume": 50, "muted": false },
@@ -45,7 +45,7 @@
 | `progress.levels` | 六关地图状态，0 为未完成，1 为已完成；第六项另允许 114，表示隐藏关已解锁 |
 | `progress.chapterName` | 非空章节名称 |
 | `progress.isFirstPlay` | 是否需要首次战斗教程，布尔值 |
-| `achievements.ach1`–`ach8` | 成就状态，只接受数字 0 或 1 |
+| `achievements` 中的 `ach1`、`ach2`、`ach3`、`ach4`、`ach6`、`ach7`、`ach8` | 成就状态，只接受数字 0 或 1 |
 | `endingFlag` | 第二章选择放掉妖族监国的分支标记，数字 0 或 1 |
 | `settings.music`、`settings.sound` | 各自包含整数音量 `volume`（1–100）和布尔静音开关 `muted` |
 

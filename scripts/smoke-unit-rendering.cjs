@@ -12,7 +12,7 @@ async function smoke({ evaluate, click, open, page }) {
       localStorage.setItem('username', 'test');
       localStorage.setItem('testachievement', JSON.stringify({
         ach1: false, ach2: false, ach3: false, ach4: false,
-        ach5: false, ach6: false, ach7: false, ach8: false,
+        ach6: false, ach7: false, ach8: false,
       }));
       GameProgress.newGame('test');
       const current = JSON.parse(localStorage.current);
