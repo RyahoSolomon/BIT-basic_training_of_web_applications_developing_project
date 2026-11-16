@@ -1,7 +1,20 @@
-// Read via the real dialogue controls when a test needs to leave the opening.
-async function readScene({ evaluate, pointerClick, click = pointerClick, cdp, until }) {
+// Both the original linear scenes and graph scenes use the real dialogue controls.
+async function dialogueLines({ evaluate, until }, nodeId) {
+  await until('active dialogue' + (nodeId ? ': ' + nodeId : ''), () => evaluate(`(() => {
+    if (!window.storyScene) return false;
+    if (!storyScene.nodes) return true;
+    const active = document.getElementById('story-player')?.dataset.storyNode;
+    return storyScene.nodes[active]?.type === 'dialogue'
+      && (${JSON.stringify(nodeId || null)} === null || active === ${JSON.stringify(nodeId || null)});
+  })()`));
+  return evaluate(`storyScene.nodes
+    ? storyScene.nodes[document.getElementById('story-player').dataset.storyNode].lines
+    : storyScene.lines`);
+}
+
+async function readScene({ evaluate, pointerClick, click = pointerClick, cdp, until }, nodeId) {
   await cdp.send('Page.bringToFront');
-  const lines = await evaluate('window.storyScene.lines');
+  const lines = await dialogueLines({ evaluate, until }, nodeId);
   const name = await evaluate('GameProfile.getName()');
   for (const line of lines) {
     await until('dialogue ready', () => evaluate(`
@@ -29,9 +42,8 @@ async function openingToMap(browser) {
   await readScene(browser);
   await until('prologue choices', () => evaluate('!!document.querySelector("#story-player .button-container .button")'));
   await click('#story-player .button-container .button');
-  await page('game/story/chapter-0/plot-b.html');
-  await readScene(browser);
+  await readScene(browser, 'departure');
   await page('game/map/index.html');
 }
 
-module.exports = { readScene, openingToMap };
+module.exports = { dialogueLines, readScene, openingToMap };

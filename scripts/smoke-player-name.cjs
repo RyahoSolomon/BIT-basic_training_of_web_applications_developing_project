@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { dialogueLines } = require('./smoke-story-helpers.cjs');
 const { replaceName, startGame } = require('./smoke-player-helpers.cjs');
 
 const menu = 'game/pages/menu.html';
@@ -33,7 +34,7 @@ async function smoke(browser) {
   }
   async function readNamedScene() {
     await open('game/story/chapter-2/plot-after.html');
-    const lines = await evaluate('storyScene.lines');
+    const lines = await dialogueLines({ evaluate, until });
     const last = lines.findIndex(line => line.text.includes('{player}'));
     assert.ok(last >= 0, 'The real dialogue fixture must address the player by name');
     let namedSpeaker = false;

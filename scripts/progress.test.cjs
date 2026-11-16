@@ -232,6 +232,82 @@ test('current battle boolean achievements are saved as numeric flags without loo
   expectUnchanged(storage, () => store.importSave(encoded({...advanced, achievements: battleAchievements})), 'INVALID_SAVE');
 });
 
+test('story choices immediately save their flag and achievement with the latest live progress', () => {
+  const { storage, store } = setup();
+  store.newGame('旅人');
+  const current = {...createNewProgress().current, level: 1, user_level: {level: 3, exp: 27}};
+  storage.setItem('current', encoded(current));
+  storage.setItem('level2', '1');
+  const before = storage.dump();
+  assert.deepEqual(store.applyStoryEffects([
+    {type: 'setFlag', value: 1},
+    {type: 'achievement', id: 'ach2', title: '保护坚果', description: '放走妖族监国'},
+  ]), {unlocked: ['ach2']});
+  const saved = JSON.parse(storage.getItem(SAVE_KEY));
+  assert.equal(saved.endingFlag, 1);
+  assert.equal(saved.achievements.ach2, 1);
+  assert.deepEqual(saved.progress.current, current);
+  assert.equal(saved.progress.levels[1], 1);
+  assert.deepEqual(storage.dump(), {...before, testflag: '1',
+    testachievement: encoded(saved.achievements), [SAVE_KEY]: encoded(saved)},
+  'Applying a story result must not rewrite other active storage fields');
+  storage.setItem('testflag', '0');
+  storage.setItem('testachievement', encoded({...saved.achievements, ach2: 0}));
+  assert.equal(store.restoreAuto().endingFlag, 1);
+  assert.equal(store.capture().achievements.ach2, 1);
+});
+
+test('repeated story achievements report only newly unlocked IDs, including legacy boolean flags', () => {
+  const { storage, store } = setup();
+  store.newGame('旅人');
+  const achievements = store.capture().achievements;
+  storage.setItem('testachievement', encoded({...achievements, ach1: true, ach2: false}));
+  const effects = [{type: 'achievement', id: 'ach1'}, {type: 'achievement', id: 'ach2'},
+    {type: 'achievement', id: 'ach2'}];
+  assert.deepEqual(store.applyStoryEffects(effects), {unlocked: ['ach2']});
+  assert.deepEqual(store.applyStoryEffects(effects), {unlocked: []});
+  assert.equal(store.capture().achievements.ach1, 1);
+  assert.equal(store.capture().achievements.ach2, 1);
+  assert.equal(store.capture().endingFlag, 0, 'An achievement must not implicitly choose a story branch');
+  assert.deepEqual(store.applyStoryEffects([{type: 'setFlag', value: 1}]), {unlocked: []});
+  assert.deepEqual(store.applyStoryEffects([{type: 'setFlag', value: 0}]), {unlocked: []});
+  assert.equal(JSON.parse(storage.getItem(SAVE_KEY)).endingFlag, 0);
+});
+
+test('invalid story effects and missing or corrupt progress never partially apply a choice', () => {
+  const { storage, store } = setup();
+  expectUnchanged(storage, () => store.applyStoryEffects([{type: 'setFlag', value: 1}]), 'NO_PROGRESS');
+  store.newGame('旅人');
+  for (const invalid of [undefined, null, {}, [null], [{type: 'unknown'}],
+    [{type: 'setFlag', value: '1'}], [{type: 'setFlag', value: true}], [{type: 'setFlag', value: 2}],
+    [{type: 'achievement', id: 'ach9'}], [{type: 'achievement', id: '__proto__'}],
+    [{type: 'achievement', id: 'toString'}], [{type: 'achievement'}]]) {
+    const effects = Array.isArray(invalid)
+      ? [{type: 'setFlag', value: 1}, {type: 'achievement', id: 'ach2'}, ...invalid] : invalid;
+    expectUnchanged(storage, () => store.applyStoryEffects(effects), 'INVALID_STORY_EFFECT');
+  }
+  storage.setItem('testachievement', '{broken');
+  expectUnchanged(storage, () => store.applyStoryEffects([{type: 'setFlag', value: 1}]), 'INVALID_PROGRESS');
+});
+
+test('failed story choice writes roll back both active results and the save before returning an unlock', () => {
+  for (const missingResults of [false, true]) {
+    for (const key of ['testflag', 'testachievement', SAVE_KEY]) {
+      const { storage, store } = setup();
+      store.newGame('旅人');
+      if (missingResults) {
+        storage.removeItem('testflag');
+        storage.removeItem('testachievement');
+      }
+      storage.failNextWriteTo(key, new DOMException('Storage full', 'QuotaExceededError'));
+      const effects = [{type: 'setFlag', value: 1}, {type: 'achievement', id: 'ach2'}];
+      expectUnchanged(storage, () => store.applyStoryEffects(effects), 'STORAGE_ERROR');
+      assert.deepEqual(store.applyStoryEffects(effects), {unlocked: ['ach2']},
+        'Retry after a failed save must still report the newly awarded achievement');
+    }
+  }
+});
+
 test('import, capture, save and export retain the full snapshot including settings and achievements', () => {
   const { storage, store } = setup({username: 'irrelevant-account'});
   assert.deepEqual(store.importSave(encoded(advanced)), advanced);

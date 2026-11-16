@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { dialogueLines } = require('./smoke-story-helpers.cjs');
 const { startGame } = require('./smoke-player-helpers.cjs');
 
 async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) {
@@ -27,11 +28,11 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     console.log('SCREENSHOT  ' + file);
   }
 
-  async function readLines() {
+  async function readLines(nodeId) {
     // The first-battle guide opens another tab; resume painting before reading.
     await cdp.send('Page.bringToFront');
     await until('first dialogue', () => evaluate('!!document.querySelector("#story-player .text")'));
-    return evaluate('window.storyScene.lines');
+    return dialogueLines({ evaluate, until }, nodeId);
   }
 
   async function expectLine(line) {
@@ -49,8 +50,8 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     assert.equal(await evaluate('document.querySelectorAll("#story-player .text").length'), 1);
   }
 
-  async function readToEnd() {
-    const lines = await readLines();
+  async function readToEnd(nodeId) {
+    const lines = await readLines(nodeId);
     for (let index = 0; index < lines.length; index++) {
       await expectLine(lines[index]);
       assert.equal(await evaluate('!!document.querySelector("#story-player #button1")'), false,
@@ -121,14 +122,15 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   console.log('PASS  opening narration without image transition events');
 
 
-  for (const [index, destination] of ['plot-b.html', 'plot-a.html'].entries()) {
+  for (const index of [0, 1]) {
     await open(prologue);
     await readToEnd();
     await waitChoices();
     if (index === 0) await screenshot('prologue-choices');
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
-    await page('game/story/chapter-0/' + destination);
-    await readToEnd();
+    await page(prologue);
+    if (index === 1) assert.equal((await readToEnd('explanation')).length, 4);
+    assert.equal((await readToEnd('departure')).length, 2);
     await page(map);
   }
   console.log('PASS  prologue branches, first-click advance, speakers and return to map');
@@ -162,24 +164,25 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
   console.log('PASS  inserted/deleted dialogue preserves speakers and battle endpoint');
 
-  for (const [index, destination] of ['branch-short.html', 'branch-long.html'].entries()) {
-    await evaluate('localStorage.setItem(' + JSON.stringify(username + 'flag') + ', "0")');
+  for (const index of [0, 1]) {
+    await evaluate(`(() => { localStorage.testflag = '0';
+      const achievements = JSON.parse(localStorage.testachievement);
+      achievements.ach2 = 0; localStorage.testachievement = JSON.stringify(achievements); })()`);
     await open('game/story/chapter-2/plot-after.html');
     await readToEnd();
     await waitChoices();
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
-    await page('game/story/chapter-2/' + destination);
+    await page('game/story/chapter-2/plot-after.html');
     assert.equal(await evaluate('localStorage.getItem(' + JSON.stringify(username + 'flag') + ')'), index === 0 ? '1' : '0');
     if (index === 0) {
-      await until('achievement popup', () => evaluate('getComputedStyle(document.getElementById("achievement_popup")).display !== "none"'));
-      await click('#achievement_popup [onclick="Shutoff()"]');
+      await until('achievement popup', () => evaluate('!!document.querySelector("[data-story-achievement-close]")'));
+      await click('[data-story-achievement-close]');
     }
-    await readToEnd();
-    if (index === 1) {
-      await page('game/story/chapter-2/branch-short.html');
-      await readToEnd();
-    }
+    if (index === 1) assert.equal((await readToEnd('exclusive')).length, 7);
+    assert.equal((await readToEnd('common')).length, 15);
     await page(map);
+    assert.equal(await evaluate('Number(JSON.parse(localStorage.testachievement).ach2)'), index === 0 ? 1 : 0);
+    assert.equal(await evaluate('JSON.parse(localStorage.getItem("game.save")).achievements.ach2'), index === 0 ? 1 : 0);
   }
   console.log('PASS  chapter 2 branches, player-name substitution and choice side effect');
 

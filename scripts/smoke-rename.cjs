@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { dialogueLines } = require('./smoke-story-helpers.cjs');
 const { replaceName } = require('./smoke-player-helpers.cjs');
 const fixture = require('./fixtures/progress.json');
 
@@ -142,7 +143,7 @@ async function smoke(browser) {
     console.log('PASS  export uses the renamed filename and Continue restores the renamed save');
 
     await open(scene);
-    const lines = await evaluate('storyScene.lines');
+    const lines = await dialogueLines({ evaluate, until });
     await until('first dialogue visible', () => evaluate(`
       document.body.dataset.storyTransitioning !== 'true'
       && getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'

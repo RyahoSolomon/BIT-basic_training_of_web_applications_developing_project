@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createPortal, flushSync } from 'react-dom';
 import '../../game/story/scripts/background-transition.js';
+import GraphPlayer from './graph-player.jsx';
+import { validateGraph } from './graph-model.mjs';
 
 function navigate(target) {
   if (typeof target === 'function') target();
@@ -55,11 +57,10 @@ function StoryPlayer({ scene }) {
     backgrounds.current?.preload(scene.lines[index + 1]?.background).catch(() => {});
   }, [scene, index]);
 
-  function leave(target, before) {
+  function leave(target) {
     if (leaving.current) return;
     leaving.current = true;
     backgrounds.current?.cancel();
-    before?.();
     navigate(target);
   }
 
@@ -83,13 +84,13 @@ function StoryPlayer({ scene }) {
       }
     } else {
       setFinished(true);
-      if (!scene.choices && !scene.inlineChoice) leave(scene.next);
+      if (!scene.inlineChoice) leave(scene.next);
     }
   }
 
-  function activate(event, target, before) {
+  function activate(event, target) {
     event.stopPropagation();
-    leave(target, before);
+    leave(target);
   }
 
   const line = scene.lines[index] || {};
@@ -114,28 +115,19 @@ function StoryPlayer({ scene }) {
       </div>
       <div className="text" style={{ whiteSpace: 'pre-line' }}>
         {choice
-          ? <button id="button1" onClick={event => activate(event, choice.to, choice.before)}>
+          ? <button id="button1" onClick={event => activate(event, choice.to)}>
               {text(choice.label)}
             </button>
           : text(line.text)}
       </div>
     </div>
-    {ready && finished && scene.choices &&
-      <div className="button-container" style={{ display: 'flex' }}>
-        {scene.choices.map((option, optionIndex) =>
-          <button key={optionIndex} className="button" type="button"
-            style={{ border: 0, padding: 0, backgroundColor: 'transparent',
-              '--story-font-family': option.fontFamily || scene.fontFamily }}
-            onClick={event => activate(event, option.to, option.before)}>
-            <span className="button-text">{text(option.label)}</span>
-          </button>)}
-      </div>}
   </>;
 }
 
 function mount() {
+  const scene = window.storyScene;
   createRoot(document.getElementById('story-player')).render(
-    <StoryPlayer scene={window.storyScene} />
+    scene.nodes ? <GraphPlayer scene={validateGraph(scene)} /> : <StoryPlayer scene={scene} />
   );
 }
 

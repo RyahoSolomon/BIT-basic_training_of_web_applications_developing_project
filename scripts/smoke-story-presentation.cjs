@@ -3,6 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
+const { dialogueLines } = require('./smoke-story-helpers.cjs');
 const { startGame } = require('./smoke-player-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
@@ -175,13 +176,14 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     console.log('PASS  all opening slides have a fixed box, synchronized text and no scrollbars');
 
     const pages = await storyPages();
-    assert.ok(pages.length >= 24, 'Missing shared-player chapter pages');
+    assert.ok(pages.length >= 20, 'Missing shared-player chapter pages');
     for (const file of pages) {
       await open(file);
       await checkPresentation('#story-player .text', defaultFont);
       assert.equal(await font('#story-player .topLeftText'), defaultFont, file + ': inconsistent speaker font');
-      if (await evaluate('window.storyScene.lines.length > 1')) {
-        const secondLine = await evaluate('window.storyScene.lines[1]');
+      const lines = await dialogueLines({ evaluate, until });
+      if (lines.length > 1) {
+        const secondLine = lines[1];
         await click('#story-player .image-container');
         await until('second dialogue', () => evaluate(`
           document.querySelector('#story-player .text').textContent === ${JSON.stringify(secondLine.text.replaceAll('{player}', username))}
@@ -201,8 +203,8 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
         source: `document.addEventListener('DOMContentLoaded', () => {
           if (!location.pathname.endsWith('/game/story/chapter-0/plot.html')) return;
           window.storyScene.fontFamily = ${JSON.stringify(sceneFont)};
-          window.storyScene.lines[0].fontFamily = 'monospace';
-          window.storyScene.lines[0].caption = 'Custom-font caption';
+          window.storyScene.nodes.main.lines[0].fontFamily = 'monospace';
+          window.storyScene.nodes.main.lines[0].caption = 'Custom-font caption';
         }, { once: true });`,
       });
       try {

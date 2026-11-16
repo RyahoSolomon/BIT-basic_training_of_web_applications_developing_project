@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const { setTimeout: delay } = require('node:timers/promises');
 const { withBrowser } = require('./smoke-browser.cjs');
 const { startGame } = require('./smoke-player-helpers.cjs');
-const { openingToMap } = require('./smoke-story-helpers.cjs');
+const { dialogueLines, openingToMap } = require('./smoke-story-helpers.cjs');
 
 const mapPage = 'game/map/index.html';
 const storyPage = 'game/story/chapter-1/plot.html';
@@ -15,7 +15,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     window.__musicPlaybackEvents = [];
     window.__musicPlaybackTimes = [];
     window.__musicDocumentId = Math.random();
-    for (const type of ['play', 'playing']) {
+    for (const type of ['play', 'playing', 'pause', 'waiting', 'loadstart', 'emptied', 'seeking']) {
       document.addEventListener(type, event => {
         if (event.target.id === 'audioPlayer') {
           window.__musicPlaybackEvents.push(type);
@@ -54,7 +54,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       return {
         paused: audio.paused,
         time: audio.currentTime,
-        events: window.__musicPlaybackEvents,
+        events: window.__musicPlaybackEvents.filter(type => ['play', 'playing'].includes(type)),
         enabled: GamePreferences.effectiveVolume('music') > 0,
         volume: audio.volume,
         sound: GamePreferences.get().sound,
@@ -148,8 +148,8 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     'A late playback attempt advanced the muted player');
   console.log('PASS  rapid toggles and later page clicks do not restart disabled music');
 
-  async function readToEnd() {
-    const lines = await evaluate('window.storyScene.lines');
+  async function readToEnd(nodeId) {
+    const lines = await dialogueLines({ evaluate, until }, nodeId);
     for (const line of lines) {
       const text = line.text.replaceAll('{player}', 'test');
       await until('audio branch dialogue: ' + text.slice(0, 30), () => evaluate(`
@@ -198,7 +198,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       'window.__musicPlaybackTimes.some(event => event.type === "playing")'));
     const state = await evaluate(`({
       time: document.getElementById('audioPlayer').currentTime,
-      events: window.__musicPlaybackTimes,
+      events: window.__musicPlaybackTimes.filter(event => ['play', 'playing'].includes(event.type)),
     })`);
     assert.ok(state.time >= minimumTime - 0.1, label + ': music restarted from the beginning');
     assert.ok(state.events.some(event => event.type === 'playing'), label + ': no actual playback observed');
@@ -211,7 +211,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await playing(label);
     const state = await evaluate(`({
       time: document.getElementById('audioPlayer').currentTime,
-      events: window.__musicPlaybackTimes,
+      events: window.__musicPlaybackTimes.filter(event => ['play', 'playing'].includes(event.type)),
     })`);
     assert.ok(state.time < 10, label + ': reused a previous scene position');
     assert.ok(state.events.length > 0 && state.events[0].time < 1,
@@ -221,33 +221,61 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   const prologue = 'game/story/chapter-0/plot.html';
   const aftermath = 'game/story/chapter-2/plot-after.html';
   await toggleMusic();
-  for (const [source, destinations, track] of [
-    [prologue, ['plot-b.html', 'plot-a.html'], '002-huguo-palace.mp3'],
-    [aftermath, ['branch-short.html', 'branch-long.html'], '005-kill-nut.mp3'],
+  async function markContinuity() {
+    await evaluate(`window.__heldAudio = document.getElementById('audioPlayer');
+      window.__heldDocument = document;
+      window.__branchPlayback = { time: __heldAudio.currentTime,
+        events: __musicPlaybackTimes.length, clock: performance.now() };`);
+  }
+
+  async function uninterrupted(label) {
+    await delay(200);
+    const state = await evaluate(`({
+      sameDocument: document === window.__heldDocument,
+      sameAudio: document.getElementById('audioPlayer') === window.__heldAudio,
+      paused: __heldAudio.paused,
+      elapsed: (performance.now() - __branchPlayback.clock) / 1000,
+      advanced: __heldAudio.currentTime - __branchPlayback.time,
+      events: __musicPlaybackTimes.slice(__branchPlayback.events),
+    })`);
+    assert.equal(state.sameDocument, true, label + ': document was replaced');
+    assert.equal(state.sameAudio, true, label + ': audio element was replaced');
+    assert.equal(state.paused, false, label + ': playback stopped');
+    assert.deepEqual(state.events, [], label + ': audio was restarted, reloaded or sought');
+    assert.ok(state.advanced > 0 && Math.abs(state.advanced - state.elapsed) < 0.5,
+      label + ': playback did not advance continuously: ' + JSON.stringify(state));
+  }
+
+  for (const [source, track] of [
+    [prologue, '002-huguo-palace.mp3'],
+    [aftermath, '005-kill-nut.mp3'],
   ]) {
-    for (const [index, destination] of destinations.entries()) {
+    for (const index of [0, 1]) {
+      await evaluate(`(() => { localStorage.testflag = '0';
+        const achievements = JSON.parse(localStorage.testachievement);
+        achievements.ach2 = 0; localStorage.testachievement = JSON.stringify(achievements); })()`);
       await open(source);
-      await readToEnd();
+      await readToEnd('main');
       await choices();
       await seekPlaying(source);
+      await markContinuity();
       await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
-      const branch = source.replace(/[^/]+$/, destination);
-      await page(branch);
+      await page(source);
       assert.ok(await evaluate('document.getElementById("audioPlayer").src.endsWith(' + JSON.stringify(track) + ')'));
-      await continued(branch);
-      if (destination === 'branch-short.html') {
+      await uninterrupted(source + ' choice ' + index);
+      if (source === aftermath && index === 0) {
         await until('branch achievement popup', () => evaluate(
-          'getComputedStyle(document.getElementById("achievement_popup")).display !== "none"'));
-        await click('#achievement_popup [onclick="Shutoff()"]');
+          '!!document.querySelector("[data-story-achievement-close]")'));
+        await click('[data-story-achievement-close]');
       }
-      if (destination === 'branch-long.html') {
-        await readToEnd();
-        await page('game/story/chapter-2/branch-short.html');
-        await continued('chapter 2 long branch rejoins short branch');
+      if (index === 1) {
+        await readToEnd(source === prologue ? 'explanation' : 'exclusive');
+        await dialogueLines({ evaluate, until }, source === prologue ? 'departure' : 'common');
+        await uninterrupted(source + ' branch rejoin');
       }
     }
   }
-  console.log('PASS  both prologue and chapter 2 choices, including long-branch rejoin, retain music position from first playback');
+  console.log('PASS  both prologue and chapter 2 choices and joins retain the document, audio element and continuous playback');
 
   // A real track change must not inherit the branch's offset, and entering the
   // same scene later must not reuse an already consumed continuation.
@@ -255,7 +283,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await page(mapPage);
   assert.ok(await evaluate('!document.getElementById("audioPlayer").src.endsWith("005-kill-nut.mp3")'));
   await fresh('map after chapter 2 branch');
-  await open('game/story/chapter-2/branch-long.html');
+  await open(aftermath);
   await fresh('chapter 2 branch entered independently');
 
   await open('game/story/chapter-6/plot1.html');
@@ -272,10 +300,13 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   await toggleMusic();
   const mutedTime = await evaluate('document.getElementById("audioPlayer").currentTime');
   await click('#story-player .button-container .button:nth-child(1)');
-  await page('game/story/chapter-0/plot-b.html');
-  await silent('muted prologue branch', { expectedTime: mutedTime });
+  await page(prologue);
+  await silent('muted prologue branch', { neverStarted: false, expectedTime: mutedTime });
+  assert.equal(await evaluate('document.getElementById("audioPlayer").currentTime'), mutedTime);
   await click('body');
-  await silent('muted prologue branch after interaction', { expectedTime: mutedTime });
+  await silent('muted prologue branch after interaction', { neverStarted: false, expectedTime: mutedTime });
+  assert.equal(await evaluate('document.getElementById("audioPlayer").currentTime'), mutedTime);
+  await evaluate('window.__musicPlaybackTimes = []');
   await toggleMusic();
   await continued('prologue branch enabled after muted navigation', mutedTime);
   console.log('PASS  a muted branch stays silent and retains its position when music is enabled');

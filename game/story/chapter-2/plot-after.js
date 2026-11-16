@@ -1,22 +1,90 @@
+// Choice effects belong to the decision, never to the common next-day dialogue.
 window.storyScene = {
-    lines: [
-        { speaker: "{player}", text: "...这些家伙...可恶,我们得赶紧离开了,大部队马上就要来了...." },
-        { speaker: "[叶岱]", text: "...." },
-        { speaker: "[叶岱]", text: "杀吗?" },
-        { speaker: "[鸢阑]", text: "算了吧...反正这群人也没掌握什么信息,还是不要再激化人妖矛盾了..." },
-        { speaker: "[妖族监国]", text: "(捂着伤口躺在地上,咬着牙)" },
-        { speaker: "[鸢阑]", text: "{player},你怎么看?" },
-    ],
-    choices: [
-        {
-            label: "算了,我们快走吧",
-            to: "branch-short.html",
-            before() {
-                const username = localStorage.getItem("username");
-                localStorage.setItem(username + "flag", "1");
-            },
+    id: "chapter-2-aftermath",
+    start: "main",
+    skip: { exit: "../../map/index.html" },
+    nodes: {
+        main: {
+            type: "dialogue",
+            lines: [
+                { speaker: "{player}", text: "...这些家伙...可恶,我们得赶紧离开了,大部队马上就要来了...." },
+                { speaker: "[叶岱]", text: "...." },
+                { speaker: "[叶岱]", text: "杀吗?" },
+                { speaker: "[鸢阑]", text: "算了吧...反正这群人也没掌握什么信息,还是不要再激化人妖矛盾了..." },
+                { speaker: "[妖族监国]", text: "(捂着伤口躺在地上,咬着牙)" },
+                { speaker: "[鸢阑]", text: "{player},你怎么看?" },
+            ],
+            next: "decision",
         },
-        { label: "我与妖族不共戴天!", to: "branch-long.html" },
-    ],
-    skip: "../../map/index.html",
+        decision: {
+            type: "choice",
+            choices: [
+                {
+                    id: "spare",
+                    kind: "advance",
+                    label: "算了,我们快走吧",
+                    to: "dawn",
+                    effects: [
+                        { type: "setFlag", value: 1 },
+                        {
+                            type: "achievement",
+                            id: "ach2",
+                            title: "保护坚果",
+                            description: "在第二关胜利后,选择放掉妖族监国",
+                        },
+                    ],
+                },
+                { id: "kill", kind: "advance", label: "我与妖族不共戴天!", to: "escape" },
+            ],
+        },
+        escape: {
+            type: "intro",
+            text: "一行三人迅速将地上的伤者击杀,迅速逃离了这里",
+            duration: 2000,
+            background: "../../assets/images/background/013-official-road.png",
+            next: "exclusive",
+        },
+        exclusive: {
+            type: "dialogue",
+            lines: [
+                { speaker: "[叶岱]", text: "你居然真的会这么干" },
+                { speaker: "{player}", text: "...啊...毕竟妖族和我们有千年之仇嘛...留着也是给人族添麻烦" },
+                { speaker: "[叶岱]", text: "..." },
+                { speaker: "{player}", text: "而且听起来你好像不太支持的样子,不是你提出来的吗?" },
+                { speaker: "[叶岱]", text: "..." },
+                { speaker: "[叶岱]", text: "我只是问问你" },
+                { speaker: "{player}", text: "(苦笑)我有时真看不出来你在想什么..." },
+            ],
+            next: "dawn",
+        },
+        dawn: {
+            type: "intro",
+            text: "次日寅时 森林外平原",
+            duration: 2000,
+            background: "../../assets/images/background/009-plain-out-of-forest.png",
+            next: "common",
+        },
+        common: {
+            type: "dialogue",
+            lines: [
+                { speaker: "[鸢阑]", text: "他们说的话..." },
+                { speaker: "{player}", text: "战争的原因...其实也根本无可考究了,不要太放在心上..." },
+                { speaker: "[鸢阑]", text: "真的能不用内丹就炼丹吗?妖族现在只盘踞在龙鳞森林里,内丹产出很少了...如果真能不用内丹炼丹,丹药的价格应该会比现在低不少吧...我父亲当年也不必..." },
+                { speaker: "{player}", text: "可惜恐怕我们也没有机会问妖族了..." },
+                { speaker: "[鸢阑]", text: "太上老君不是神族吗?神族的寿元我记得是无限的呀,不会自然死亡,如果有朝我们能问到他就好了!" },
+                { speaker: "{player}", text: "可惜他在给出人族配方后就销声匿迹了...我们也不知道他在哪儿..." },
+                { speaker: "[叶岱]", text: "蓬莱" },
+                { speaker: "[鸢阑]", text: "???你怎么知道?" },
+                { speaker: "[叶岱]", text: "...\n...\n..." },
+                { speaker: "[叶岱]", text: "昆仑一本古书里..." },
+                { speaker: "{player}", text: "叶岱不想说的话就算了,毕竟蓬莱地处北海又设下结界,普通人族完全没有权限进入." },
+                { speaker: "{player}", text: "我更在意的是...太上老君为什么会这么做呢?为了挑起人妖之间的战争???" },
+                { speaker: "{player}", text: "而且这么多年,妖族为了自保,难道没有向人族提供过他们的炼丹配方吗...." },
+                { speaker: "[鸢阑]", text: "算啦!这些完全不是我们这些小卒能管了的啦!" },
+                { speaker: "[鸢阑]", text: "不过有朝一日如果真能见到太上老君,我们还是问问配方吧!这样仙丹价格就不会那么高了,会救更多人的命..." },
+            ],
+            next: "exit",
+        },
+        exit: { type: "exit", to: "../../map/index.html" },
+    },
 };

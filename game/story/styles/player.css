@@ -116,3 +116,38 @@ body > .centered-text2 {
     image-rendering: pixelated;
     -webkit-user-drag: none;
 }
+
+#story-player [data-story-intro] {
+    z-index: 2;
+}
+
+#story-player [data-choice-seen="true"] .button-text {
+    opacity: 0.65;
+}
+
+#story-player .button:disabled {
+    cursor: default;
+}
+
+.story-choice-error {
+    color: white;
+    background: #351b1b;
+    padding: 0.5em 1em;
+}
+
+.story-achievement-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+}
+
+.story-achievement-heading {
+    font-family: var(--story-default-font);
+    font-size: 1.6vw;
+    color: rgb(96, 65, 51);
+}
+
+.story-achievement-backdrop button {
+    border: 0;
+    background: transparent;
+}

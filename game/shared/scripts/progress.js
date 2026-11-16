@@ -219,6 +219,33 @@
             return save;
         }
 
+        function applyStoryEffects(effects) {
+            if (!Array.isArray(effects) || effects.some(effect => !isObject(effect) ||
+                (effect.type === 'setFlag' ? !isFlag(effect.value) :
+                    effect.type !== 'achievement' || !Object.hasOwn(achievementsDefinition, effect.id)))) {
+                fail('INVALID_STORY_EFFECT', '剧情选项的结果配置不正确。');
+            }
+            const save = capture();
+            const unlocked = [];
+            for (const effect of effects) {
+                if (effect.type === 'setFlag') save.endingFlag = effect.value;
+                else if (save.achievements[effect.id] === 0) {
+                    save.achievements[effect.id] = 1;
+                    unlocked.push(effect.id);
+                }
+            }
+            if (effects.length) {
+                // Internal story nodes no longer leave the document. Persist the
+                // accepted choice now, without rewriting unrelated active fields.
+                writeAtomically([
+                    ['testflag', String(save.endingFlag)],
+                    ['testachievement', JSON.stringify(save.achievements)],
+                    [SAVE_KEY, JSON.stringify(save)],
+                ]);
+            }
+            return { unlocked };
+        }
+
         function renamePlayer(raw) {
             const name = playerName(raw, 'INVALID_NAME');
             const saved = storage.getItem(SAVE_KEY);
@@ -251,6 +278,7 @@
             renamePlayer: guarded(renamePlayer),
             capture: guarded(capture),
             saveAuto: guarded(saveAuto),
+            applyStoryEffects: guarded(applyStoryEffects),
             hasSave: guarded(() => {
                 try { decodeSave(storage.getItem(SAVE_KEY)); return true; }
                 catch (error) {

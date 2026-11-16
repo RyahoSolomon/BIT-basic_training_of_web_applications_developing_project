@@ -12,10 +12,9 @@ const map = 'game/map/index.html';
 const battle = 'game/battle/index.html';
 const mines = 'game/minesweeper/index.html';
 const expectedRoutes = {
-  'chapter-0/plot.html': map, 'chapter-0/plot-a.html': map, 'chapter-0/plot-b.html': map,
+  'chapter-0/plot.html': map,
   'chapter-1/plot.html': battle, 'chapter-1/plot-after.html': map,
   'chapter-2/plot.html': battle, 'chapter-2/plot-after.html': map,
-  'chapter-2/branch-short.html': map, 'chapter-2/branch-long.html': map,
   'chapter-3/plot.html': battle, 'chapter-3/plot-next.html': battle,
   'chapter-3/plot-after.html': map, 'chapter-3/plot-end.html': map,
   'chapter-4/plot1.html': battle, 'chapter-4/plot2.html': battle, 'chapter-4/plot3.html': mines,
@@ -151,7 +150,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     if (expectedRoutes[file] === battle) assert.equal(await evaluate('level'), chapter - 1,
       file + ': skipping entered the wrong battle');
   }
-  console.log('PASS  opening and all 24 chapter pages load one skip icon and follow their own navigation routes');
+  console.log('PASS  opening and all canonical chapter pages load one skip icon and follow their own navigation routes');
 
   for (const poison of [false, true]) {
     await reset(4, poison);

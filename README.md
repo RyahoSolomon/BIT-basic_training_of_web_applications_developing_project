@@ -14,6 +14,8 @@
 
 ### 开发时检查页面依赖
 
+当前项目处于尚未发布的 dev 阶段。重构时直接删除废弃入口、配置和代码，无需维护旧版本兼容层；同步更新当前流程、引用和测试。
+
 使用 Node.js 22 或更高版本，在项目根目录运行：
 
 ```sh
@@ -46,7 +48,7 @@ node scripts/smoke-audio.cjs
 
 剧情、地图、战斗、菜单与结局的背景音乐由公共音频脚本在页面加载时读取共用设置中的音乐音量与开关状态后启动；关闭音乐后跳转或刷新不会重新播放。这些页面的 `<audio>` 不使用 `autoplay` 属性，以避免短暂出声。首次播放被浏览器阻止时，再等待页面点击重试。音频检查使用真实鼠标输入，并且不会把读取页面状态当作用户交互。
 
-对白播放器跳转到下一段剧情时，会临时记录音乐进度；目标剧情使用同一首音乐时从该位置继续，曲目改变时从头播放。该记录仅供紧接着的目标页使用，不写入游戏存档，也不会影响刷新或重新进入剧情。序章两个选项、第二关战后两个选项及长分支接回后续剧情均保持原曲续播。
+序章和第二关战后的分支、汇合都在各自同一个页面内播放，使用同一个音频元素；相同曲目不会重新加载、暂停或调整进度。其他尚未迁移的连续剧情跨页时，仍临时记录音乐进度；目标页使用同一首音乐时恢复该位置，曲目改变时从头播放。跨页记录只供紧接着的目标页使用，不写入游戏存档，也不会影响刷新或重新进入剧情。
 
 新游戏、自动保存、继续游戏与 JSON 存档导入导出统一通过 [公共进度模块](game/shared/scripts/progress.js) 处理，只保留一份本地存档。各页面右上角的设置入口提供音乐、音效和存档操作；两种音量默认均为 50，静音后再次点击图标恢复此前音量，拖动滑块也能开启声音。音效仅预留设置，等待后续接入。下载文件名为 `save_{主角名字}.json`，导入后返回地图。空档或损坏数据不会覆盖当前进度。存档格式见 [存档格式](docs/save-format.md)。
 
@@ -64,9 +66,56 @@ node scripts/smoke-audio.cjs
 
 ### 编辑章节对话
 
-第 0–6 章的 24 个对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。
+第 0–6 章的对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。序章 `plot.html` 和第二关 `plot-after.html` 已将整段分支剧情合并为同页节点，分支对白直接存放在对应剧情包中。
 
-场景 JS 定义 `window.storyScene`。在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`choices` 定义分支选项，`inlineChoice` 定义对话框内的最后一个按钮，`next` 定义读完后的目标。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+场景 JS 定义 `window.storyScene`。线性剧情在 `lines` 中按顺序填写 `speaker` 和 `text`，`{player}` 会替换为玩家姓名。`caption` 是与该句一起显示的中央字幕。`inlineChoice` 定义对话框内的最后一个按钮，`next` 定义读完后的目标；分支选项统一使用下述节点结构。添加或删除一句时，将说话人与台词作为同一条记录编辑。
+
+对于已经迁移的整段剧情，`start` 指定起始节点，`nodes` 按稳定 ID 存放节点；内部 `next` 和选项 `to` 都指向节点 ID，只有 `type: "exit"` 的 `to` 才是页面路径。播放器及背景控制器只初始化一次，内部跳转不改变地址或新增浏览器历史。四种节点为：
+
+| `type` | 内容与去向 |
+| --- | --- |
+| `dialogue` | `lines` 保留原对白格式，读完后进入 `next` |
+| `choice` | `choices` 中每项有 `id`、`label`、`to`，选中后跳到对应节点 |
+| `intro` | 显示 `text`，经过 `duration` 毫秒（默认 2000）进入 `next` |
+| `exit` | 整段结束，按 `to` 离开当前页面 |
+
+例如补充询问回到同一个菜单，而推进选项离开菜单：
+
+```js
+window.storyScene = {
+    id: "example-conversation",
+    start: "greeting",
+    skip: { node: "menu" }, // 只略过对白，不替玩家选择推进选项。
+    nodes: {
+        greeting: {
+            type: "dialogue",
+            lines: [{ speaker: "[法海]", text: "还有什么想问的？" }],
+            next: "menu",
+        },
+        menu: {
+            type: "choice",
+            choices: [
+                { id: "ask", label: "告诉我更多", kind: "topic", repeat: "always", to: "details" },
+                { id: "leave", label: "准备出发", kind: "advance", to: "exit" },
+            ],
+        },
+        details: {
+            type: "dialogue",
+            lines: [{ speaker: "[法海]", text: "这是补充说明。" }],
+            next: "menu",
+        },
+        exit: { type: "exit", to: "../../map/index.html" },
+    },
+};
+```
+
+`kind` 说明选项用途，实际路线由 `to`/`next` 决定。`repeat` 默认 `"always"`，也可设为 `"hide"` 或 `"disable"`；问过的选项标记为已读，但不自动禁止再次询问。返回菜单只显示选项和刚才的对白，不重播开场问候。已读记录仅在当前页面有效，刷新重新开始，不增加逐句存档。
+
+节点及对白可配置 `background`、`transition`、`music`：省略就继承现状；同背景且未指定转场时直接换对白，同曲目不触碰播放状态。`music: null` 明确停止音乐，之后给出曲目即可重新启用，并继续遵守设置中的静音和音量。节点可以用 `skip` 覆盖整段的跳过目标，格式为 `{ node: "menu" }` 或 `{ exit: "../../map/index.html" }`。现有序章和第二关仍直接跳过到地图。
+
+选项的 `effects` 只在该选项首次被接受时执行，返回菜单重复选择不再次执行；支持 `{ type: "setFlag", value: 0或1 }` 和 `{ type: "achievement", id: "ach2", title: "保护坚果", description: "..." }`。剧情标记和成就立即与存档一起保存，失败则留在选项处提示重试；已解锁成就不重复弹窗。第二关仅实际选择放走才设置标记并授予成就，击杀、跳过或进入公共节点均不授予。
+
+编辑节点连接时，播放器会检查目标是否存在、选项 ID 是否重复等；允许补充询问返回菜单形成循环。
 
 剧情页的设置按钮下方提供 `skip_dialogue.png` 跳过按钮，执行场景的 `skip` 目标；未配置时使用 `next`。开场背景介绍跳过后返回地图。跳过会取消正在进行的背景转场，不触发被略过的选项效果。
 
