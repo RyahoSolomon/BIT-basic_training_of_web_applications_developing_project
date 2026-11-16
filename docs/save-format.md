@@ -57,7 +57,7 @@
 
 [profile.js](../game/shared/scripts/profile.js) 集中定义姓名规则。`GameProfile.countName(raw)` 按 Unicode 码点计数：统一表意文字（`Unified_Ideograph`）和 `〇` 计 2，其余码点计 1。`validateName(raw)` 返回 `{valid, name, count, message}`：先检查原串只包含允许字符，再去掉首尾 ASCII 空格，要求结果非空，且原串加权长度不超过 14。因此控制符、换行、零宽字符、双向格式符、HTML 符号和引号均不会因去空白而被放行。不按关键词过滤，名字始终作为数据处理。
 
-浏览器中的 `GameProfile.getName()` 验证 `playerName` 后返回安全名字；缺失、非法或无法读取时回退为 `test`，不把未验证的存储内容交给界面。保存时的 `capture()` 更严格：名字必须存在、合法且无首尾空格，否则拒绝覆盖好档。导入也要求名字已经是规范形式，不会自动修剪文件中的名字。Node 可直接使用 `profile.js` 导出的纯函数 `countName`、`validateName`。
+浏览器中的 `GameProfile.getName()` 验证 `playerName` 后返回安全名字；缺失、非法或无法读取时返回空字符串，不预设显示名字，也不把未验证的存储内容交给界面。保存时的 `capture()` 更严格：名字必须存在、合法且无首尾空格，否则拒绝覆盖好档。导入也要求名字已经是规范形式，不会自动修剪文件中的名字。Node 可直接使用 `profile.js` 导出的纯函数 `countName`、`validateName`。
 
 战斗规则在运行时使用布尔成就标记，剧情使用数字标记；读取运行状态时统一转换为数字 0/1。导入文件仍严格要求数字 0/1，不接受布尔成就字段。
 

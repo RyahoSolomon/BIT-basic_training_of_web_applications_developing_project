@@ -22,6 +22,16 @@ async function smoke(browser) {
     await click('[data-settings-open]');
     await until('settings open', () => evaluate('document.getElementById("game-settings").open'));
   }
+  async function menuWithoutName() {
+    const before = await storage();
+    await settings();
+    assert.equal(await evaluate('document.querySelectorAll("#game-settings .settings-name, #game-settings [data-player-name], #game-settings [data-name-edit]").length'), 0,
+      'Main-menu settings must not show a character name or provide a rename button');
+    assert.equal(await evaluate('document.querySelectorAll("#game-settings [data-volume-toggle]").length'), 2,
+      'Hiding the name must retain both volume controls');
+    await click('[data-settings-close]');
+    assert.deepEqual(await storage(), before, 'Opening main-menu settings changed the name or save');
+  }
   async function edit() {
     const name = await evaluate('GameProfile.getName()');
     await click('[data-name-edit]');
@@ -56,17 +66,24 @@ async function smoke(browser) {
   try {
     await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.showSaveFilePicker = undefined;' });
     await open(menu);
-    await rename('菜单名字');
-    assert.equal(await evaluate('localStorage.getItem("game.save")'), null, 'Rename created a game before the player started');
+    assert.equal(await evaluate('GameProfile.getName()'), '', 'A fresh game must not display a default character name');
+    await menuWithoutName();
+    assert.equal(await evaluate('localStorage.getItem("playerName")'), null, 'Main-menu settings selected a display name');
+    assert.equal(await evaluate('localStorage.getItem("game.save")'), null, 'Main-menu settings created a game before the player started');
     assert.equal(await evaluate('localStorage.getItem("current")'), null);
-    await click('[data-settings-close]');
     await evaluate('GameProgress.importSave(' + JSON.stringify(JSON.stringify(fixture)) + ')');
+    await menuWithoutName();
+    console.log('PASS  main-menu settings omit name and rename controls with or without a save');
     await open(map);
     await settings();
+    assert.equal(await evaluate('document.querySelector("[data-player-name]").textContent'), fixture.playerName,
+      'In-game settings must display the saved character name');
     await edit();
     const before = await storage();
     for (const name of ['', '   ', '一二三四五六七八', '123456789012345', '旅人!', '<svg/onload=1>', 'A\u200bB']) {
       await replaceName(browser, name);
+      assert.equal(await evaluate('document.getElementById("player-name").value'), name,
+        'The rename field must contain the exact invalid input being tested');
       await key('Enter', 13);
       assert.equal(await evaluate('document.getElementById("player-name-dialog").open'), true);
       assert.ok(await evaluate('document.getElementById("player-name-error").textContent.trim()'));
@@ -114,6 +131,8 @@ async function smoke(browser) {
     assert.deepEqual(withoutTimestamp(exported), withoutTimestamp(expectedSave));
     await click('[data-menu-leave]');
     await page(menu);
+    await menuWithoutName();
+    assert.equal(await evaluate('GameProfile.getName()'), name, 'Returning to the menu discarded the chosen name');
     await click('a[onclick="return load()"]');
     await page(map);
     assert.equal(await evaluate('GameProfile.getName()'), name);
@@ -130,7 +149,8 @@ async function smoke(browser) {
       && document.querySelector('#story-player .text').textContent === ${JSON.stringify(lines[0].text)}
     `));
     await rename('新说话人');
-    assert.equal(await evaluate('document.querySelector("#story-player .topLeftText").textContent'), '新说话人');
+    await until('renamed speaker rendered', () => evaluate(
+      'document.querySelector("#story-player .topLeftText").textContent === "新说话人"'));
     assert.equal(await evaluate('document.querySelector("#story-player .text").textContent'), lines[0].text,
       'Rename advanced the current dialogue');
     await click('[data-settings-close]');
@@ -142,8 +162,8 @@ async function smoke(browser) {
         JSON.stringify(lines[index].text.replaceAll('{player}', '新说话人'))));
     }
     await rename('一二三四五六七');
-    assert.equal(await evaluate('document.querySelector("#story-player .text").textContent'),
-      lines[namedLine].text.replaceAll('{player}', '一二三四五六七'));
+    await until('renamed dialogue text rendered', () => evaluate('document.querySelector("#story-player .text").textContent === ' +
+      JSON.stringify(lines[namedLine].text.replaceAll('{player}', '一二三四五六七'))));
     assert.equal(await evaluate('document.querySelector("#story-player .topLeftText").textContent'), lines[namedLine].speaker);
     await click('[data-settings-close]');
     await page(scene);

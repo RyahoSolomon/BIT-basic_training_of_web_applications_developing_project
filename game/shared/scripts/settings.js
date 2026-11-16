@@ -57,6 +57,7 @@
     function mount() {
         const host = document.querySelector('[data-settings-host]');
         if (!host) return;
+        const showName = host.dataset.settingsContext !== 'menu';
         host.innerHTML = `<button type="button" data-settings-open title="设置" aria-label="设置"><img src="${asset('settings.png')}" alt="" draggable="false"></button>`;
         const dialog = document.createElement('dialog');
         dialog.id = 'game-settings';
@@ -64,10 +65,10 @@
         dialog.innerHTML = `
             <button type="button" data-settings-close title="关闭设置" aria-label="关闭设置"><img src="${asset('close.png')}" alt="" draggable="false"></button>
             <h2 id="settings-title">SETTINGS</h2>
-            <div class="settings-name">
+            ${showName ? `<div class="settings-name">
                 <span>名字：<span data-player-name></span></span>
                 <button type="button" data-name-edit title="修改名字" aria-label="修改主角名字"><img src="${asset('edit.png')}" alt="" draggable="false"></button>
-            </div>
+            </div>` : ''}
             <div class="settings-volumes">
                 ${[['sound', '音效'], ['music', '音乐']].map(([channel, label]) => `
                     <div class="settings-volume" data-channel="${channel}">
@@ -86,9 +87,10 @@
             <input type="file" data-save-file accept=".json,application/json" hidden>`;
         document.body.append(dialog);
         const status = dialog.querySelector('.settings-status');
+        const playerName = dialog.querySelector('[data-player-name]');
         const report = error => { status.textContent = error.message || '操作失败，请重试。'; };
         function render() {
-            dialog.querySelector('[data-player-name]').textContent = GameProfile.getName();
+            if (playerName) playerName.textContent = GameProfile.getName();
             for (const channel of ['sound', 'music']) {
                 const value = GamePreferences.effectiveVolume(channel);
                 const row = dialog.querySelector(`[data-channel="${channel}"]`);
@@ -116,7 +118,7 @@
         dialog.querySelector('[data-settings-close]').addEventListener('click', () => dialog.close());
         window.addEventListener('game-settings-change', render);
         window.addEventListener('game:player-name-changed', render);
-        dialog.querySelector('[data-name-edit]').addEventListener('click', async event => {
+        dialog.querySelector('[data-name-edit]')?.addEventListener('click', async event => {
             const button = event.currentTarget;
             button.disabled = true;
             try {

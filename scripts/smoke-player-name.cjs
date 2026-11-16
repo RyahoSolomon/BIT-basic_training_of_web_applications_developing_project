@@ -57,8 +57,11 @@ async function smoke(browser) {
     await open(menu);
     assert.equal(await evaluate('localStorage.getItem("playerName")'), null,
       'Loading the menu must not choose a name');
+    assert.equal(await evaluate('GameProfile.getName()'), '', 'A fresh game must not supply a default character name');
     const emptyGame = await storage();
     await nameDialog();
+    assert.equal(await evaluate('document.getElementById("player-name").value'), '',
+      'New-game name entry must start empty');
     await replaceName(browser, '未确认');
     await click('[data-name-close]');
     await unchanged(emptyGame);
@@ -187,12 +190,12 @@ async function smoke(browser) {
     await until('safe fallback speaker', () => evaluate(`
       document.body.dataset.storyTransitioning !== 'true'
       && getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'
-      && document.querySelector('#story-player .topLeftText').textContent === 'test'
+      && document.querySelector('#story-player .topLeftText').textContent === ''
     `));
-    assert.equal(await evaluate('GameProfile.getName()'), 'test');
+    assert.equal(await evaluate('GameProfile.getName()'), '');
     assert.equal(await evaluate('document.querySelectorAll("img[src=x]").length'), 0);
     assert.equal(await evaluate('window.__nameExecuted === undefined'), true);
-    console.log('PASS  tampered runtime names fall back safely without creating markup or executing code');
+    console.log('PASS  tampered runtime names remain empty without creating markup or executing code');
   } finally {
     const resolved = path.resolve(downloads);
     assert.equal(path.dirname(resolved), path.resolve(os.tmpdir()));

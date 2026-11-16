@@ -2,8 +2,10 @@ async function replaceName(browser, name) {
   const { cdp } = browser;
   const click = browser.pointerClick || browser.click;
   await click('#player-name');
+  // Use the browser's editing command: Ctrl+A is not Select All on macOS.
   await cdp.send('Input.dispatchKeyEvent', {
     type: 'keyDown', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2,
+    commands: ['selectAll'],
   });
   await cdp.send('Input.dispatchKeyEvent', {
     type: 'keyUp', key: 'a', code: 'KeyA', windowsVirtualKeyCode: 65, modifiers: 2,

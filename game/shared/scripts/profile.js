@@ -9,8 +9,8 @@
         getName() {
             try {
                 const result = api.validateName(root.localStorage.getItem('playerName'));
-                return result.valid ? result.name : 'test';
-            } catch { return 'test'; }
+                return result.valid ? result.name : '';
+            } catch { return ''; }
         },
     };
 

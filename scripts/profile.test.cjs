@@ -34,7 +34,7 @@ test('validation rejects raw illegal characters before trimming and uses the raw
   }
 });
 
-test('browser getName validates storage and safely falls back without mutating the display name', () => {
+test('browser getName leaves missing or invalid display names empty without mutating storage', () => {
   const values = new Map();
   const storage = {
     getItem: key => values.get(key) ?? null,
@@ -45,14 +45,17 @@ test('browser getName validates storage and safely falls back without mutating t
   const profile = context.window.GameProfile;
   assert.equal(values.get('username'), 'test');
   assert.equal(values.has('playerName'), false, 'Loading the menu must not preselect or write a display name');
-  assert.equal(profile.getName(), 'test');
+  assert.equal(profile.getName(), '');
   for (const name of ['<img>', 'A\n', 'A\u202e', '中文'.repeat(4), '']) {
     values.set('playerName', name);
-    assert.equal(profile.getName(), 'test');
+    assert.equal(profile.getName(), '');
     assert.equal(values.get('playerName'), name, 'Safe rendering does not silently overwrite stored progress');
   }
   values.set('playerName', '旅人_A1');
   assert.equal(profile.getName(), '旅人_A1');
+  values.set('playerName', 'test');
+  assert.equal(profile.getName(), 'test', 'A valid saved name must not be treated as an obsolete default');
+  assert.equal(values.get('playerName'), 'test');
   storage.getItem = () => { throw new Error('Storage blocked'); };
-  assert.equal(profile.getName(), 'test');
+  assert.equal(profile.getName(), '');
 });
