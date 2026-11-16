@@ -1,7 +1,7 @@
 body
-{ margin: 0; 
-  background-image: url("../assets/images/background/winter-palace.jpg"); 
-  background-repeat: no-repeat; 
+{ margin: 0;
+  background-image: url("../assets/images/background/winter-palace.jpg");
+  background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 }
@@ -29,6 +29,7 @@ body
   position: absolute;
   left: 212px;
   top: 225px;
+  cursor: pointer;
 }
 
 .result_inform
@@ -49,4 +50,7 @@ body
   color: rgb(102, 63, 49);
   top: 240px;
   left: 285px;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
