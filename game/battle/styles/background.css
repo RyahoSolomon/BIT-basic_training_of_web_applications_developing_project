@@ -1,7 +1,9 @@
 body
-{ margin: 0; 
-  background-image: url("../assets/images/background/talion.png"); 
-  background-repeat: no-repeat; 
+{ margin: 0;
+  background-image: url("../assets/images/background/talion.png");
+  background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  -webkit-user-select: none;
+  user-select: none;
 }
