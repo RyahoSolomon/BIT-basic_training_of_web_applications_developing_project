@@ -79,4 +79,4 @@ design/                            可编辑的美术源稿
 - 所有运行页面在 head 中依次加载 `profile.js`、`preferences.js`、`progress.js`、`settings.js`，通过 `data-settings-host` 挂载唯一设置入口。`profile.js` 提供姓名计数、校验及安全读取，并补齐缺失的 `testachievement` 与 `testflag`，不会初始化当前进度；显示姓名单独保存在 `playerName`，内部 ID 仍为 `test`。
 - 主菜单与成就页使用已有静态背景；开场循环背景视频已经移除，真结局的 `cast.mp4` 保留。
 
-战棋伤害、经验和死亡计数已提取为可独立运行的规则，页面通过适配层处理显示与存储，见 [伤害与死亡结算](battle-rules.md)。玩家与 AI 共用移动范围计算，AI 决策也与页面执行分离，见 [移动范围与 AI 决策](movement-rules.md)。行动结束和整轮结束共用 [胜负与通关结算](battle-settlement.md)，成就编号与确认流程集中维护。回合阶段、异步等待和稳定的单位显示节点见 [回合推进与单位显示](turn-flow.md)；完成情况记录在 [架构问题清单](TODO.md)。
+战棋伤害、经验和死亡计数已提取为可独立运行的规则，页面通过适配层处理显示与存储，见 [伤害与死亡结算](battle-rules.md)。玩家与 AI 共用移动范围计算，AI 决策也与页面执行分离，见 [移动范围与 AI 决策](movement-rules.md)。行动结束和整轮结束共用 [胜负与通关结算](battle-settlement.md)，成就编号与确认流程集中维护。回合阶段、异步等待和稳定的单位显示节点见 [回合推进与单位显示](turn-flow.md)；后续体验改进见 [生活质量改进清单](TODO.md)。
