@@ -10,32 +10,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>True Ending</title>
     <link rel="stylesheet" href="true-ending-first.css">
+    <link rel="stylesheet" href="../styles/achievement.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rochester&family=Spectral+SC:wght@700&display=swap">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&display=swap" rel="stylesheet">
-    <script>
-        function check(){
-            
-        }
-    </script>
     <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
 <body>
     <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/014-true-ending.mp3" type="audio/mp3"></audio>
     <div class="button-group" data-settings-host></div>
-    <div id="achievement_popup">
-        <div id="achievement_confirm_button_mask">
-            <p id="achievement_confirm_button_text">解锁成就</p>
-        </div>
-        <div class="achievement_title_container">
-            <p class="achievement_title">神所创造的世界 并非完美</p>
-        </div>
-        <div class="achievement_content_container">
-            <p class="achievement_content">达成真结局</p>
-        </div>
-        <div id="achievement_confirm_button_mask">
-            <p id="achievement_confirm_button_text" onclick="Shutoff(),check()">确认</p>
+    <div class="story-achievement-backdrop" hidden>
+        <div id="achievement_popup" class="story-achievement-panel" role="dialog" aria-modal="true" aria-label="解锁成就">
+            <p class="story-achievement-heading">解锁成就</p>
+            <h2 class="story-achievement-title">神所创造的世界 并非完美</h2>
+            <p class="story-achievement-description">达成真结局</p>
+            <button type="button" class="story-achievement-confirm" onclick="Shutoff()">确认</button>
         </div>
     </div>
     <div class="container">
@@ -55,9 +45,9 @@
     <script src="../scripts/ending.js"></script>
     <script src="../../shared/scripts/audio.js"></script>
     <script>
+        const awardBackdrop = document.querySelector('.story-achievement-backdrop');
         function Shutoff(){
-            var achievement_popup = document.getElementById("achievement_popup");
-            achievement_popup.style.display = "none";
+            awardBackdrop.hidden = true;
             setTimeout(()=>{
                 document.querySelector(".container").style.display = "none";
                 document.querySelector("body").style.backgroundImage = "none";
@@ -84,8 +74,8 @@
             },1000);
         }
         function achieve(){
-            var achievement_popup = document.getElementById("achievement_popup");
-            achievement_popup.style.display = "flex";
+            awardBackdrop.hidden = false;
+            awardBackdrop.querySelector('button').focus();
         }
         window.onload = function (){
             var username = window.localStorage.username;

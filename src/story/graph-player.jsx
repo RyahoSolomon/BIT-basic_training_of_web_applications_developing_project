@@ -222,11 +222,11 @@ export default function GraphPlayer({ scene }) {
       </div>}
     {award && createPortal(
       <div className="story-achievement-backdrop">
-        <div id="achievement_popup" role="dialog" aria-modal="true" aria-label="解锁成就" style={{ display: 'flex' }}>
+        <div id="achievement_popup" className="story-achievement-panel" role="dialog" aria-modal="true" aria-label="解锁成就">
           <p className="story-achievement-heading">解锁成就</p>
-          <div className="achievement_title_container"><p className="achievement_title">{award.title || award.id}</p></div>
-          <div className="achievement_content_container"><p className="achievement_content">{award.description}</p></div>
-          <button type="button" id="achievement_confirm_button_text" data-story-achievement-close autoFocus
+          <h2 className="story-achievement-title">{award.title || award.id}</h2>
+          {award.description && <p className="story-achievement-description">{award.description}</p>}
+          <button type="button" className="story-achievement-confirm" data-story-achievement-close autoFocus
             onClick={closeAward}>确认</button>
         </div>
       </div>, document.body)}

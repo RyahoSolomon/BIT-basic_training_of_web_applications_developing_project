@@ -1,4 +1,3 @@
-@import url("../../shared/styles/xingkai.css");
 @import url("../../shared/styles/story-fonts.css");
 
 html {
@@ -93,79 +92,7 @@ body {
         line-height: 1.4; /* 进一步调整非常小屏幕上的行间距 */
     }
 }
-#achievement_popup {
-    width: 35%; /* 可以根据需要调整宽度百分比 */
-    aspect-ratio: 576 / 320; /* 保持宽高比 576:320 */
-    margin: 0 auto;
-    position: absolute;
-    left: 33%;
-    top: 12%;
-    background-image: url("../../assets/images/achievement-popup.png");
-    background-size: contain; /* 保持图片长宽比 */
-    background-repeat: no-repeat; /* 防止背景图片重复 */
-    background-position: center; /* 图片居中 */
-    color: rgb(130, 43, 216);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-  }
-  
-  .achievement_title_container {
-    width: 80%;
-    text-align: center;
-    overflow: hidden;
-  }
-  
-  .achievement_title {
-    font-family: var(--xingkai-font);
-    font-size: 2.0vw;
-    color: rgb(96, 65, 51);
-    margin-bottom: 0%; /* 控制标题和内容之间的间距 */
-    overflow: hidden;
-  }
-  
-  .achievement_content_container {
-    width: 80%;
-    text-align: center;
-    overflow: hidden;
-  }
-  
-  .achievement_content {
-    font-family: "KaiTi", "楷体", "STKaiti", serif;
-    font-size: 1.5vw;
-    color: rgb(96, 65, 51);
-    margin-bottom: 0%; /* 控制内容和按钮之间的间距 */
-    overflow: hidden;
-  }
-  
-  /* #achievement_confirm_button_mask {
-    background-image: url("./confirm.png");
-    overflow: hidden;
-    text-align: center;
-  } */
-  
-  #achievement_confirm_button_mask {
-    /* background-image: url("./confirm.png"); */
-    background-size: cover; /* 使图片覆盖整个容器 */
-    background-position: center; /* 确保图片居中 */
-    background-repeat: no-repeat; /* 防止背景图片重复 */
-    overflow: hidden;
-    text-align: center;
-  }
-  
-  #achievement_confirm_button_text {
-    cursor: pointer;
-    font-family: "KaiTi", "楷体", "STKaiti", serif;
-    font-size: 2.0vw;
-    color: rgb(96, 65, 51);
-    overflow: hidden;
-    margin-bottom: 0%;
-  }
-
-
-  .centered-text {
+.centered-text {
     font-family: "Zhi Mang Xing", cursive;
     font-weight: 400;
     font-style: normal;
@@ -213,4 +140,5 @@ object-fit: cover;
 #text114{
   z-index: 1000;
   opacity: 0;
+  pointer-events: none;
 }

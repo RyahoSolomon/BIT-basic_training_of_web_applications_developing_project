@@ -64,6 +64,41 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await until('branch choices', () => evaluate('document.querySelectorAll("#story-player .button-container .button").length === 2'));
   }
 
+  async function checkAwardLayout(width, height) {
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: false });
+    await cdp.send('Runtime.evaluate', { expression: 'document.fonts.ready.then(() => true)', awaitPromise: true });
+    const layout = await evaluate(`(() => {
+      const dialog = document.querySelector('[role=dialog][aria-label="解锁成就"]');
+      const frame = dialog.getBoundingClientRect();
+      const button = dialog.querySelector('[data-story-achievement-close]');
+      const rows = [];
+      const walker = document.createTreeWalker(dialog, NodeFilter.SHOW_TEXT);
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        if (!node.textContent.trim() || button.contains(node)) continue;
+        const range = document.createRange();
+        range.selectNodeContents(node);
+        rows.push(range.getBoundingClientRect().toJSON());
+      }
+      const confirm = button.getBoundingClientRect();
+      rows.push(confirm.toJSON());
+      return { frame: frame.toJSON(), rows,
+        clickable: button.contains(document.elementFromPoint(confirm.x + confirm.width / 2, confirm.y + confirm.height / 2)) };
+    })()`);
+    const { frame, rows, clickable } = layout;
+    const size = width + '×' + height;
+    assert.ok(frame.left >= 0 && frame.right <= width && frame.top >= 0 && frame.bottom <= height, 'Award offscreen at ' + size);
+    assert.equal(rows.length, 4, 'Expected announcement, award name, description and confirm button');
+    for (const [index, row] of rows.entries()) {
+      // The painted inner border is about 9% from either side and 13% from either end.
+      assert.ok(row.width > 0 && row.height > 0 && row.left >= frame.left + frame.width * .085 &&
+        row.right <= frame.right - frame.width * .085 && row.top >= frame.top + frame.height * .125 &&
+        row.bottom <= frame.bottom - frame.height * .125, 'Award row ' + index + ' crosses the frame at ' + size);
+      if (index) assert.ok(row.top >= rows[index - 1].bottom + 3, 'Award rows touch at ' + size);
+    }
+    assert.ok(clickable, 'Award confirmation is covered at ' + size);
+  }
+
   async function enterBattle() {
     await until('battle button', () => evaluate('!!document.querySelector("#story-player #button1")'));
     await click('#button1');
@@ -152,7 +187,12 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     assert.equal(await evaluate('localStorage.getItem(' + JSON.stringify(username + 'flag') + ')'), index === 0 ? '1' : '0');
     if (index === 0) {
       await until('achievement popup', () => evaluate('!!document.querySelector("[data-story-achievement-close]")'));
+      for (const [width, height] of [[1440, 900], [320, 568], [568, 320]]) {
+        await checkAwardLayout(width, height);
+        await screenshot('chapter2-award-' + width, '[data-story-achievement-close]');
+      }
       await click('[data-story-achievement-close]');
+      await cdp.send('Emulation.clearDeviceMetricsOverride');
     }
     if (index === 1) assert.equal((await readToEnd('exclusive')).length, 7);
     assert.equal((await readToEnd('common')).length, 15);

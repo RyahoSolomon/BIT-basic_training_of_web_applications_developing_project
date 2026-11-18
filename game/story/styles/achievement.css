@@ -1,57 +1,69 @@
 @import url("../../shared/styles/xingkai.css");
 
-#achievement_popup {
-  width: 35%; /* 可以根据需要调整宽度百分比 */
-  aspect-ratio: 576 / 320; /* 保持宽高比 576:320 */
-  margin: 0 auto;
-  position: absolute;
-  left: 33%;
-  top: 12%;
-  background-image: url("../../assets/images/achievement-popup.png");
-  background-size: contain; /* 保持图片长宽比 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
-  background-position: center; /* 图片居中 */
-  color: rgb(130, 43, 216);
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
+.story-achievement-backdrop:not([hidden]) {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    overflow: auto;
+    background: rgb(29 19 13 / 30%);
 }
 
-.achievement_title_container {
-  width: 80%;
-  text-align: center;
-  overflow: hidden;
+.story-achievement-panel {
+    --panel-width: min(94vw, 145vh, clamp(32rem, 43vw, 52rem));
+    box-sizing: border-box;
+    container-type: inline-size;
+    flex: none;
+    width: var(--panel-width);
+    min-height: calc(var(--panel-width) * 5 / 9);
+    margin: auto;
+    /* Keep the text inside the artwork's inner frame, including when it wraps. */
+    padding: calc(var(--panel-width) * .10) calc(var(--panel-width) * .12);
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    row-gap: clamp(5px, .65vw, 10px);
+    text-align: center;
+    overflow-wrap: anywhere;
+    color: #604133;
+    background: url("../../assets/images/achievement-popup.png") center / 100% 100% no-repeat;
 }
 
-.achievement_title {
-  font-family: var(--xingkai-font);
-  font-size: 1.6vw;
-  color: rgb(96, 65, 51);
-  margin-bottom: -1%; /* 控制标题和内容之间的间距 */
-  overflow: hidden;
+.story-achievement-heading,
+.story-achievement-title,
+.story-achievement-description {
+    margin: 0;
+    text-wrap: balance;
 }
 
-.achievement_content_container {
-  width: 80%;
-  text-align: center;
-  overflow: hidden;
+.story-achievement-heading {
+    margin-bottom: .25em;
+    font: 400 clamp(.875rem, 4cqi, 1.45rem)/1.25 var(--story-default-font);
+    letter-spacing: .1em;
 }
 
-.achievement_content {
-  font-family: "KaiTi", "楷体", "STKaiti", serif;
-  font-size: 1.2vw;
-  color: rgb(96, 65, 51);
-  margin-bottom: -1%; /* 控制内容和按钮之间的间距 */
-  overflow: hidden;
+.story-achievement-title {
+    font: 400 clamp(1.375rem, 7.5cqi, 2.75rem)/1.2 var(--xingkai-font);
 }
 
-#achievement_confirm_button_text {
-  cursor: pointer;
-  font-family: "KaiTi", "楷体", "STKaiti", serif;
-  font-size: 1.6vw;
-  color: rgb(96, 65, 51);
-  overflow: hidden;
-  margin-bottom: -1%;
+.story-achievement-description {
+    font: 400 clamp(.875rem, 4.2cqi, 1.4rem)/1.45 "KaiTi", "楷体", "STKaiti", serif;
+}
+
+.story-achievement-confirm {
+    margin-top: .35em;
+    padding: .25em 1.35em;
+    min-height: 34px;
+    font: 400 clamp(1rem, 4.4cqi, 1.5rem)/1.25 "KaiTi", "楷体", "STKaiti", serif;
+    color: inherit;
+    background: rgb(111 71 40 / 7%);
+    border: 1px solid #85664d;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.story-achievement-confirm:hover,
+.story-achievement-confirm:focus-visible {
+    color: #fff2cc;
+    background: #674a37;
 }
