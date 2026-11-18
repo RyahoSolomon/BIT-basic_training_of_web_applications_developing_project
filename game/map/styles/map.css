@@ -125,6 +125,14 @@ body {
     height: auto;
 }
 
+.map-board [data-settings-host] {
+    position: absolute;
+    inset: 2% 2% auto auto;
+    width: clamp(38px, 7%, 64px);
+}
+
+.map-board [data-settings-open] { width: 100%; }
+
 .map-board .button {
     display: none;
     position: absolute;
