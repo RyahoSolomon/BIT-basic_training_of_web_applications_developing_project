@@ -65,7 +65,6 @@ async function smoke(browser) {
   }
 
   try {
-    await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.showSaveFilePicker = undefined;' });
     await open(menu);
     assert.equal(await evaluate('GameProfile.getName()'), '', 'A fresh game must not display a default character name');
     await menuWithoutName();

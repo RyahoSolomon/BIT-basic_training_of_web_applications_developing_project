@@ -54,7 +54,6 @@ async function smoke(browser) {
   }
 
   try {
-    await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.showSaveFilePicker = undefined;' });
     await open(menu);
     assert.equal(await evaluate('localStorage.getItem("playerName")'), null,
       'Loading the menu must not choose a name');

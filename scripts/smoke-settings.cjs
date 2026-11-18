@@ -53,15 +53,24 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
 
   try {
-    // Exercise the real browser download fallback without opening a native picker.
+    await cdp.send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: downloads });
     await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
-      source: 'window.showSaveFilePicker = undefined;',
+      source: `window.savePickerCalls = 0;
+        window.showSaveFilePicker = () => {
+          window.savePickerCalls++;
+          throw new Error('Export must use the browser download');
+        };`,
     });
     await open(menu);
     assert.deepEqual(await evaluate('GamePreferences.get()'), {
       music: { volume: 50, muted: false }, sound: { volume: 50, muted: false },
     });
     await panel();
+    await click('[data-save-download]');
+    assert.match(await evaluate('document.querySelector(".settings-status").textContent'), /请先开始游戏/);
+    assert.equal(await evaluate('window.savePickerCalls'), 0);
+    assert.equal(await evaluate('localStorage.getItem("game.save")'), null);
+    assert.deepEqual(await fs.readdir(downloads), [], 'An empty game must not download a file');
     await evaluate('window.settingsEvents = 0; window.addEventListener("game-settings-change", () => settingsEvents++);');
     await toggle('music');
     assert.deepEqual(await evaluate('GamePreferences.get().music'), { volume: 50, muted: true });
@@ -123,55 +132,16 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
         ach6: false, ach7: false, ach8: true});
       localStorage.testflag = '1';
     })()`);
-    const expected = await evaluate('JSON.parse(GameProgress.exportSave())');
-    await cdp.send('Page.setDownloadBehavior', { behavior: 'allow', downloadPath: downloads });
+    const expected = await evaluate('GameProgress.capture()');
+    const filename = 'save_test.json';
     await panel();
-    await evaluate(`
-      window.nativeSave = { calls: [] };
-      window.showSaveFilePicker = async options => {
-        nativeSave.options = options;
-        nativeSave.calls.push('picker');
-        return { createWritable: async () => {
-          nativeSave.calls.push('createWritable');
-          return {
-            write: async text => { nativeSave.text = text; nativeSave.calls.push('write'); },
-            close: async () => { nativeSave.calls.push('close'); },
-          };
-        } };
-      };
-    `);
     await click('[data-save-download]');
-    await until('native save writer closed', () => evaluate('nativeSave.calls.includes("close")'));
-    const nativeSave = await evaluate('nativeSave');
-    assert.equal(nativeSave.options.suggestedName, 'save_test.json');
-    assert.deepEqual(nativeSave.options.types[0].accept, { 'application/json': ['.json'] });
-    assert.deepEqual(nativeSave.calls, ['picker', 'createWritable', 'write', 'close']);
-    assert.deepEqual(withoutTimestamp(JSON.parse(nativeSave.text)), withoutTimestamp(expected));
-    assert.equal(await evaluate('document.querySelector(".settings-status").textContent'), '存档已导出。');
-    await close();
-    await panel();
-    await evaluate(`
-      window.saveCancelled = false;
-      window.showSaveFilePicker = async () => {
-        saveCancelled = true;
-        throw new DOMException('User cancelled the picker', 'AbortError');
-      };
-    `);
-    await click('[data-save-download]');
-    await until('native picker cancelled', () => evaluate('saveCancelled'));
-    assert.equal(await evaluate('document.querySelector(".settings-status").textContent'), '',
-      'Cancelling the native picker was reported as an export failure');
-    await evaluate('window.showSaveFilePicker = undefined');
-    await click('[data-save-download]');
-    const filename = await until('downloaded JSON save', async () => {
-      const files = await fs.readdir(downloads);
-      return files.find(file => file.endsWith('.json'));
-    });
-    const exported = JSON.parse(await fs.readFile(path.join(downloads, filename), 'utf8'));
-    assert.deepEqual(withoutTimestamp(exported), withoutTimestamp(expected));
-    assert.deepEqual(exported.settings, {
-      music: { volume: 35, muted: false }, sound: { volume: 65, muted: false },
-    });
+    assert.equal(await evaluate('window.savePickerCalls'), 0, 'Export opened a save picker');
+    await until('downloaded save on disk', async () => (await fs.readdir(downloads)).includes(filename));
+    assert.equal(await evaluate('document.querySelector(".settings-status").textContent'), '存档已保存为' + filename);
+    const downloaded = JSON.parse(await fs.readFile(path.join(downloads, filename), 'utf8'));
+    assert.deepEqual(withoutTimestamp(downloaded), withoutTimestamp(expected));
+    assert.deepEqual(await fs.readdir(downloads), [filename], 'One click must produce one save file');
     await click('[data-menu-leave]');
     await page(menu);
     assert.deepEqual(withoutTimestamp(await evaluate('JSON.parse(localStorage.getItem("game.save"))')),
@@ -199,7 +169,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     const restored = await evaluate('JSON.parse(GameProgress.exportSave())');
     assert.deepEqual(withoutTimestamp(restored), withoutTimestamp(expected),
       'Uploaded save did not restore progress, achievements, branch flags and audio preferences');
-    console.log('PASS  native save writer/cancellation and actual JSON download/upload restore complete save; menu return saves progress');
+    console.log('PASS  one click downloads a named JSON file that restores full progress, achievements and settings');
 
     for (const ending of ['cast', 'true-ending-first']) {
       await open('game/story/chapter-6/' + ending + '.html');

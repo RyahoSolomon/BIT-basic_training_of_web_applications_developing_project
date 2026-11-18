@@ -69,7 +69,7 @@
 .settings-volume label { grid-column: 2 / 4; margin-bottom: .45em; }
 .settings-volume input { grid-column: 2; width: 100%; min-width: 0; margin: 0; accent-color: #865235; cursor: pointer; }
 .settings-volume output { grid-column: 3; text-align: right; font-variant-numeric: tabular-nums; }
-.settings-status { width: 75%; margin: auto 0 0; min-height: 2.5em; font-size: clamp(10px, 3.3cqw, 16px); text-align: center; }
+.settings-status { width: 75%; margin: auto 0 0; min-height: 2.5em; font-size: clamp(10px, 3.3cqw, 16px); text-align: center; overflow-wrap: anywhere; }
 .settings-actions { width: 72%; display: flex; justify-content: space-between; margin: 3% 0 12%; }
 #game-settings .settings-actions button { width: 21%; font-size: clamp(10px, 3.75cqw, 18px); }
 #game-settings .settings-actions span { display: block; margin-top: .4em; }

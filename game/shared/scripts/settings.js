@@ -162,32 +162,24 @@
                 window.location.href = new URL('map/index.html', base).href;
             } catch (error) { report(error); }
         });
-        let downloading = false;
-        dialog.querySelector('[data-save-download]').addEventListener('click', async () => {
-            if (downloading) return;
-            downloading = true;
+        dialog.querySelector('[data-save-download]').addEventListener('click', () => {
             try {
                 const text = GameProgress.exportSave();
-                const name = 'save_' + JSON.parse(text).playerName + '.json';
-                if (typeof window.showSaveFilePicker === 'function') {
-                    const file = await window.showSaveFilePicker({ suggestedName: name,
-                        types: [{ description: '游戏存档', accept: { 'application/json': ['.json'] } }] });
-                    const writable = await file.createWritable();
-                    await writable.write(text);
-                    await writable.close();
-                } else {
-                    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-                    const link = document.createElement('a');
+                const link = document.createElement('a');
+                link.download = 'save_' + JSON.parse(text).playerName + '.json';
+                const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+                try {
                     link.href = url;
-                    link.download = name;
-                    document.body.append(link);
+                    link.hidden = true;
+                    dialog.append(link);
                     link.click();
+                    status.textContent = '存档已保存为' + link.download;
+                } finally {
                     link.remove();
+                    // Allow the browser to start reading the file before releasing its URL.
                     setTimeout(() => URL.revokeObjectURL(url), 60000);
                 }
-                status.textContent = '存档已导出。';
-            } catch (error) { if (error.name !== 'AbortError') report(error); }
-            finally { downloading = false; }
+            } catch (error) { report(error); }
         });
         render();
         window.addEventListener('pagehide', () => {
