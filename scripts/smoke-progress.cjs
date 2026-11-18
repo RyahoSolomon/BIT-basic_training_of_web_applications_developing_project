@@ -166,9 +166,10 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   console.log('PASS  malformed imports and failed storage writes preserve all prior data');
 
   await open(menuPage);
+  const beforeCancel = await readStorage();
+  assert.equal(JSON.parse(beforeCancel.testachievement).ach3, 1);
   await click(newGameLink);
   await until('name dialog', () => evaluate('document.getElementById("player-name-dialog").open'));
-  const beforeCancel = await readStorage();
   await click('[data-name-close]');
   assert.deepEqual(await readStorage(), beforeCancel, 'Cancelling a new name preserves the current run');
   await start('新旅人_B2');
@@ -177,10 +178,13 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   assert.equal(await evaluate('GameProfile.getName()'), '新旅人_B2');
   assert.equal(await evaluate('localStorage.getItem("username")'), 'test');
   assert.deepEqual(restarted.progress, initial.progress);
-  assert.deepEqual(restarted.achievements, exportedSave.achievements);
+  assert.deepEqual(restarted.achievements, initial.achievements);
+  assert.deepEqual((await capture()).achievements, initial.achievements);
   assert.deepEqual(restarted.settings, exportedSave.settings);
   assert.equal(restarted.endingFlag, 0);
-  console.log('PASS  restart replaces the single run while retaining cumulative achievements and settings');
+  await open('game/pages/achievements.html');
+  assert.equal(await evaluate('document.querySelector("[data-achievement=ach3] .exh").textContent.trim()'), '隐藏成就');
+  console.log('PASS  confirming a new character resets achievements in the game and save while preserving audio settings');
 }
 
 withBrowser(smoke, {userGesture: false}).catch(error => {

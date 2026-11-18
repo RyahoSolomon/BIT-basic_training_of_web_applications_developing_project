@@ -5,6 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { createStore, createNewProgress, VERSION, FORMAT, SAVE_KEY, SETTINGS_KEY } = require('../game/shared/scripts/progress.js');
 const advanced = require('./fixtures/progress.json');
+const lockedAchievements = {ach1: 0, ach2: 0, ach3: 0, ach4: 0, ach6: 0, ach7: 0, ach8: 0};
 const timestamp = advanced.savedAt;
 const encoded = JSON.stringify;
 const clone = value => JSON.parse(encoded(value));
@@ -56,7 +57,7 @@ test('new game needs no account and immediately persists a complete initial save
   assert.equal(storage.getItem('playerName'), 'test');
   assert.equal(storage.getItem('username'), 'test');
   assert.deepEqual(save.progress, createNewProgress());
-  assert.deepEqual(save.achievements, Object.fromEntries(['ach1', 'ach2', 'ach3', 'ach4', 'ach6', 'ach7', 'ach8'].map(key => [key, 0])));
+  assert.deepEqual(save.achievements, lockedAchievements);
   assert.equal(save.endingFlag, 0);
   assert.deepEqual(save.settings, {music: {volume: 50, muted: false}, sound: {volume: 50, muted: false}});
   assert.deepEqual(JSON.parse(storage.getItem(SAVE_KEY)), save);
@@ -70,12 +71,14 @@ test('new game needs no account and immediately persists a complete initial save
   assert.equal('listSlots' in store, false);
 });
 
-test('new game resets run progress and branch flag while retaining achievements and independent settings', () => {
+test('starting again with the same name resets all achievements, progress and branch flags and retains settings', () => {
   const { storage, store } = setup();
-  store.importSave(encoded(advanced));
-  const save = store.newGame('test');
+  const unlocked = Object.fromEntries(Object.keys(lockedAchievements).map(key => [key, 1]));
+  store.importSave(encoded({...advanced, achievements: unlocked}));
+  const save = store.newGame(advanced.playerName);
   assert.deepEqual(save.progress, createNewProgress());
-  assert.deepEqual(save.achievements, advanced.achievements);
+  assert.deepEqual(save.achievements, lockedAchievements);
+  assert.deepEqual(JSON.parse(storage.getItem('testachievement')), lockedAchievements);
   assert.deepEqual(save.settings, advanced.settings);
   assert.equal(save.endingFlag, 0);
   assert.equal(storage.getItem('testflag'), '0');
@@ -103,7 +106,8 @@ test('new game requires an explicit valid name before changing any existing run 
 test('changing display names retains the fixed achievement identity and continue restores the saved name', () => {
   const { storage, store } = setup();
   store.importSave(encoded({...advanced, playerName: '旧名字'}));
-  const renamed = store.newGame(' 新旅人_A ');
+  store.renamePlayer(' 新旅人_A ');
+  const renamed = store.capture();
   assert.equal(renamed.playerName, '新旅人_A');
   assert.deepEqual(renamed.achievements, advanced.achievements);
   assert.deepEqual(renamed.settings, advanced.settings);
@@ -228,7 +232,7 @@ test('current battle boolean achievements are saved as numeric flags without loo
   storage.setItem('testachievement', encoded(battleAchievements));
   assert.deepEqual(store.capture().achievements, advanced.achievements);
   assert.deepEqual(JSON.parse(store.exportSave()).achievements, advanced.achievements);
-  assert.deepEqual(store.newGame('test').achievements, advanced.achievements);
+  assert.deepEqual(store.newGame('test').achievements, lockedAchievements);
   expectUnchanged(storage, () => store.importSave(encoded({...advanced, achievements: battleAchievements})), 'INVALID_SAVE');
 });
 

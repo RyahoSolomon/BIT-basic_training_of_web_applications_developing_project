@@ -17,12 +17,11 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     await open('game/pages/menu.html');
     await evaluate(`(() => {
       localStorage.clear();
-      localStorage.setItem('username', 'test');
+      GameProgress.newGame('test');
       localStorage.setItem('testachievement', JSON.stringify({
         ach1: true, ach2: true, ach3: true, ach4: true,
         ach6: true, ach7: true, ach8: true,
       }));
-      GameProgress.newGame('test');
       const current = JSON.parse(localStorage.current);
       current.level = 1;
       GamePreferences.setVolume('music', 0);

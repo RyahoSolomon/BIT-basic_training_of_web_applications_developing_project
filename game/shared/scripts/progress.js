@@ -153,14 +153,14 @@
             return validate(normalized, achievementsDefinition, 'INVALID_PROGRESS');
         }
 
-        function snapshot(progress, endingFlag, name) {
+        function snapshot(progress, endingFlag, name, achievements) {
             return {
                 format: FORMAT,
                 version: VERSION,
                 savedAt: now().toISOString(),
                 playerName: name,
                 progress: validate(progress, definition, 'INVALID_PROGRESS'),
-                achievements: readAchievements(),
+                achievements,
                 endingFlag,
                 settings: readObject(SETTINGS_KEY, settingsDefinition),
             };
@@ -175,7 +175,7 @@
                 fail('INVALID_PROGRESS', '剧情标记数据已损坏。');
             }
             return snapshot(progress, rawFlag === '1' ? 1 : 0,
-                playerName(storage.getItem('playerName'), 'INVALID_PROGRESS', true));
+                playerName(storage.getItem('playerName'), 'INVALID_PROGRESS', true), readAchievements());
         }
 
         function writeAtomically(entries) {
@@ -274,7 +274,7 @@
         return {
             createNewProgress,
             newGame: guarded(name => apply(snapshot(createNewProgress(), 0,
-                playerName(name, 'INVALID_NAME')), { settings: true, persist: true })),
+                playerName(name, 'INVALID_NAME'), defaults(achievementsDefinition)), { settings: true, persist: true })),
             renamePlayer: guarded(renamePlayer),
             capture: guarded(capture),
             saveAuto: guarded(saveAuto),
