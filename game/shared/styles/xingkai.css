@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "STXingkai";
+    src: url("../../assets/fonts/STXingkai.ttf") format("truetype");
+    font-display: swap;
+}
+
+:root {
+    --xingkai-font: "STXingkai", "华文行楷", cursive;
+}

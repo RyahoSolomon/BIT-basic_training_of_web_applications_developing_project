@@ -1,10 +1,7 @@
+@import url("../../shared/styles/xingkai.css");
 @font-face{
     font-family: "汉仪书魂体";
     src: url("../../assets/fonts/hanyi-shuhun.ttf");
-}
-@font-face{
-  font-family: "字神苏轼豪放体";
-  src: url("../../assets/fonts/sushi.ttf");
 }
 @font-face{
   font-family: "汉仪颜楷";
@@ -85,7 +82,7 @@
 {
   margin: auto;
   font-size: 32px;
-  font-family: "字神苏轼豪放体";
+  font-family: var(--xingkai-font);
   color:rgb(117, 50, 30);
   left: 11%;
   position: relative;

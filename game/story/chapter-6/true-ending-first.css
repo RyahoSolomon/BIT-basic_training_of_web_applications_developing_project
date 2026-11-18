@@ -1,3 +1,4 @@
+@import url("../../shared/styles/xingkai.css");
 @import url("../../shared/styles/story-fonts.css");
 
 html {
@@ -7,10 +8,6 @@ html {
 @font-face{
     font-family: "汉仪书魂体";
     src: url("../../assets/fonts/hanyi-shuhun.ttf");
-  }
-  @font-face{
-  font-family: "字神苏轼豪放体";
-  src: url("../../assets/fonts/sushi.ttf");
   }
   @font-face{
   font-family: "汉仪颜楷";
@@ -130,7 +127,7 @@ body {
   }
   
   .achievement_title {
-    font-family: "字神苏轼豪放体";
+    font-family: var(--xingkai-font);
     font-size: 2.0vw;
     color: rgb(96, 65, 51);
     margin-bottom: 0%; /* 控制标题和内容之间的间距 */
