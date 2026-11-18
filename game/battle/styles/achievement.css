@@ -1,13 +1,4 @@
 @import url("../../shared/styles/xingkai.css");
-@font-face{
-  font-family: "汉仪书魂体";
-  src: url("../../assets/fonts/hanyi-shuhun.ttf");
-}
-@font-face{
-font-family: "汉仪颜楷";
-src: url("../../assets/fonts/hanyi-yankai.ttf");
-}
-
 #achievement_popup
 {
   height: 0;
@@ -87,7 +78,7 @@ src: url("../../assets/fonts/hanyi-yankai.ttf");
   position: absolute;
   left: 254.5px;
   top: 214px;
-  font-family:  "汉仪书魂体";
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
   width: 64;
   font-size: 28px;
   color:rgb(96, 65, 51);
@@ -122,7 +113,7 @@ src: url("../../assets/fonts/hanyi-yankai.ttf");
 
 .achievement_display
 {
-  font-family:  "汉仪书魂体";
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
   font-size: 30px;
   color:rgb(96, 65, 51);
   text-align: center;
@@ -141,7 +132,7 @@ src: url("../../assets/fonts/hanyi-yankai.ttf");
 
 .achievement_content
 {
-  font-family:  "汉仪颜楷";
+  font-family: "KaiTi", "楷体", "STKaiti", serif;
   font-size: 24px;
   color: rgb(96, 65, 51);
 }

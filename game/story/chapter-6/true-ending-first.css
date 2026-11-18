@@ -5,14 +5,6 @@ html {
     scrollbar-gutter: stable;
 }
 
-@font-face{
-    font-family: "汉仪书魂体";
-    src: url("../../assets/fonts/hanyi-shuhun.ttf");
-  }
-  @font-face{
-  font-family: "汉仪颜楷";
-  src: url("../../assets/fonts/hanyi-yankai.ttf");
-  }
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -141,7 +133,7 @@ body {
   }
   
   .achievement_content {
-    font-family: "汉仪颜楷";
+    font-family: "KaiTi", "楷体", "STKaiti", serif;
     font-size: 1.5vw;
     color: rgb(96, 65, 51);
     margin-bottom: 0%; /* 控制内容和按钮之间的间距 */
@@ -165,7 +157,7 @@ body {
   
   #achievement_confirm_button_text {
     cursor: pointer;
-    font-family: "汉仪书魂体";
+    font-family: "KaiTi", "楷体", "STKaiti", serif;
     font-size: 2.0vw;
     color: rgb(96, 65, 51);
     overflow: hidden;
