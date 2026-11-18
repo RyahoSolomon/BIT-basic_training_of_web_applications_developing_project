@@ -1,6 +1,6 @@
 /* Only the artwork moves: the button's layout and pointer target stay fixed. */
 :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button) > img,
-.index-button > img {
+.index-button::before {
     pointer-events: none;
     filter: var(--button-pressed-filter, var(--button-hover-filter, none));
     transform: var(--button-pressed-transform, none);
