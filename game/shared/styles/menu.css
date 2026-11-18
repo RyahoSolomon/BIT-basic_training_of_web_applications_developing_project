@@ -1,8 +1,3 @@
-@font-face {
-    font-family: "genshin";
-    src: url("../../assets/fonts/genshin.ttf");
-}
-
 * {
     box-sizing: border-box;
 }
@@ -15,7 +10,7 @@ html, body {
 body {
     min-height: 100vh;
     padding: 4vh 1rem;
-    font-family: "genshin", sans-serif;
+    font-family: "LiSu", "隶书", serif;
     background: #111 var(--menu-background, none) center / cover fixed;
 }
 

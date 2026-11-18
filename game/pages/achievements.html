@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <script src="../shared/scripts/profile.js"></script>
@@ -11,8 +11,9 @@
     <style>
         body { background: #111 url("../assets/images/background/005-huguo-palace.png") center / cover fixed; }
         @font-face {
-            font-family: "genshin";
-            src: url(../assets/fonts/genshin.ttf);
+            font-family: "STXingkai";
+            src: url("../assets/fonts/STXingkai.ttf") format("truetype");
+            font-display: swap;
         }
         html, body {
             height: 100%;
@@ -74,11 +75,15 @@
             transform: translate(-50%, -50%);
             color: #ffffff;
             font-size: 2.5vh;
-            font-family: "genshin";
+        }
+
+        .exh {
+            font-family: "STXingkai", "华文行楷", cursive;
         }
 
 
         .exh_back {
+            font-family: "KaiTi", "楷体", "STKaiti", serif;
             left:0;
             top:40%;
             transform: rotateY(180deg);
