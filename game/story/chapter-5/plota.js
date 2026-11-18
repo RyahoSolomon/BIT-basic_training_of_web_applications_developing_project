@@ -50,7 +50,17 @@ window.storyScene = {
       "text": "不过有一点很奇怪,按照造神计划所述,假盘古也只是会模仿真盘古的行为而已...为什么会攻击你们呢..."
     }
   ],
-  "next": "good-ending.html",
+  onComplete() {
+    const ending = document.getElementById("good-ending");
+    document.documentElement.classList.add("showing-good-ending");
+    document.body.style.removeProperty("background-image");
+    document.title = "Happy Ending";
+    ending.hidden = false;
+    revealEndingParagraphs(ending.querySelectorAll("p"));
+
+    document.getElementById("audioPlayer").src = "../../assets/audio/015-normal-ending.mp3";
+    initial_music();
+  },
   "skip": "../../map/index.html",
   "boxImage": "../../assets/images/ui/text-box.png"
 };

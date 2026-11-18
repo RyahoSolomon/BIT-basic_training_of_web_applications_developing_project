@@ -7,8 +7,7 @@ const { dialogueLines } = require('./smoke-story-helpers.cjs');
 const { startGame } = require('./smoke-player-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
-const background = 'game/story/chapter-0/background.html';
-const prologue = 'game/story/chapter-0/plot.html';
+const prologue = 'game/story/chapter-0/background.html';
 
 async function storyPages(directory = path.join(root, 'game/story')) {
   const pages = [];
@@ -27,7 +26,7 @@ async function storyPages(directory = path.join(root, 'game/story')) {
 // text appearing before its box during entry.
 function observePresentation() {
   document.addEventListener('DOMContentLoaded', () => {
-    if (!document.querySelector('#story-player, #overlayText')) return;
+    if (!document.querySelector('#story-player')) return;
     const state = window.presentationSmoke = { frames: 0, visibleFrames: 0, failures: [] };
     const fail = message => {
       if (!state.failures.includes(message)) state.failures.push(message);
@@ -49,7 +48,7 @@ function observePresentation() {
         fail('A page scrollbar appeared');
       }
       if (scrollX !== 0 || scrollY !== 0) fail('The page moved away from the viewport');
-      const text = document.querySelector('#story-player .text, #overlayText');
+      const text = document.querySelector('#story-player .text');
       const image = document.getElementById('slideImage');
       const textVisible = visible(text);
       const imageVisible = visible(image);
@@ -99,7 +98,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await ready(selector);
     const result = await evaluate(`(() => {
       const nodes = [...document.querySelectorAll(
-        '#slideImage, #story-player .text, #story-player .topLeftText, #story-player .centered-text1, #overlayText'
+        '#slideImage, #story-player .text, #story-player .topLeftText, #story-player .centered-text1'
       )];
       return {
         failures: window.presentationSmoke.failures,
@@ -163,21 +162,29 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     const username = 'test';
     await open('game/pages/menu.html');
     await startGame({ evaluate, click, page, cdp, until });
-    const defaultFont = await checkPresentation('#overlayText');
+    const defaultFont = await checkPresentation('#story-player .text');
     assert.match(defaultFont, /KaiTi|楷体/i, 'The shared default should use the KaiTi font stack');
-    const slides = await evaluate('backgrounds');
+    const slides = await dialogueLines({ evaluate, until }, 'history');
+    assert.ok(await evaluate('document.getElementById("slideImage").src.endsWith("/text-box-no.png")'));
     for (let index = 0; index < slides.length; index++) {
       await until('opening slide ' + (index + 1), () => evaluate(
-        'document.getElementById("overlayText").textContent === ' + JSON.stringify(slides[index].text)));
-      await checkPresentation('#overlayText', defaultFont);
+        'document.querySelector("#story-player .text").textContent === ' + JSON.stringify(slides[index].text)));
+      await checkPresentation('#story-player .text', defaultFont);
       if (index === 2) await screenshot('opening-slide-3');
-      if (index + 1 < slides.length) await click('#overlayText');
+      await click('#story-player .text');
     }
-    console.log('PASS  all opening slides have a fixed box, synchronized text and no scrollbars');
+    await dialogueLines({ evaluate, until }, 'main');
+    await checkPresentation('#story-player .text', defaultFont);
+    assert.ok(await evaluate('document.getElementById("slideImage").src.endsWith("/text-box.png")'));
+    await screenshot('prologue-dialogue');
+    console.log('PASS  opening narration and palace dialogue use their own boxes in the same viewport');
 
     const pages = await storyPages();
-    assert.ok(pages.length >= 20, 'Missing shared-player chapter pages');
+    for (let chapter = 0; chapter <= 6; chapter++) {
+      assert.ok(pages.some(file => file.includes('/chapter-' + chapter + '/')), 'Missing dialogue for chapter ' + chapter);
+    }
     for (const file of pages) {
+      if (file === prologue) continue; // Already checked through the opening and palace.
       await open(file);
       await checkPresentation('#story-player .text', defaultFont);
       assert.equal(await font('#story-player .topLeftText'), defaultFont, file + ': inconsistent speaker font');
@@ -192,7 +199,6 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
         `));
         await checkPresentation('#story-player .text', defaultFont);
       }
-      if (file === prologue) await screenshot('prologue-dialogue');
     }
     console.log('PASS  synchronized entry, stable viewport and shared defaults on ' + pages.length + ' dialogue pages');
 
@@ -201,7 +207,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     for (const sceneFont of [null, 'sans-serif']) {
       const { identifier: fixture } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
         source: `document.addEventListener('DOMContentLoaded', () => {
-          if (!location.pathname.endsWith('/game/story/chapter-0/plot.html')) return;
+          window.storyScene.start = 'main';
           window.storyScene.fontFamily = ${JSON.stringify(sceneFont)};
           window.storyScene.nodes.main.lines[0].fontFamily = 'monospace';
           window.storyScene.nodes.main.lines[0].caption = 'Custom-font caption';
@@ -222,18 +228,16 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     }
     const { identifier: backgroundFixture } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
       source: `document.addEventListener('DOMContentLoaded', () => {
-        if (location.pathname.endsWith('/game/story/chapter-0/background.html')) {
-          backgrounds[0].fontFamily = 'monospace';
-        }
+        window.storyScene.nodes.history.lines[0].fontFamily = 'monospace';
       }, { once: true });`,
     });
     try {
-      await open(background);
-      await checkPresentation('#overlayText', 'monospace');
-      await click('#overlayText');
-      await checkPresentation('#overlayText', defaultFont);
-      await checkSelection('#overlayText');
-      await checkDoubleClick('#overlayText');
+      await open(prologue);
+      await checkPresentation('#story-player .text', 'monospace');
+      await click('#story-player .text');
+      await checkPresentation('#story-player .text', defaultFont);
+      await checkSelection('#story-player .text');
+      await checkDoubleClick('#story-player .text');
     } finally {
       await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: backgroundFixture });
     }

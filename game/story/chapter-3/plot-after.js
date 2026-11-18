@@ -1,31 +1,55 @@
 window.storyScene = {
-  "lines": [
-    {
-      "speaker": "[守城官兵]",
-      "text": "谢谢三位侠客出手相助!如果没有你们,怕是要死更多弟兄!"
+    id: "chapter-3-aftermath",
+    start: "wallIntro",
+    skip: { exit: "../../map/index.html" },
+    nodes: {
+        wallIntro: {
+            type: "intro",
+            text: "约半个时辰后 涿鹿城城墙根",
+            next: "wall",
+        },
+        wall: {
+            type: "dialogue",
+            transition: "black",
+            lines: [
+                { speaker: "[守城官兵]", text: "谢谢三位侠客出手相助!如果没有你们,怕是要死更多弟兄!" },
+                { speaker: "[守城官兵]", text: "没想到它们居然有僵尸巨兽,在我们杀死它之前就把城墙撞塌了." },
+                { speaker: "[守城官兵]", text: "四圣兽在上!这真他妈的奇怪,结界保护下我们从来没有受到天杀的如此大规模的怪物袭击,还有这么厉害的怪物." },
+                { speaker: "{player}", text: "这是我们应该做的,这些怪物竟如此凶险!" },
+                { speaker: "{player}", text: "既然怪物已被击败,那我们就告辞了,你们多保重!" },
+                { speaker: "[守城官兵]", text: "保重" },
+            ],
+            next: "roadIntro",
+        },
+        roadIntro: {
+            type: "intro",
+            text: "片刻后 京城官道",
+            background: "../../assets/images/background/013-official-road.png",
+            transition: "none",
+            next: "road",
+        },
+        road: {
+            type: "dialogue",
+            transition: "black",
+            lines: [
+                { speaker: "[鸢阑]", text: "结界削弱的影响已经逐渐显现了...." },
+                { speaker: "[鸢阑]", text: "希望能顺利解决吧." },
+                { speaker: "[鸢阑]", text: "万一...四圣兽无法归位呢..." },
+                { speaker: "{player}", text: "那我们恐怕就要面临怪物的威胁了...高墙之内也不再安全..." },
+                { speaker: "{player}", text: "那时候我会奋战在保卫人族的第一线的." },
+                { speaker: "[鸢阑]", text: "我也会!" },
+                { speaker: "[鸢阑]", text: "(点了点头)" },
+                { speaker: "[鸢阑]", text: "(我们都是没有牵挂的人,在一起共同战斗了很多年了,为皇族做过一些肮脏的事,也有一些正义的事)" },
+                { speaker: "[鸢阑]", text: "(我不知道我们是不是好人,但是我很确信,我们相互之间都是彼此唯一的家人)" },
+                { speaker: "[鸢阑]", text: "(我只擅长战斗,从小卒选拔进禁卫军,从禁卫军被选拔入特务机关, 再被选拔成为精英小队成员)" },
+                { speaker: "[鸢阑]", text: "(但我不知道我想要什么,直到遇到了他们)" },
+                { speaker: "[鸢阑]", text: "(我在龙须镇从怪物手中救下了这个在森民群体中也极具战斗天赋和弓术天赋的小姑娘)" },
+                { speaker: "[鸢阑]", text: "(我从虎金镇的山脚下遇到了沉默寡言的叶岱,并一起清理了那里矿坑里的怪物)" },
+                { speaker: "[鸢阑]", text: "(自那以后我们就并肩作战,我也知道了我想要什么)" },
+                { speaker: "[鸢阑]", text: "(我会守护好他们的陪伴,守护好人族,即使结界崩溃后,面对无尽的怪物,我也不会退缩)" },
+            ],
+            next: "exit",
+        },
+        exit: { type: "exit", to: "../../map/index.html" },
     },
-    {
-      "speaker": "[守城官兵]",
-      "text": "没想到它们居然有僵尸巨兽,在我们杀死它之前就把城墙撞塌了."
-    },
-    {
-      "speaker": "[守城官兵]",
-      "text": "四圣兽在上!这真他妈的奇怪,结界保护下我们从来没有受到天杀的如此大规模的怪物袭击,还有这么厉害的怪物."
-    },
-    {
-      "speaker": "{player}",
-      "text": "这是我们应该做的,这些怪物竟如此凶险!"
-    },
-    {
-      "speaker": "{player}",
-      "text": "既然怪物已被击败,那我们就告辞了,你们多保重!"
-    },
-    {
-      "speaker": "[守城官兵]",
-      "text": "保重"
-    }
-  ],
-  "next": "plot-end.html",
-  "skip": "../../map/index.html",
-  "boxImage": "../../assets/images/ui/text-box.png"
 };

@@ -47,11 +47,11 @@ async function smoke(browser) {
     await evaluate('document.activeElement?.blur()');
   }
   async function text() {
-    return evaluate('document.querySelector("#story-player .text, #overlayText")?.textContent');
+    return evaluate('document.querySelector("#story-player .text")?.textContent');
   }
   async function ready(expected) {
     await until('readable dialogue ' + expected, () => evaluate(`
-      document.querySelector('#story-player .text, #overlayText')?.textContent === ${JSON.stringify(expected)}
+      document.querySelector('#story-player .text')?.textContent === ${JSON.stringify(expected)}
       && getComputedStyle(document.querySelector('.image-container')).visibility === 'visible'
       && document.body.dataset.storyTransitioning !== 'true'
     `));
@@ -212,13 +212,21 @@ async function smoke(browser) {
   console.log('PASS  keys pressed while loading a transition are ignored instead of queued');
 
   await open(openingPage);
-  const openingLines = await evaluate('backgrounds.map(line => line.text)');
+  const openingLines = await evaluate('storyScene.nodes.history.lines.map(line => line.text)');
   await ready(openingLines[0]);
   await key(' ');
   await ready(openingLines[1]);
   await key('Enter');
   await ready(openingLines[2]);
-  console.log('PASS  the standalone opening narration shares Space/Enter controls');
+  for (const text of openingLines.slice(3)) {
+    await key('Enter');
+    await ready(text);
+  }
+  await key(' ');
+  await node('main');
+  await ready(await evaluate('storyScene.nodes.main.lines[0].text'));
+  await page(openingPage);
+  console.log('PASS  Space/Enter advance the opening history and enter the palace dialogue on the same page');
 }
 
 async function smokeKeyboardAudio({ evaluate, open, cdp, until }) {

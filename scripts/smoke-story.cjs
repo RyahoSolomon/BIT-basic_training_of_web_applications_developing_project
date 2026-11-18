@@ -8,8 +8,7 @@ const { startGame } = require('./smoke-player-helpers.cjs');
 
 async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) {
   const username = 'test';
-  const background = 'game/story/chapter-0/background.html';
-  const prologue = 'game/story/chapter-0/plot.html';
+  const prologue = 'game/story/chapter-0/background.html';
   const chapter1 = 'game/story/chapter-1/plot.html';
   const battle = 'game/battle/index.html';
   const map = 'game/map/index.html';
@@ -37,11 +36,11 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
 
   async function expectLine(line) {
     const text = line.text.replaceAll('{player}', username);
-    const speaker = line.speaker.replaceAll('{player}', username);
+    const speaker = (line.speaker || '').replaceAll('{player}', username);
     const caption = (line.caption || '').replaceAll('{player}', username);
     await until('dialogue: ' + text.slice(0, 35), () => evaluate(`
       document.querySelector("#story-player .text")?.textContent.trim() === ${JSON.stringify(text)}
-      && document.querySelector("#story-player .topLeftText")?.textContent.trim() === ${JSON.stringify(speaker)}
+      && (document.querySelector("#story-player .topLeftText")?.textContent.trim() || "") === ${JSON.stringify(speaker)}
       && getComputedStyle(document.querySelector("#story-player .image-container")).visibility === "visible"
       && getComputedStyle(document.querySelector("#story-player .text")).opacity === "1"
       && document.body.dataset.storyTransitioning !== "true"
@@ -73,58 +72,35 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   }
 
   async function readBackgroundToEnd(takeScreenshots = false) {
-    const slides = await evaluate('backgrounds');
+    const slides = await readLines('history');
     assert.equal(slides.length, 7, 'The opening history should contain all seven slides');
-    for (let index = 0; index < slides.length; index++) {
-      await until('visible opening slide ' + (index + 1), () => evaluate(`(() => {
-        const text = document.getElementById("overlayText");
-        const style = getComputedStyle(text);
-        return text.textContent === ${JSON.stringify(slides[index].text)}
-          && document.body.dataset.storyTransitioning !== "true"
-          && style.visibility === "visible" && Number(style.opacity) === 1
-          && style.display !== "none" && text.getBoundingClientRect().height > 0;
-      })()`));
-      assert.equal(await evaluate('currentBackground'), index,
-        'Opening slides must stay in order');
+    assert.ok(await evaluate('document.getElementById("slideImage").src.endsWith("/text-box-no.png")'));
+    await evaluate('window.historyDocument = document; window.historyAudio = document.getElementById("audioPlayer")');
+    for (const [index, slide] of slides.entries()) {
+      await expectLine(slide);
       assert.equal(await evaluate('getComputedStyle(document.body).backgroundImage.includes(' +
-        JSON.stringify(slides[index].image.replace('../..', '/game')) + ')'), true);
-      if (takeScreenshots && [2, 3, 5].includes(index)) {
-        await screenshot('opening-slide-' + (index + 1), '#overlayText');
-      }
-      await click('#overlayText');
+        JSON.stringify(slide.background.replace('../..', '/game')) + ')'), true);
+      if (takeScreenshots && [2, 3, 5].includes(index)) await screenshot('opening-slide-' + (index + 1));
+      await click('#story-player .image-container');
     }
-    await page(prologue);
+    await dialogueLines({ evaluate, until }, 'main');
+    assert.ok(await evaluate('window.historyDocument === document && window.historyAudio === document.getElementById("audioPlayer")'),
+      'The history and the palace dialogue must share the same document and audio player');
+    assert.ok(await evaluate('historyAudio.src.endsWith("/002-huguo-palace.mp3")'));
+    assert.ok(await evaluate('document.getElementById("slideImage").src.endsWith("/text-box.png")'));
   }
 
-  // The normal new-game action initializes progress and the fixed player.
   await open('game/pages/menu.html');
   await startGame({ evaluate, click, page, cdp, until });
-  await readBackgroundToEnd(true);
-  console.log('PASS  all seven opening slides and repeated backgrounds');
-
-  // Missing transitionend used to leave narration hidden indefinitely. Disable
-  // the image transition before the page starts to reproduce that case reliably.
-  const { identifier: noTransition } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
-    source: `document.addEventListener("DOMContentLoaded", () => {
-      if (location.pathname.endsWith("/game/story/chapter-0/background.html")) {
-        const style = document.createElement("style");
-        style.textContent = "#slideImage { transition: none !important; }";
-        document.head.appendChild(style);
-      }
-    }, { once: true });`,
-  });
-  try {
-    await open(background);
-    await readBackgroundToEnd();
-  } finally {
-    await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier: noTransition });
-  }
-  console.log('PASS  opening narration without image transition events');
-
-
   for (const index of [0, 1]) {
-    await open(prologue);
-    await readToEnd();
+    if (index === 1) {
+      await open(prologue);
+      // The opening must also remain readable without image transition events.
+      await evaluate(`const style = document.createElement("style");
+        style.textContent = "#slideImage { transition: none !important; }"; document.head.appendChild(style);`);
+    }
+    await readBackgroundToEnd(index === 0);
+    await readToEnd('main');
     await waitChoices();
     if (index === 0) await screenshot('prologue-choices');
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');

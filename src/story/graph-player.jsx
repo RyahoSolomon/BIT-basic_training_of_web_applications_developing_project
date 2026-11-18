@@ -22,7 +22,7 @@ function music(source) {
 export default function GraphPlayer({ scene }) {
   const [cursor, setCursor] = useState(null);
   const [ready, setReady] = useState(false);
-  const [boxReady, setBoxReady] = useState(false);
+  const [loadedBox, setLoadedBox] = useState(null);
   const [seen, setSeen] = useState(new Set());
   const [awards, setAwards] = useState([]);
   const [error, setError] = useState('');
@@ -73,7 +73,7 @@ export default function GraphPlayer({ scene }) {
     const line = node.lines?.[index];
     const source = line?.background || (index === 0 ? node.background : undefined);
     const transition = line?.transition || (index === 0 ? node.transition : undefined);
-    const changed = source && new URL(source, document.baseURI).href !== backgrounds.current.currentImage();
+    const changed = source === null || (source && new URL(source, document.baseURI).href !== backgrounds.current.currentImage());
     const commit = () => {
       if (!current()) return;
       if (line) lastLine.current = line;
@@ -182,6 +182,8 @@ export default function GraphPlayer({ scene }) {
   }
 
   const node = cursor ? scene.nodes[cursor.id] : null;
+  const boxImage = node?.boxImage || scene.boxImage || '../../assets/images/ui/text-box.png';
+  const boxReady = loadedBox === boxImage;
   const line = node?.lines?.[cursor.index] || lastLine.current;
   const font = { '--story-font-family': line.fontFamily || node?.fontFamily || scene.fontFamily };
   const skipTarget = node?.skip ?? scene.skip;
@@ -201,8 +203,8 @@ export default function GraphPlayer({ scene }) {
       <div className="centered-text1" style={{ ...font, opacity: 1 }}>{text(line.caption)}</div>}
     <div className="image-container" onClick={advance}
       style={{ ...font, visibility: ready && boxReady && node?.type !== 'intro' ? 'visible' : 'hidden' }}>
-      <img id="slideImage" src={scene.boxImage || '../../assets/images/ui/text-box.png'} alt=""
-        draggable={false} onLoad={() => setBoxReady(true)} />
+      <img key={boxImage} id="slideImage" src={boxImage} alt=""
+        draggable={false} onLoad={() => setLoadedBox(boxImage)} />
       <div className="topLeftText">{text(line.speaker)}</div>
       <div className="text" style={{ whiteSpace: 'pre-line' }}>{text(line.text)}</div>
     </div>

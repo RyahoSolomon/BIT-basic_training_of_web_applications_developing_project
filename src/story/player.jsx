@@ -14,7 +14,7 @@ function navigate(target) {
   }
 }
 
-function StoryPlayer({ scene }) {
+function StoryPlayer({ scene, complete }) {
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
   const [finished, setFinished] = useState(false);
@@ -73,7 +73,7 @@ function StoryPlayer({ scene }) {
       advancing.current = true;
       try {
         if (next.background || next.transition) {
-          await backgrounds.current.show(next.background, {
+          await backgrounds.current.show(next.background || undefined, {
             transition: next.transition,
             onCommit: () => flushSync(() => setIndex(nextIndex)),
           });
@@ -85,7 +85,7 @@ function StoryPlayer({ scene }) {
       }
     } else {
       setFinished(true);
-      if (!scene.inlineChoice) leave(scene.next);
+      if (!scene.inlineChoice) leave(scene.onComplete ? complete : scene.next);
     }
   }
 
@@ -129,8 +129,13 @@ function StoryPlayer({ scene }) {
 
 function mount() {
   const scene = window.storyScene;
-  createRoot(document.getElementById('story-player')).render(
-    scene.nodes ? <GraphPlayer scene={validateGraph(scene)} /> : <StoryPlayer scene={scene} />
+  const root = createRoot(document.getElementById('story-player'));
+  function complete() {
+    root.unmount();
+    scene.onComplete();
+  }
+  root.render(
+    scene.nodes ? <GraphPlayer scene={validateGraph(scene)} /> : <StoryPlayer scene={scene} complete={complete} />
   );
 }
 

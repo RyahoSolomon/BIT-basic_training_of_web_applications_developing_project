@@ -1,13 +1,51 @@
-// One continuous scene: both routes meet at the shared departure dialogue.
 window.storyScene = {
-    id: "chapter-0-palace",
-    start: "intro",
+    id: "chapter-0",
+    start: "history",
     skip: { exit: "../../map/index.html" },
     nodes: {
+        history: {
+            type: "dialogue",
+            boxImage: "../../assets/images/ui/text-box-no.png",
+            lines: [
+                {
+                    background: "../../assets/images/background/001.png",
+                    text: "很久很久以前，盘古开天辟地，双眼耀日月，四肢化四极，血液成江河，肌肤铸大地。混沌中，诞生了盘古大陆—我们生存的世界。盘古的后代—团聚在继承盘古部分能力的长老身边组成了神族。",
+                },
+                {
+                    background: "../../assets/images/background/002.png",
+                    text: "女娲，用泥巴创造了我们人族，人族在神族的领导下，探索世界，开荒垦地，我们凭借超高的创造力和强大的繁殖能力，成为了大陆的主要种族。",
+                },
+                {
+                    background: "../../assets/images/background/003.png",
+                    text: "然而，大陆并非是完全和平的，妖族侵占了我们的土地，掠夺我们的资源，我们为了保家卫国与之开战。杀死妖族取得的内丹也是人族核心技术—炼丹的原材料，因祸得福，我们获得了更强大的力量。",
+                },
+                {
+                    background: "../../assets/images/background/003.png",
+                    transition: "black",
+                    text: "经过与妖族千余年的残酷战争，如今，妖族盘踞在东方龙鳞森林深处，靠着地利将战斗拖入了僵持期。",
+                },
+                {
+                    background: "../../assets/images/background/004.png",
+                    text: "除了妖族的威胁，还有一些未开启灵智的怪物诞生于污秽之中，不断袭击着人类。",
+                },
+                {
+                    background: "../../assets/images/background/005.png",
+                    text: "好在千年前人族通过蓬勃发展的炼丹和结阵技术，创造了人族最强兵器—四圣兽。 四圣兽分别在四个方位设下四大祭坛，结下结界并镇守祭坛，保护着人族领土，涤净污秽，大幅度减少了怪物的生成。",
+                },
+                {
+                    background: "../../assets/images/background/005.png",
+                    transition: "black",
+                    text: "以上，就是我们人族史书中记载的，我们坚信的历史。",
+                },
+            ],
+            next: "intro",
+        },
         intro: {
             type: "intro",
             text: "某日上午 京城 人族皇宫 玄阳殿",
             duration: 2000,
+            transition: "none",
+            music: "../../assets/audio/002-huguo-palace.mp3",
             background: "../../assets/images/background/005-huguo-palace.png",
             next: "main",
         },

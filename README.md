@@ -50,7 +50,7 @@ node scripts/smoke-audio.cjs
 
 剧情、地图、战斗、菜单与结局的背景音乐由公共音频脚本在页面加载时读取共用设置中的音乐音量与开关状态后启动；关闭音乐后跳转或刷新不会重新播放。这些页面的 `<audio>` 不使用 `autoplay` 属性，以避免短暂出声。首次播放被浏览器阻止时，再等待页面点击重试。音频检查使用真实鼠标输入，并且不会把读取页面状态当作用户交互。
 
-序章和第二关战后的分支、汇合都在各自同一个页面内播放，使用同一个音频元素；相同曲目不会重新加载、暂停或调整进度。其他尚未迁移的连续剧情跨页时，仍临时记录音乐进度；目标页使用同一首音乐时恢复该位置，曲目改变时从头播放。跨页记录只供紧接着的目标页使用，不写入游戏存档，也不会影响刷新或重新进入剧情。
+连续剧情在各自的入口页中共用一个音频元素。沿用同一首音乐时保持播放进度，原剧情指定新曲目时在对应段落切换。
 
 第四关战后对白结束或跳过后直接返回地图，继续前往第五关。
 
@@ -74,7 +74,7 @@ node scripts/smoke-audio.cjs
 
 ### 编辑章节对话
 
-第 0–6 章的对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。序章 `plot.html` 和第二关 `plot-after.html` 已将整段分支剧情合并为同页节点，分支对白直接存放在对应剧情包中。
+第 0–6 章的对话页面共用 React 播放器。章节页面与场景配置放在 `game/story/chapter-0/` 至 `game/story/chapter-6/`；例如 [第一章页面](game/story/chapter-1/plot.html) 对应 [第一章场景配置](game/story/chapter-1/plot.js)。序章背景介绍与宫廷对白共用 [background.html](game/story/chapter-0/background.html)。第二关战后、第三关战前与战后、第四关战前和第六关战前的连续对白分别在各自入口页内按节点推进。第五关普通好结局的战后对白和定时尾声共用 [plota.html](game/story/chapter-5/plota.html)。
 
 开场背景介绍、普通对白和节点剧情支持点击、空格或回车继续。按住按键不会连续跳句，转场期间的按键也不会积压到下一句。设置、姓名输入、输入法选字与成就弹窗不会推进底层对白；出现剧情选项时不会自动选择，仍需点击选项，或用 Tab 聚焦按钮后按空格、回车确认。纯键盘首次阅读也会在浏览器允许交互后启动音乐，并遵守静音设置。
 
@@ -137,16 +137,17 @@ window.storyScene = {
 
 开场介绍和第 0–6 章的对白统一直接显示，文字与文本框一起出现；点击区域禁止选择文字，默认字体统一为楷体（依次回退到 KaiTi、楷体、STKaiti 和系统衬线字体）。共用显示规则位于 `game/story/styles/player.css`，默认字体定义位于 `game/shared/styles/story-fonts.css`。
 
-需要某句使用特殊字体时，在该条记录中加 `fontFamily`；下一句没有配置就恢复默认。也可在 `window.storyScene.fontFamily` 设置整个场景的字体，单句配置优先。分支选项和 `inlineChoice` 同样支持 `fontFamily`。开场介绍可在 `background.js` 的对应 `backgrounds` 条目设置同名字段。字体必须已安装或通过页面的 `@font-face` 加载。
+需要某句使用特殊字体时，在该条记录中加 `fontFamily`；下一句没有配置就恢复默认。也可在 `window.storyScene.fontFamily` 设置整个场景的字体，单句配置优先。分支选项和 `inlineChoice` 同样支持 `fontFamily`。开场介绍可在 [序章配置](game/story/chapter-0/plot.js) 的 `history.lines` 条目设置同名字段。字体必须已安装或通过页面的 `@font-face` 加载。
 
 ```js
 { speaker: "[法海]", text: "此事非同小可。", fontFamily: '"华文新魏", serif' },
 ```
 
-每句可用 `background` 指定背景图片，用 `transition` 指定进入该句时的背景过渡；开场 `background.js` 的条目继续用 `image` 指定图片，同样支持 `transition`。
+每句可用 `background` 指定背景图片，用 `transition` 指定进入该句时的背景过渡。节点上可用 `background: null` 清除背景图。
 
 | `transition` 值 | 效果 |
 | --- | --- |
+| `"none"` | 直接切换 |
 | `"black"`（默认） | 旧背景渐入黑场，在全黑时切图，再从黑场显示新背景 |
 | `"white"` | 旧背景渐入白场，在全白时切图，再从白场显示新背景 |
 | `"crossfade"` | 保留旧背景，将新背景从透明逐渐叠加至不透明 |
@@ -157,11 +158,11 @@ window.storyScene = {
 { speaker: "[法海]", text: "眼前忽然一亮。", background: "../../assets/images/background/004.png", transition: "white" },
 { speaker: "{player}", text: "远处的景象逐渐清晰。", background: "../../assets/images/background/005.png", transition: "crossfade" },
 
-// 开场介绍：在 backgrounds 中给对应条目加 transition。
-{ image: "../../assets/images/background/002.png", text: "女娲创造了人族……", transition: "crossfade" },
+// 序章背景介绍的 history.lines 条目
+{ background: "../../assets/images/background/002.png", text: "女娲创造了人族……", transition: "crossfade" },
 ```
 
-过渡约 600 毫秒，只作用于背景，文字和文本框保持固定。新图加载并解码完成后才开始过渡，期间忽略重复翻页。仅换台词且没有配置 `background` 或 `transition` 时直接更新文字；空背景继承当前图片，显式指定 `transition` 可给同一背景加转场。开场条目均配置了 `image`，所以每段默认都有黑场过渡。开场字幕后的 `intro.background` 也使用同一逻辑，可用 `intro.transition` 指定效果，首句的设置优先。
+背景动画约 600 毫秒，新图加载并解码完成后开始，期间忽略重复翻页。仅换台词时直接更新文字。显式指定 `transition` 可以给同一背景加转场。
 
 图片加载失败或超过 15 秒时保留旧背景并继续显示台词；系统开启减少动态效果时直接切换到已加载的背景。共用实现位于 `game/story/scripts/background-transition.js`，修改后需要重新构建剧情播放器。
 

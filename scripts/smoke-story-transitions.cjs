@@ -3,7 +3,7 @@ const { setTimeout: delay } = require('node:timers/promises');
 const { withBrowser } = require('./smoke-browser.cjs');
 
 const background = 'game/story/chapter-0/background.html';
-const prologue = 'game/story/chapter-0/plot.html';
+const chapter = 'game/story/chapter-1/plot.html';
 const images = [1, 2, 3].map(index => '../../assets/images/background/00' + index + '.png');
 
 // Hold a real, locally decoded image at the decode boundary. This models slow
@@ -23,9 +23,7 @@ function installFixture(config) {
   };
   document.addEventListener('DOMContentLoaded', () => {
     if (config.opening) {
-      backgrounds.splice(0, backgrounds.length, ...config.lines.map(line => ({
-        ...line, image: line.background,
-      })));
+      if (config.lines) window.storyScene.nodes.history.lines = config.lines;
     } else {
       window.storyScene = {
         intro: { selector: '#no-transition-test-intro' },
@@ -42,7 +40,7 @@ function installFixture(config) {
         state.frames.push({
           background: getComputedStyle(document.body).backgroundImage,
           bodyColor: getComputedStyle(document.body).backgroundColor,
-          text: document.querySelector('#overlayText, #story-player .text')?.textContent,
+          text: document.querySelector('#story-player .text')?.textContent,
           busy: document.body.dataset.storyTransitioning === 'true',
           visible: container && getComputedStyle(container).visibility === 'visible',
           layer: layer && { type: layer.dataset.transition, opacity: Number(style.opacity),
@@ -59,18 +57,18 @@ function installFixture(config) {
 }
 
 async function smoke({ evaluate, pointerClick: click, open, cdp, until }) {
-  const textSelector = '#overlayText, #story-player .text';
+  const textSelector = '#story-player .text';
 
   async function load(config) {
     const { identifier } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
       source: '(' + installFixture.toString() + ')(' + JSON.stringify(config) + ');',
     });
     try {
-      await open(config.opening ? background : prologue);
+      await open(config.opening ? background : chapter);
     } finally {
       await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier });
     }
-    await ready(config.lines[0].text);
+    await ready(config.lines?.[0].text ?? await evaluate('storyScene.nodes.history.lines[0].text'));
   }
 
   async function ready(text, timeout) {
@@ -122,7 +120,7 @@ async function smoke({ evaluate, pointerClick: click, open, cdp, until }) {
   }
 
   // Default black and both explicit alternatives must behave identically in the
-  // standalone opening and the React chapter player.
+  // opening graph and the linear chapter player.
   for (const opening of [true, false]) {
     for (const transition of [undefined, 'white', 'crossfade']) {
       const type = transition || 'black';
@@ -191,7 +189,7 @@ async function smoke({ evaluate, pointerClick: click, open, cdp, until }) {
     { speaker: '[测试]', text: '空背景', background: '' },
     { speaker: '[测试]', text: '空值背景', background: null },
     { speaker: '[测试]', text: '同图显式白闪', background: images[0], transition: 'white' },
-    { speaker: '[测试]', text: '继承图显式黑闪', transition: 'black' },
+    { speaker: '[测试]', text: '继承图显式黑闪', background: null, transition: 'black' },
   ] });
   for (const expected of ['未配置背景', '空背景', '空值背景']) {
     await start();
@@ -207,15 +205,30 @@ async function smoke({ evaluate, pointerClick: click, open, cdp, until }) {
     assert.ok(await evaluate('getComputedStyle(document.body).backgroundImage.includes("/001.png")'));
   }
 
-  await load({ opening: true, lines: [
-    { text: '重复背景前', background: images[0] },
-    { text: '重复背景后', background: images[0] },
-  ] });
-  await start();
-  await ready('重复背景后');
+  await load({ opening: true });
+  const slides = await evaluate('storyScene.nodes.history.lines');
+  const repeated = slides.findIndex((line, i) => i > 0 && line.background === slides[i - 1].background);
+  assert.ok(repeated > 0, 'Expected an opening slide that reuses its background');
+  for (let i = 1; i <= repeated; i++) {
+    await start();
+    await ready(slides[i].text);
+  }
   assert.ok((await frames()).some(frame => frame.layer?.type === 'black' && frame.layer.opacity > 0.05),
-    'Opening slides must use the default black transition even when the image repeats');
+    'Consecutive opening slides using the same image lost their black transition');
   console.log('PASS  inherited/empty backgrounds, explicit unchanged-image effects and repeated opening images');
+
+  for (const slide of slides.slice(repeated + 1)) {
+    await click('.image-container');
+    await ready(slide.text);
+  }
+  await start();
+  await until('palace introduction shown', () => evaluate(`
+    !!document.querySelector('[data-story-intro]')
+    && getComputedStyle(document.body).backgroundImage.includes('/005-huguo-palace.png')
+    && transitionSmoke.frames.some(frame => frame.background.includes('/005-huguo-palace.png'))
+  `));
+  assert.ok((await frames()).every(frame => !frame.layer), 'An extra transition played when entering the palace');
+  console.log('PASS  palace introduction follows the last history slide without an added effect');
 
   // Cancellation while decode or animation is pending must settle the caller
   // without committing late, even if the image subsequently finishes decoding.

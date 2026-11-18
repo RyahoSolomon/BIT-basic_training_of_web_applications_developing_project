@@ -1,10 +1,12 @@
-@import url("../../shared/styles/story-fonts.css");
-
-html {
+html.showing-good-ending {
+    height: auto;
+    overflow: auto;
     scrollbar-gutter: stable;
 }
 
-body {
+html.showing-good-ending body {
+    height: auto;
+    overflow: visible;
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
@@ -20,14 +22,14 @@ body {
     box-sizing: border-box;
 }
 
-.container {
+#good-ending {
     width: 90%;
     max-width: 1200px;
     padding: 100px 20px 50px; /* 增加顶部的 padding 使第一段文本远离顶部 */
     border-radius: 10px; /* Rounded corners */
 }
 
-.text {
+#good-ending p {
     opacity: 0;
     -webkit-user-select: none;
     user-select: none;
@@ -35,7 +37,7 @@ body {
     line-height: 1.6; /* Increased line spacing */
 }
 
-.art-font1 {
+#good-ending .art-font1 {
     font-family: var(--story-font-family, var(--story-default-font));
     font-weight: 400;
     font-style: normal; /* Artistic font */
@@ -47,7 +49,7 @@ body {
     text-shadow: 1px 1px 2px #000, -1px -1px 2px #000, -1px 1px 2px #000, 1px -1px 2px #000;
 }
 
-.art-font2 {
+#good-ending .art-font2 {
     font-family: 'Rochester', cursive; /* Artistic font for emphasis */
     font-size: 2.4em; /* Larger font size for emphasis */
     color: #D0021B; /* Text color */
@@ -56,7 +58,7 @@ body {
     text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.4); /* More pronounced shadow effect */
 }
 
-.center-text {
+#good-ending .center-text {
     text-align: center; /* Center text horizontally */
     text-indent: 0; /* Remove text indent for centered text */
     margin-top: 10px; /* Increase margin for better spacing */
@@ -64,58 +66,58 @@ body {
 
 /* 针对屏幕宽度小于1480px且宽高比例大于1.5:1（宽屏）的调整 */
 @media (max-width: 1480px) and (min-aspect-ratio: 126/100) {
-    .container {
+    #good-ending {
         width: 90%;
         padding: 8%; /* 宽屏时减少内边距 */
         box-sizing: border-box;
     }
 
-    .text {
+    #good-ending p {
         font-size: 1.8rem; /* 比原先的 2.3em 略小 */
         line-height: 1.2; /* 缩小行间距 */
         margin: 0.5rem 0; /* 段落间距适当减少 */
         text-align: justify;
     }
 
-    .art-font1 {
+    #good-ending .art-font1 {
         font-size: 1.7rem; /* 比原先的 2.3em 略小 */
         line-height: 1.3; /* 行间距适度减少 */
     }
 
-    .art-font2 {
+    #good-ending .art-font2 {
         font-size: 1.8rem; /* 比原先的 2.4em 略小 */
         line-height: 1.2; /* 行间距缩小 */
     }
-    .center-text {
+    #good-ending .center-text {
         text-align: center; /* Center text horizontally */
     }
 }
 
 /* 针对屏幕宽度小于968px且宽高比例小于1:1（竖屏或接近正方形屏幕）的调整 */
 @media (max-width: 968px) and (max-aspect-ratio: 5/4) {
-    .container {
+    #good-ending {
         width: 100%; 
         padding: 10%; 
         box-sizing: border-box;
     }
 
-    .text {
+    #good-ending p {
         font-size: 1.5rem; /* 比原先的 2.3em 更小 */
         line-height: 1.1; /* 行间距更紧凑 */
         margin: 0.4rem 0; /* 减少段落间距 */
         text-align: justify;
     }
 
-    .art-font1 {
+    #good-ending .art-font1 {
         font-size: 1.5rem; /* 比原先的 2.3em 小 */
         line-height: 1.2; /* 行间距缩小 */
     }
 
-    .art-font2 {
+    #good-ending .art-font2 {
         font-size: 1.6rem; /* 比原先的 2.4em 小 */
         line-height: 1.1; /* 更紧凑的行间距 */
     }
-    .center-text {
+    #good-ending .center-text {
         text-align: center; /* Center text horizontally */
     }
 }

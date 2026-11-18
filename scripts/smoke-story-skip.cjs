@@ -7,20 +7,18 @@ const { startGame } = require('./smoke-player-helpers.cjs');
 
 const root = path.resolve(__dirname, '..');
 const opening = 'game/story/chapter-0/background.html';
-const prologue = 'game/story/chapter-0/plot.html';
+const chapter1 = 'game/story/chapter-1/plot.html';
 const map = 'game/map/index.html';
 const battle = 'game/battle/index.html';
 const expectedRoutes = {
-  'chapter-0/plot.html': map,
+  'chapter-0/background.html': map,
   'chapter-1/plot.html': battle, 'chapter-1/plot-after.html': map,
   'chapter-2/plot.html': battle, 'chapter-2/plot-after.html': map,
-  'chapter-3/plot.html': battle, 'chapter-3/plot-next.html': battle,
-  'chapter-3/plot-after.html': map, 'chapter-3/plot-end.html': map,
-  'chapter-4/plot1.html': battle, 'chapter-4/plot2.html': battle, 'chapter-4/plot3.html': map,
+  'chapter-3/plot.html': battle, 'chapter-3/plot-after.html': map,
+  'chapter-4/plot1.html': battle, 'chapter-4/plot3.html': map,
   'chapter-5/plot1.html': battle, 'chapter-5/plota.html': map,
   'chapter-5/plotb.html': map, 'chapter-5/bad-ending.html': map,
-  'chapter-6/plot1.html': battle, 'chapter-6/plot2.html': battle,
-  'chapter-6/plot3.html': battle, 'chapter-6/bad-ending.html': map,
+  'chapter-6/plot1.html': battle, 'chapter-6/bad-ending.html': map,
 };
 
 async function storyPages(directory = path.join(root, 'game/story')) {
@@ -52,7 +50,7 @@ function installTransitionFixture(config) {
     skips: state.skips, commits: state.commits, cancellations: state.cancellations,
     busy: document.body.dataset.storyTransitioning === 'true',
     layers: document.querySelectorAll('.story-transition-layer').length,
-    text: document.querySelector('#overlayText, #story-player .text')?.textContent,
+    text: document.querySelector('#story-player .text')?.textContent,
     background: getComputedStyle(document.body).backgroundImage,
   });
   window.addEventListener('beforeunload', () => {
@@ -74,7 +72,7 @@ function installTransitionFixture(config) {
       { speaker: '[测试]', text: '取消后不应提交的对白', background: '../../assets/images/background/002.png', transition: 'crossfade' },
     ];
     if (config.opening) {
-      backgrounds.splice(0, backgrounds.length, ...lines.map(line => ({ ...line, image: line.background })));
+      window.storyScene.nodes.history.lines = lines;
     } else {
       window.storyScene = {
         intro: { selector: '#absent-skip-fixture-intro' }, lines,
@@ -113,6 +111,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
   async function ready() {
     await until('visible settled story', () => evaluate(`
       document.body.dataset.storyTransitioning !== 'true'
+      && !!document.querySelector('.image-container')
       && getComputedStyle(document.querySelector('.image-container')).visibility === 'visible'
     `));
   }
@@ -164,18 +163,17 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     await reset(5, file === 'plotb', file === 'plotb');
     await open('game/story/chapter-5/' + file + '.html');
     await skipButton();
-    if (file === 'plota') assert.equal(await evaluate('storyScene.next'), 'good-ending.html');
     await click('[data-story-skip]');
     await page(map);
   }
   console.log('PASS  chapter 4 clue variants return to the map and chapter 5 skips retain their map destinations');
 
-  for (const file of [opening, prologue]) {
+  for (const file of [opening, chapter1]) {
     await reset();
     await open(file);
     await ready();
     await skipButton();
-    const text = await evaluate('document.querySelector("#overlayText, #story-player .text").textContent');
+    const text = await evaluate('document.querySelector("#story-player .text").textContent');
     await click('[data-settings-open]');
     const blocked = await evaluate(`(() => {
       const skip = document.querySelector('[data-story-skip]');
@@ -189,7 +187,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     }
     await page(file);
     assert.equal(await evaluate('document.getElementById("game-settings").open'), true);
-    assert.equal(await evaluate('document.querySelector("#overlayText, #story-player .text").textContent'), text);
+    assert.equal(await evaluate('document.querySelector("#story-player .text").textContent'), text);
     await click('[data-settings-close]');
     await until('modal no longer covers skip', () => evaluate(`(() => {
       const skip = document.querySelector('[data-story-skip]'), box = skip.getBoundingClientRect();
@@ -197,7 +195,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
         && skip.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2));
     })()`));
     await click('[data-story-skip]');
-    await page(map);
+    await page(file === opening ? map : battle);
   }
   console.log('PASS  settings blocks skip clicks without advancing either narration player');
 
@@ -207,7 +205,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
       const { identifier } = await cdp.send('Page.addScriptToEvaluateOnNewDocument', {
         source: '(' + installTransitionFixture.toString() + ')(' + JSON.stringify({ opening: isOpening, gate }) + ');',
       });
-      try { await open(isOpening ? opening : prologue); }
+      try { await open(isOpening ? opening : chapter1); }
       finally { await cdp.send('Page.removeScriptToEvaluateOnNewDocument', { identifier }); }
       await ready();
       await skipButton();
@@ -223,7 +221,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
           return true;
         })()`));
       }
-      assert.equal(await evaluate('document.querySelector("#overlayText, #story-player .text").textContent'), '跳过之前的对白');
+      assert.equal(await evaluate('document.querySelector("#story-player .text").textContent'), '跳过之前的对白');
       if (isOpening) {
         await click('[data-story-skip]');
         await page(map);

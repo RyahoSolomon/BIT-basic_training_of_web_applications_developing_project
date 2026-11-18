@@ -74,7 +74,7 @@ design/                            可编辑的美术源稿
 - 开始页、主菜单与剧情页的三份通用音乐脚本合并为 `game/shared/scripts/audio.js`。战棋使用自身的音乐列表与控制逻辑，保留在 `game/battle/scripts/audio.js`。
 - 第一至第三章相同的剧情样式统一为 `game/story/styles/dialogue.css`；各章有差异的样式继续就近维护。
 - 开场介绍与各章对白共用 `game/story/styles/player.css` 的显示规则；战斗对白、章节与结局正文共用 `game/shared/styles/story-fonts.css` 的默认字体。
-- 三份结局字幕脚本共用 `game/story/scripts/ending.js`。
+- 第五关普通好结局的文字尾声位于 [战后对白页](../game/story/chapter-5/plota.html)，它与第六关两版真结局共用 [ending.js](../game/story/scripts/ending.js) 按时显示字幕。
 - 新游戏、自动保存、继续游戏与 JSON 导入导出共用 `game/shared/scripts/progress.js` 的版本化进度定义，使用一份本地存档；`settings.js` 负责统一设置交互，详见 [存档格式](save-format.md)。
 - 所有运行页面在 head 中依次加载 `profile.js`、`preferences.js`、`progress.js`、`settings.js`，通过 `data-settings-host` 挂载唯一设置入口。`profile.js` 提供姓名计数、校验及安全读取，并补齐缺失的 `testachievement` 与 `testflag`，不会初始化当前进度；显示姓名单独保存在 `playerName`，内部 ID 仍为 `test`。
 - 主菜单与成就页使用已有静态背景；开场循环背景视频已经移除，真结局的 `cast.mp4` 保留。

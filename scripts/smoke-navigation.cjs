@@ -104,6 +104,31 @@ async function smoke({ evaluate, click, pointerClick, page, open, cdp, until }) 
   }
   console.log('PASS  ' + pages.length + ' runtime pages, local resources and initial story images');
 
+  for (const [chapter, entry, nodes, destination] of [
+    [3, 'plot', ['road', 'city'], battlePage],
+    [3, 'plot-after', ['wall', 'road'], mapPage],
+    [4, 'plot1', ['sea', 'island'], battlePage],
+    [6, 'plot1', ['confession', 'messenger', 'meeting'], battlePage],
+  ]) {
+    await reset();
+    await evaluate(`(() => {
+      const current = JSON.parse(localStorage.current);
+      current.level = ${chapter - 1};
+      localStorage.current = JSON.stringify(current);
+    })()`);
+    await open('game/story/chapter-' + chapter + '/' + entry + '.html');
+    await evaluate('window.initialStoryDocument = document');
+    for (const node of nodes) {
+      await until('chapter ' + chapter + ' dialogue ' + node, () => evaluate(
+        'document.getElementById("story-player")?.dataset.storyNode === ' + JSON.stringify(node)));
+      assert.ok(await evaluate('window.initialStoryDocument === document'), 'A dialogue change replaced the page');
+      await readScene({ evaluate, click: pointerClick, cdp, until }, node);
+    }
+    await page(destination);
+    if (destination === battlePage) assert.equal(await evaluate('level'), chapter - 1);
+  }
+  console.log('PASS  consecutive chapter 3, 4 and 6 dialogues retain their document and reach the authored exit');
+
   // Both authored post-battle variants must finish on the map with chapter 5
   // available; simply changing the skip destination would miss this route.
   for (const poison of [false, true]) {
@@ -201,6 +226,20 @@ async function smoke({ evaluate, click, pointerClick, page, open, cdp, until }) 
       const destination = (outcome === 'win' ? winTargets : loseTargets)[level];
       await page(destination);
       await resources(destination);
+      if (outcome === 'win' && level === 4) {
+        await evaluate('window.initialStoryDocument = document');
+        assert.ok(await evaluate('document.getElementById("good-ending").hidden'));
+        await readScene({ evaluate, click: pointerClick, cdp, until });
+        await until('normal ending begins', () => evaluate(`(() => {
+          const ending = document.getElementById('good-ending');
+          return ending && !ending.hidden && getComputedStyle(ending.querySelector('p')).opacity === '1';
+        })()`));
+        assert.ok(await evaluate('window.initialStoryDocument === document'));
+        assert.ok(await evaluate('!document.querySelector("[data-story-skip], #story-player .image-container")'));
+        assert.match(await evaluate('document.getElementById("audioPlayer").src'), /015-normal-ending\.mp3$/);
+        await until('ending title revealed', () => evaluate(
+          'getComputedStyle(document.querySelector("#good-ending p:last-child")).opacity === "1"'), 22000);
+      }
     }
   }
   console.log('PASS  six battle maps, victory/defeat routes and result-page continuation');

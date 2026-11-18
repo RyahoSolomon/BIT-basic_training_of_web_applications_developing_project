@@ -3,7 +3,7 @@ const fs = require('node:fs/promises');
 const os = require('node:os');
 const path = require('node:path');
 const { withBrowser } = require('./smoke-browser.cjs');
-const { dialogueLines } = require('./smoke-story-helpers.cjs');
+const { dialogueLines, readScene } = require('./smoke-story-helpers.cjs');
 const { replaceName, startGame } = require('./smoke-player-helpers.cjs');
 
 const menu = 'game/pages/menu.html';
@@ -187,7 +187,9 @@ async function smoke(browser) {
     console.log('PASS  named JSON download, continue and file import retain the name; hostile imported names are rejected');
 
     await evaluate('localStorage.playerName = ' + JSON.stringify(markupName));
-    await open('game/story/chapter-0/plot.html');
+    await open(opening);
+    await readScene(browser, 'history');
+    await dialogueLines(browser, 'main');
     await until('safe fallback speaker', () => evaluate(`
       document.body.dataset.storyTransitioning !== 'true'
       && getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'

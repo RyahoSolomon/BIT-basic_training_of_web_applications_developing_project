@@ -112,13 +112,17 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
   for (const file of [
     'game/pages/menu.html',
     'game/pages/achievements.html',
-    'game/story/chapter-5/good-ending.html',
     'game/story/chapter-6/true-ending-first.html',
     'game/story/chapter-6/true-ending.html',
   ]) {
     await open(file);
     await silent(file);
   }
+  await open('game/story/chapter-5/plota.html');
+  await readToEnd();
+  await until('ordinary ending music selected', () => evaluate(
+    'document.getElementById("audioPlayer").src.endsWith("/015-normal-ending.mp3")'));
+  await silent('ordinary ending after muted dialogue');
   console.log('PASS  menu, achievements and ending pages honor the saved mute preference');
 
   await open(mapPage);
@@ -236,7 +240,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       label + ': fresh music did not begin at the start');
   }
 
-  const prologue = 'game/story/chapter-0/plot.html';
+  const prologue = 'game/story/chapter-0/background.html';
   const aftermath = 'game/story/chapter-2/plot-after.html';
   await toggleMusic();
   async function markContinuity() {
@@ -286,6 +290,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
         const achievements = JSON.parse(localStorage.testachievement);
         achievements.ach2 = 0; localStorage.testachievement = JSON.stringify(achievements); })()`);
       await open(source);
+      if (source === prologue) await readToEnd('history');
       await readToEnd('main');
       await choices();
       await seekPlaying(source);
@@ -319,13 +324,20 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
 
   await open('game/story/chapter-6/plot1.html');
   await seekPlaying('chapter 6 before its music change');
-  await readToEnd();
-  await page('game/story/chapter-6/plot2.html');
-  assert.ok(await evaluate('document.getElementById("audioPlayer").src.endsWith("013-meeting-before-war.mp3")'));
+  await evaluate('window.__musicPlaybackTimes = []');
+  await readToEnd('confession');
+  await until('messenger music selected', () => evaluate(
+    'document.getElementById("audioPlayer").src.endsWith("/013-meeting-before-war.mp3")'));
   await fresh('chapter 6 with a different track');
+  await dialogueLines({ evaluate, until }, 'messenger');
+  await markContinuity();
+  await readToEnd('messenger');
+  await dialogueLines({ evaluate, until }, 'meeting');
+  await uninterrupted('messenger to council with the same track');
 
   await open(prologue);
-  await readToEnd();
+  await readToEnd('history');
+  await readToEnd('main');
   await choices();
   await seekPlaying('prologue before muted choice');
   await toggleMusic();

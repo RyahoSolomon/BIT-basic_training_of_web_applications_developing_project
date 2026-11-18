@@ -1,6 +1,6 @@
 # 生活质量改进清单
 
-更新日期：2026-11-16。
+更新日期：2026-11-18。
 
 原清单已全部完成，本清单替换旧内容，收录本轮体验检查提出的全部 36 项。编号 01–30 对应检查建议，31–36 对应末尾的六个细节项。完成并验证后再勾选。
 
@@ -118,7 +118,7 @@
 
   开场背景介绍、普通对白和节点剧情已支持 Space、Enter 单次推进。长按不会连续跳句，转场期间的输入不会积压；设置、姓名输入、输入法选字、分支选项和成就弹窗均避免误推进。继续提示暂不显示，待位置确定后再加入。
 
-  相关位置：[共享键盘输入](../game/story/scripts/advance-input.js)、[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)、[开场背景介绍](../game/story/chapter-0/background.js)。验证：`npm run test:story-keyboard`。
+  相关位置：[共享键盘输入](../game/story/scripts/advance-input.js)、[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)、[开场背景介绍](../game/story/chapter-0/plot.js)。验证：`npm run test:story-keyboard`。
 
 - [ ] **19 · 增加只读的对白回看记录**
 
@@ -130,19 +130,19 @@
 
   当前同名按钮有的去地图、有的进战斗；第五关某条战后剧情正常读完进入好结局，跳过却直接回地图。这是现有配置，需先确认设计意图，不直接认定为逻辑错误。区分“跳过当前对白”“跳至下一选项”“跳过整段”，让玩家清楚将略过什么。
 
-  相关位置：[播放器跳过入口](../src/story/player.jsx)、[节点跳过入口](../src/story/graph-player.jsx)、[第五关配置](../game/story/chapter-5/plota.js)、[序章背景介绍](../game/story/chapter-0/background.js)。
+  相关位置：[播放器跳过入口](../src/story/player.jsx)、[节点跳过入口](../src/story/graph-player.jsx)、[第五关配置](../game/story/chapter-5/plota.js)、[序章背景介绍](../game/story/chapter-0/plot.js)。
 
 - [ ] **21 · 将剩余连续剧情迁移到同一页面**
 
-  第四关和第六关仍有连续对白之间换页面的情况，沿用已有节点播放器继续迁移，保留现有剧情走向。本轮确认了跨页现状，没有重新实测这些页面是否出现音乐卡顿。
+  已完成六段同页迁移：序章背景介绍接宫廷对白、第三关战前与战后两段、第四关战前、第六关战前，以及第五关普通好结局战后对白接文字尾声。原换页处直接切换。待作者实机核对各处衔接效果后勾选。
 
-  相关位置：[第四关起始段](../game/story/chapter-4/plot1.js)、[第六关起始段](../game/story/chapter-6/plot1.js)、[第六关中间段](../game/story/chapter-6/plot2.js)、[节点播放器](../src/story/graph-player.jsx)。
+  相关位置：[序章](../game/story/chapter-0/background.html)、[第三关战前](../game/story/chapter-3/plot.html)、[第三关战后](../game/story/chapter-3/plot-after.html)、[第四关战前](../game/story/chapter-4/plot1.html)、[第六关战前](../game/story/chapter-6/plot1.html)、[第五关普通好结局](../game/story/chapter-5/plota.html)。
 
 - [ ] **22 · 统一结局的阅读节奏与出口**
 
   有些结局段落定时出现；首次真结局在固定时间弹成就，确认后很快隐藏正文。允许玩家主动继续，打开设置时暂停演出；结尾统一提供返回地图、主菜单、重看等明确出口，演职员视频也提供跳过或返回入口。
 
-  相关位置：[结局演出](../game/story/scripts/ending.js)、[普通好结局](../game/story/chapter-5/good-ending.html)、[首次真结局](../game/story/chapter-6/true-ending-first.html)、[重复真结局](../game/story/chapter-6/true-ending.html)。
+  相关位置：[结局演出](../game/story/scripts/ending.js)、[普通好结局](../game/story/chapter-5/plota.html)、[首次真结局](../game/story/chapter-6/true-ending-first.html)、[重复真结局](../game/story/chapter-6/true-ending.html)。
 
 - [ ] **23 · 为未来可重复询问的选项区分用途**
 
@@ -224,7 +224,7 @@
 
   移除无效字体请求与重复引用，按实际需要本地化资源，让离线和慢网络情况下的启动更稳定。
 
-  相关位置：[战斗字体引用](../game/battle/index.html)、[结局字体引用](../game/story/chapter-5/good-ending.html)、[共用剧情样式](../game/story/styles/player.css)。
+  相关位置：[战斗字体引用](../game/battle/index.html)、[结局字体引用](../game/story/chapter-5/plota.html)、[共用剧情样式](../game/story/styles/player.css)。
 
 - [ ] **36 · 统一按钮点击区域与键盘焦点**
 

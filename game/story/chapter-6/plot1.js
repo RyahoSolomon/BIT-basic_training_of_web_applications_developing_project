@@ -1,39 +1,71 @@
 window.storyScene = {
-  "lines": [
-    {
-      "speaker": "[鸢阑]",
-      "text": "你可算醒了啊!!!担心死我们了!"
+    id: "chapter-6-before-battle",
+    start: "waking",
+    skip: { exit: "../../battle/index.html" },
+    nodes: {
+        waking: {
+            type: "intro",
+            text: "(再次醒来,似乎已经过去将近一天了,我已经被转移到后方,叶岱和鸢阑在旁边等着我,看到我苏醒,他们十分激动)",
+            next: "confession",
+        },
+        confession: {
+            type: "dialogue",
+            background: "../../assets/images/background/021-rest.png",
+            transition: "black",
+            lines: [
+                { speaker: "[鸢阑]", text: "你可算醒了啊!!!担心死我们了!" },
+                { speaker: "[叶岱]", text: "..." },
+                { speaker: "[叶岱]", text: "对不起,我一直瞒着我的身份...因为我担心人族和神族之间的矛盾...我知道你们虽然表面上服从神族,但是对每年数量惊人的贡品感到不满...只是迫于长老压力才表现出服从.." },
+                { speaker: "{player}", text: "其实...没关系....." },
+                { speaker: "{player}", text: "话说,你为什么离开神族了呢..." },
+                { speaker: "[叶岱]", text: "其实...我是神族内部反抗长老的一员...即使不算上他对你们做的事情,我们神族内部对他也是颇有微词的...然而事情还是败露,和我们一伙的,包括我的亲哥哥,大多都被杀了,我和一些其它罪状不是很重的人也被流放..." },
+                { speaker: "[叶岱]", text: "真的对不起...." },
+            ],
+            next: "interruption",
+        },
+        interruption: {
+            type: "intro",
+            text: "我们陷入了令人尴尬的沉默,此时一个传令兵进来通报",
+            background: null,
+            transition: "none",
+            music: "../../assets/audio/013-meeting-before-war.mp3",
+            next: "messenger",
+        },
+        messenger: {
+            type: "dialogue",
+            background: "../../assets/images/background/021-rest.png",
+            transition: "black",
+            lines: [
+                { speaker: "[传令兵]", text: "抱歉打扰三位休息了,但是盘古此时已经现出真身,大战一触即发...法海点名要见你们三位..." },
+                { speaker: "{player}", text: "是!我现在立刻过去" },
+            ],
+            next: "meetingIntro",
+        },
+        meetingIntro: {
+            type: "intro",
+            text: "下午 临时作战会议",
+            background: "../../assets/images/background/022-meeting.png",
+            transition: "none",
+            next: "meeting",
+        },
+        meeting: {
+            type: "dialogue",
+            transition: "black",
+            lines: [
+                { speaker: "{player}", text: "(不大的区域居然坐着好些个熟面孔:第五十六代轩辕——当今人族帝王,护国法师法海,妖族族长,梓决,太上老君还有几个其它人)" },
+                { speaker: "[轩辕]", text: "不必行礼,法海,说一下情况吧" },
+                { speaker: "[法海]", text: "{player},你们还好吧,现在怎么样了" },
+                { speaker: "{player}", text: "回禀大宗师殿下,身体已经恢复大半,目前已可继续战斗!" },
+                { speaker: "[法海]", text: "盘古那家伙...开天辟地居然是骗人的.那家伙是游离于世界之间的一个种族.他们寻找混沌的世界,然后打破混沌,再克服世界的天道意志,便能吞噬这个世界...盘古一族,就是这样形式的生命存在" },
+                { speaker: "[法海]", text: "这样的过程,或许他本人也经历过无数次,但是这都不重要了,我们要保护自己所爱的世界,他给了我们强大的武器:阵法、丹药和创造力.我们会用这些东西彻底击溃盘古!" },
+                { speaker: "[法海]", text: "我们各组已经制定作战方针!太上老君统帅炼丹师协会,为我们提供丹药供给,仙盟派出数名死士,准备在盘古处布下”五行灭神大阵”彻底诛杀盘古!" },
+                { speaker: "[法海]", text: "我们需要在结阵完成前保护死士!时间紧张,我们必须在这个阶段——他的真身出现,实力尚不完全的的时候才有机会杀死他!" },
+                { speaker: "[法海]", text: "如今大部队还难集结,但是各种族和组织的精英已经聚集,我本人和妖族族长也会参战." },
+                { speaker: "[法海]", text: "我们需要你保护东方木阵,能否杀死盘古,在此一举!此后恐再无机会." },
+                { speaker: "{player}", text: "属下领命!定会用生命保护木阵安危!" },
+            ],
+            next: "exit",
+        },
+        exit: { type: "exit", to: "../../battle/index.html" },
     },
-    {
-      "speaker": "[叶岱]",
-      "text": "..."
-    },
-    {
-      "speaker": "[叶岱]",
-      "text": "对不起,我一直瞒着我的身份...因为我担心人族和神族之间的矛盾...我知道你们虽然表面上服从神族,但是对每年数量惊人的贡品感到不满...只是迫于长老压力才表现出服从.."
-    },
-    {
-      "speaker": "{player}",
-      "text": "其实...没关系....."
-    },
-    {
-      "speaker": "{player}",
-      "text": "话说,你为什么离开神族了呢..."
-    },
-    {
-      "speaker": "[叶岱]",
-      "text": "其实...我是神族内部反抗长老的一员...即使不算上他对你们做的事情,我们神族内部对他也是颇有微词的...然而事情还是败露,和我们一伙的,包括我的亲哥哥,大多都被杀了,我和一些其它罪状不是很重的人也被流放..."
-    },
-    {
-      "speaker": "[叶岱]",
-      "text": "真的对不起...."
-    }
-  ],
-  "next": "plot2.html",
-  "skip": "../../battle/index.html",
-  "boxImage": "../../assets/images/ui/text-box.png",
-  "intro": {
-    "selector": "#text2",
-    "background": "../../assets/images/background/021-rest.png"
-  }
 };

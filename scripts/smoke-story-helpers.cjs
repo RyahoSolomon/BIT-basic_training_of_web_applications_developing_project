@@ -29,17 +29,8 @@ async function readScene({ evaluate, pointerClick, click = pointerClick, cdp, un
 
 async function openingToMap(browser) {
   const { evaluate, pointerClick, click = pointerClick, page, until } = browser;
-  const lines = await evaluate('backgrounds');
-  for (const line of lines) {
-    await until('opening ready', () => evaluate(`
-      document.querySelector('#overlayText')?.textContent === ${JSON.stringify(line.text)}
-      && getComputedStyle(document.querySelector('.image-container')).visibility === 'visible'
-      && document.body.dataset.storyTransitioning !== 'true'
-    `));
-    await click('.image-container');
-  }
-  await page('game/story/chapter-0/plot.html');
-  await readScene(browser);
+  await readScene(browser, 'history');
+  await readScene(browser, 'main');
   await until('prologue choices', () => evaluate('!!document.querySelector("#story-player .button-container .button")'));
   await click('#story-player .button-container .button');
   await readScene(browser, 'departure');

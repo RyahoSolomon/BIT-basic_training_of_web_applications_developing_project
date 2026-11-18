@@ -1,4 +1,4 @@
-// Shared by the standalone opening and the bundled React dialogue player.
+// Background loading and effects for story scenes.
 window.StoryBackgroundTransition = class StoryBackgroundTransition {
     constructor() {
         this.cache = new Map();
@@ -77,7 +77,7 @@ window.StoryBackgroundTransition = class StoryBackgroundTransition {
             new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))),
             cancelled,
         ]);
-        const image = source || this.currentImage();
+        const image = source === null ? null : source || this.currentImage();
         const type = ['black', 'white', 'crossfade'].includes(transition) ? transition : 'black';
         const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 600;
         try {
@@ -94,6 +94,11 @@ window.StoryBackgroundTransition = class StoryBackgroundTransition {
             if (!current()) return false;
 
             const background = image ? 'url(' + JSON.stringify(new URL(image, document.baseURI).href) + ')' : 'none';
+            if (transition === 'none') {
+                document.body.style.backgroundImage = background;
+                onCommit();
+                return true;
+            }
             const layer = this.layer(type);
             if (type === 'crossfade') {
                 layer.style.backgroundImage = background;

@@ -8,21 +8,17 @@
     <script src="../../shared/scripts/settings.js"></script>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>背景</title>
-    <link rel="stylesheet" type="text/css" href="background.css">
+    <title>序章</title>
+    <link rel="stylesheet" type="text/css" href="plot.css">
     <link rel="stylesheet" href="../styles/player.css">
     <link rel="stylesheet" href="../../shared/styles/settings.css">
 </head>
-<body id="mainBody">
+<body>
     <audio id="audioPlayer" loop="loop" preload="preload" src="../../assets/audio/001-story-background.mp3" type="audio/mp3"></audio>
-    <div class="image-container" style="visibility: hidden">
-        <img src="../../assets/images/ui/text-box-no.png" id="slideImage" alt="" draggable="false">
-        <p id="overlayText" class="centered-text"></p>
-    </div>
+    <div id="story-player"></div>
     <div class="button-group" data-settings-host></div>
-    <script src="../scripts/background-transition.js"></script>
-    <script src="../scripts/advance-input.js"></script>
-    <script src="background.js"></script>
+    <script src="plot.js"></script>
+    <script src="../../generated/story-player.js"></script>
     <script src="../../shared/scripts/audio.js"></script>
 </body>
 </html>

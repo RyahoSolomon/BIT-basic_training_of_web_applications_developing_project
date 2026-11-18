@@ -122,3 +122,12 @@ body {
     color: blue;
     text-decoration: underline;
 }
+
+#story-player[data-story-node="history"] .topLeftText {
+    display: none;
+}
+
+#story-player[data-story-node="history"] .text {
+    top: 10%;
+    margin-top: 1em;
+}
