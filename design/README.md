@@ -6,6 +6,10 @@
 
 [story/ui-concept-v1.png](story/ui-concept-v1.png) 保存了基于原有素材生成的 1536×1024 剧情 UI 设计稿。目前应用其中顶部的对白框：从 `(54, 28)` 裁出 `1430×318` 区域，以最近邻采样缩小为 `320×68`，将透明度按 128 分界转为全透明或不透明，再导出为不抖动的 16 色 PNG。姓名栏占顶部 16 像素；裁去这 16 行后，用右上边框的镜像补齐左上方 `108×6` 的衔接区域，得到 `320×52` 的独立无姓名栏版本。运行资源分别是 [text-box.png](../game/assets/images/ui/text-box.png) 和 [text-box-no.png](../game/assets/images/ui/text-box-no.png)，由共享剧情样式以 `image-rendering: pixelated` 放大显示。
 
+[ui/basic-ui-atlas-v1.png](ui/basic-ui-atlas-v1.png) 是基于现有按钮和对白框生成的基础 UI 参考图，包含面板、边栏、弹窗、内嵌框、按钮状态和小控件。[ui/ui-styles-simple-v1.png](ui/ui-styles-simple-v1.png) 自上而下提供切角素框、几何回纹、莲瓣三种方向；[ui/ui-styles-ornate-v1.png](ui/ui-styles-ornate-v1.png) 自上而下提供神木枝叶、如意流云、夔龙雷纹三种方向。两张风格对照图每行左侧为面板，右侧为简化的按钮及小框。图像由内置绘图生成，供选择纹样、下采样和逐像素精修；尚未进行调色板规整、九宫格切片或运行时接入。生成提示词记录于 [ui/ui-generation-prompts-v1.txt](ui/ui-generation-prompts-v1.txt)。
+
+[ui/ui-panels-inner-patterns-a-v1.png](ui/ui-panels-inner-patterns-a-v1.png) 与 [ui/ui-panels-inner-patterns-b-v1.png](ui/ui-panels-inner-patterns-b-v1.png) 是矩形外框、内部纹饰的基础面板选型稿，每张以 2×2 排列展示四款。A 图按左上、右上、左下、右下依次为云纹、回纹、莲瓣、卷草；B 图同序为雷纹、竹叶、水波、如意结。图像保留整张棕色背景对照稿，各面板可按矩形裁切；仍需下采样、统一色阶和逐像素精修，尚未切片或接入页面。生成提示词记录于 [ui/ui-panels-inner-patterns-prompts-v1.txt](ui/ui-panels-inner-patterns-prompts-v1.txt)。
+
 新增源稿按功能模块归类；编辑后将导出的 PNG 等文件放入对应模块的 `assets/`，跨模块共用的导出资源放入 `game/assets/`。页面只引用导出资源。更改导出文件名或位置后，同步更新引用并运行检查。
 
 静态页面依赖检查不扫描源稿目录。完整规则见 [项目目录说明](../docs/project-structure.md)。

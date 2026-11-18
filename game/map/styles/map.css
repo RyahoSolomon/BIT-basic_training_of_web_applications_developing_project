@@ -1,103 +1,146 @@
-#box{
+body {
+    margin: 0;
+    background-color: #262e2d;
+}
+
+.map-layout {
+    --map-height: 100vh;
+    --board-height: var(--map-height);
+    --board-width: calc(var(--board-height) * 745 / 760);
+    --sidebar-width: calc(var(--board-height) * .27);
+    display: grid;
+    height: var(--map-height);
+    justify-content: center;
+    grid-template-columns: var(--sidebar-width) var(--board-width);
+    grid-template-rows: minmax(0, 1fr);
+}
+
+@supports (height: 100dvh) {
+    .map-layout { --map-height: 100dvh; }
+}
+
+.map-info-panel {
+    /* 回纹源稿为 144×84，九宫格中心为 (37, 30, 71, 23)。 */
+    container-type: inline-size;
+    min-height: 0;
+    background-color: #f2e0ae;
+    border: 6px solid transparent;
+    border-image: url("../../assets/images/basic_component_reverse.png") 30 36 31 37 fill / 30px 36px 31px 37px stretch;
+    image-rendering: pixelated;
+}
+
+.character-info {
+    --portrait-size: clamp(24px, 22cqi, 40px);
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+    padding: clamp(10px, 6cqi, 20px) clamp(4px, 4cqi, 16px);
+    color: #52351f;
+    font: 600 clamp(13px, 7cqi, 18px)/1.4 KaiTi, STKaiti, "楷体", serif;
+}
+
+.character-info h2 {
+    margin: 0 0 0.4em;
+    font-size: clamp(14px, 9cqi, 22px);
     text-align: center;
-    width: 80%;
-    margin: 0 auto;
-}
-body
-{
-  background-image: url("../assets/images/background.jpg"); 
-  margin: 0;
-  padding: 0;
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat; 
-  height: 100vh; 
 }
 
-.button {
-    display: block;
-    position: absolute;
-    width: 6em;
-    height: 6em;
-    padding: 0px 0px;
-    border: none;
-    cursor: pointer;
+.character-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.character-row {
+    display: grid;
+    grid-template-columns: var(--portrait-size) minmax(0, 1fr);
+    align-items: center;
+    gap: 4px clamp(4px, 4cqi, 12px);
+    padding-block: clamp(5px, 3cqi, 9px);
+    overflow-wrap: anywhere;
+}
+
+.character-row + .character-row {
+    border-top: 1px solid #b99a67;
+}
+
+.character-portrait {
+    position: relative;
+    width: var(--portrait-size);
+    aspect-ratio: 1;
     overflow: hidden;
-    transition: border-color 0.3s ease;
-  }
-  
-  .button:hover {
-    border: 3px solid hsl(0, 100%, 100%);
-  }
+    background: #e5cb96;
+}
 
-  #level-1{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+/* 从 64×64 的战棋图标取中心 40×40 的脸部，避开角落的职业标记。 */
+.character-portrait img {
+    position: absolute;
+    width: 160%;
+    height: 160%;
+    inset: -30% auto auto -30%;
+}
 
-  #level-2{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+.character-exp {
+    grid-column: 1 / -1;
+    min-width: 0;
+}
 
-  #level-3{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+.character-exp canvas {
+    display: block;
+    margin-inline: auto;
+    max-width: 100%;
+    height: auto;
+    image-rendering: pixelated;
+}
 
-  #level-4{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+/* 并排所需的宽高比：地图 745/760 + 侧栏 27/100。 */
+@media (aspect-ratio < 4751/3800) {
+    .map-layout {
+        --board-height: calc(var(--map-height) - min(266px, var(--map-height) * .5));
+        grid-template-columns: min(100%, var(--board-width));
+        grid-template-rows: max-content minmax(0, 1fr);
+    }
 
-  #level-5{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+    .map-board { grid-row: 1; }
+    .character-info { --portrait-size: 36px; padding-block: 8px; }
+    .character-row { padding-block: 5px; }
+}
 
-  #level-6{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+.map-board {
+    position: relative;
+    min-width: 0;
+    image-rendering: pixelated;
+}
 
-  #Level1{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+.map-art {
+    display: block;
+    width: 100%;
+    height: auto;
+}
 
-  #Level2{
-    width: 5vw;
-    height:5vw;
+.map-board .button {
     display: none;
-  }
+    position: absolute;
+    width: max(24px, 7.8%);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+}
 
-  #Level3{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+.map-board .button img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 
-  #Level4{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+.map-board .button:is(:hover, :focus-visible) {
+    outline: 2px solid white;
+    outline-offset: -2px;
+}
 
-  #Level5{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
-
-  #Level6{
-    width: 5vw;
-    height:5vw;
-    display: none;
-  }
+/* 以地图原图为坐标系，定位每枚徽章的中心。 */
+#level-1 { left: 93%;   top: 59.5%; }
+#level-2 { left: 75.8%; top: 69.5%; }
+#level-3 { left: 60.2%; top: 56.4%; }
+#level-4 { left: 69.5%; top: 6.4%; }
+#level-5 { left: 41.4%; top: max(12px, 4.2%); }
+#level-6 { left: 35.2%; top: 36.4%; }

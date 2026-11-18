@@ -1,12 +1,12 @@
 // 纯战斗规则：只读取传入状态，返回新状态和事件，不访问页面、全局战局或浏览器存储。
 (function (root, factory) {
-    const rules = factory();
-    if (typeof module === 'object' && module.exports) module.exports = rules;
-    else root.BattleRules = rules;
-})(typeof window === 'undefined' ? globalThis : window, function () {
+    if (typeof module === 'object' && module.exports) {
+        module.exports = factory(require('../../shared/scripts/experience.js'));
+    } else root.BattleRules = factory(root.GameExperience);
+})(typeof window === 'undefined' ? globalThis : window, function (experience) {
     'use strict';
 
-    const EXPERIENCE_THRESHOLDS = Object.freeze([20, 48, 96, 144, 216]);
+    const EXPERIENCE_THRESHOLDS = experience.thresholds;
 
     function requireUnit(state, id) {
         if (!Number.isInteger(id) || !state.units[id]) throw new RangeError('Unknown battle unit');

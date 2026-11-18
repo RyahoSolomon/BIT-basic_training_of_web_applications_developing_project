@@ -1,62 +1,20 @@
-<html>
+<!doctype html>
+<html lang="zh-CN">
     <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="../shared/scripts/profile.js"></script>
     <script src="../shared/scripts/preferences.js"></script>
     <script src="../shared/scripts/progress.js"></script>
     <script src="../shared/scripts/settings.js"></script>
+    <script src="../shared/scripts/experience.js"></script>
 
-        <title>map</title>
+        <title>大地图</title>
         <link type="text/css" rel="stylesheet" href="styles/map.css">
-        <style>
-            #level-1{
-                top: 55%;
-                left: 75%;
-            }
-            #level-2{
-                top: 65%;
-                left: 64%;
-            }
-            #level-3{
-                top: 52%;
-                left:54%;
-            }
-            #level-4{
-                top: 2%;
-                left:60%;
-            }
-            #level-5{
-                top:-1%;
-                left: 42%;
-            }
-            #level-6{
-                top:32%;
-                left:38%
-            }
-            #level-1:hover {
-                border: 3px solid hsl(0, 100%, 100%);
-            }
-            #level-2:hover {
-                border: 3px solid hsl(0, 100%, 100%);
-            }
-            #level-3:hover {
-                border: 3px solid hsl(0, 100%, 100%);
-            }
-            #level-4:hover {
-                border: 3px solid hsl(0, 100%, 100%);
-            }
-            #level-5:hover {
-                border: 3px solid hsl(0, 100%, 100%);
-            }
-            #level-6:hover {
-                border: 3px solid hsl(0, 100%, 100%);
-            }
-            
-        </style>
         <script>
             function save() {
                 try {
-                    GameProgress.saveAuto();
-                    return true;
+                    return GameProgress.saveAuto();
                 } catch (error) {
                     alert('自动保存失败：' + error.message);
                     return false;
@@ -81,30 +39,65 @@
 </head>
     <body>
         <audio id="audioPlayer" loop="loop" preload="preload" src="../assets/audio/000-map.mp3" type="audio/mp3"></audio>
-        <div id="box">
-        <img src="assets/images/map.png" width=80% height=100%>
-
-        <a href = "../story/chapter-1/plot.html" class = "button" id="level-1"><img id="Level1" src = "assets/images/uncaptured-level.png" alt = "第一关" onclick="change(1)"></a>
-        <a href = "../story/chapter-2/plot.html" class = "button" id="level-2"><img id="Level2" src = "assets/images/uncaptured-level.png" alt = "第二关" onclick="change(2)"></a>
-        <a href = "../story/chapter-3/plot.html" class = "button" id="level-3"><img id="Level3" src = "assets/images/uncaptured-level.png" alt = "第三关" onclick="change(3)"></a>
-        <a href = "../story/chapter-4/plot1.html" class = "button" id="level-4"><img id="Level4" src = "assets/images/uncaptured-level.png" alt = "第四关" onclick="change(4)"></a>
-        <a href = "../story/chapter-5/plot1.html" class = "button" id="level-5"><img id="Level5" src = "assets/images/uncaptured-level.png" alt = "第五关" onclick="change(5)"></a>
-        <a href = "../story/chapter-6/plot1.html" class = "button" id="level-6"><img id="Level6" src = "assets/images/uncaptured-level.png" alt = "第六关" onclick="change(6)"></a>
-        
+        <main class="map-layout">
+            <aside class="map-info-panel" aria-label="关卡与角色信息">
+                <section class="character-info" aria-labelledby="character-heading">
+                    <h2 id="character-heading">角色信息</h2>
+                    <ul class="character-list">
+                        <li class="character-row">
+                            <span class="character-portrait"><img src="../assets/images/characters/protagonist-male.png" alt=""></span>
+                            <span class="character-name" id="map-player-name">主角</span>
+                            <div class="character-exp" data-character="user_level">
+                                <canvas width="1" height="10" role="progressbar" aria-label="主角经验"></canvas>
+                            </div>
+                        </li>
+                        <li class="character-row">
+                            <span class="character-portrait"><img src="../assets/images/characters/yuanlan.png" alt=""></span>
+                            <span class="character-name">鸢阑</span>
+                            <div class="character-exp" data-character="yuanlan_level">
+                                <canvas width="1" height="10" role="progressbar" aria-label="鸢阑经验"></canvas>
+                            </div>
+                        </li>
+                        <li class="character-row">
+                            <span class="character-portrait"><img src="../assets/images/characters/yedai.png" alt=""></span>
+                            <span class="character-name">叶岱</span>
+                            <div class="character-exp" data-character="yedai_level">
+                                <canvas width="1" height="10" role="progressbar" aria-label="叶岱经验"></canvas>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+            <nav class="map-board" aria-label="选择关卡">
+                <img class="map-art" src="assets/images/map.png" width="745" height="760" alt="">
+                <a href="../story/chapter-1/plot.html" class="button" id="level-1" onclick="change(1)"><img id="Level1" src="assets/images/uncaptured-level.png" alt="第一关"></a>
+                <a href="../story/chapter-2/plot.html" class="button" id="level-2" onclick="change(2)"><img id="Level2" src="assets/images/uncaptured-level.png" alt="第二关"></a>
+                <a href="../story/chapter-3/plot.html" class="button" id="level-3" onclick="change(3)"><img id="Level3" src="assets/images/uncaptured-level.png" alt="第三关"></a>
+                <a href="../story/chapter-4/plot1.html" class="button" id="level-4" onclick="change(4)"><img id="Level4" src="assets/images/uncaptured-level.png" alt="第四关"></a>
+                <a href="../story/chapter-5/plot1.html" class="button" id="level-5" onclick="change(5)"><img id="Level5" src="assets/images/uncaptured-level.png" alt="第五关"></a>
+                <a href="../story/chapter-6/plot1.html" class="button" id="level-6" onclick="change(6)"><img id="Level6" src="assets/images/uncaptured-level.png" alt="第六关"></a>
+            </nav>
+        </main>
         <div class="button-group" data-settings-host></div>
+        <img id="exp-atlas" src="assets/images/exp_bar.png" alt="" hidden>
+        <script src="scripts/experience-bars.js"></script>
         <script>
+            function updatePlayerName() {
+                document.getElementById('map-player-name').textContent = GameProfile.getName() || '主角';
+            }
+            updatePlayerName();
+            window.addEventListener('game:player-name-changed', updatePlayerName);
 
               window.onload = function(){
                 var saved = save();
+                showMapExperience((saved ? saved.progress : GameProgress.createNewProgress()).current);
                 
                 for(let i = 1;i <= 5; ++i){
                     var flag = localStorage.getItem('level'+i);
                     if(flag == 1){
                         document.getElementById('Level'+i).src = 'assets/images/captured-level.png';
-                        document.getElementById('Level'+i).style.display = 'block';
                         document.getElementById('level-'+i).style.display = 'block';
                     }else{
-                        document.getElementById('Level'+i).style.display = 'block';
                         document.getElementById('level-'+i).style.display = 'block';
                         break;
                     }
@@ -112,16 +105,13 @@
                 }
                 var keyvalue = window.localStorage.getItem('level6');
                 if(keyvalue == 114){
-                    document.getElementById('Level6').style.display = 'block';
                     document.getElementById('level-6').style.display = 'block';
                 }else if(keyvalue == 1){
                     document.getElementById('Level6').src = 'assets/images/captured-level.png';
-                    document.getElementById('Level6').style.display = 'block';
                     document.getElementById('level-6').style.display = 'block';
                 }
                 if (saved) alert("已自动保存");
               }
         </script>
-        </div>
     </body>
 </html>

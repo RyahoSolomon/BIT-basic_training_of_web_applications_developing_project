@@ -1,6 +1,6 @@
 # 伤害与死亡结算
 
-伤害和经验规则放在 [battle-rules.js](../game/battle/scripts/battle-rules.js)，页面接入放在 [battle-state.js](../game/battle/scripts/battle-state.js)。规则模块可以由 Node 直接加载，不依赖 DOM、`localStorage` 或战斗页面的全局变量。
+伤害和经验结算放在 [battle-rules.js](../game/battle/scripts/battle-rules.js)，地图经验条与战斗结算共用 [experience.js](../game/shared/scripts/experience.js) 的升级阈值。战斗页面通过 [battle-state.js](../game/battle/scripts/battle-state.js) 应用结算结果。规则模块可以由 Node 直接加载，不依赖 DOM、`localStorage` 或战斗页面的全局变量。
 
 ## 状态与结果
 

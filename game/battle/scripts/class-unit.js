@@ -123,7 +123,7 @@ class Protagonist extends PlayerUnit
     this.max_armor = 2;
     /* armor 定义护甲 */
     this.armor = 2;
-    this.icon = "assets/images/unit/protagonist-male.png";
+    this.icon = "../assets/images/characters/protagonist-male.png";
     this.skill_count = 4;
     this.available_skills = new Array();
     this.cooldown[0] = 0;
@@ -194,7 +194,7 @@ class YuanLan extends PlayerUnit
     this.max_armor = 1;
     /* armor 定义护甲 */
     this.armor = 1;
-    this.icon = "assets/images/unit/yuanlan.png";
+    this.icon = "../assets/images/characters/yuanlan.png";
     this.skill_count = 4;
     this.available_skills = new Array();
     this.available_skills[0] = "move";
@@ -259,7 +259,7 @@ class YeDai extends PlayerUnit
     this.max_range = 3;
     /* armor 定义护甲 */
     this.armor = 0;
-    this.icon = "assets/images/unit/yedai.png";
+    this.icon = "../assets/images/characters/yedai.png";
     this.skill_count = 4;
     this.available_skills = new Array();
     this.available_skills[0] = "move";
