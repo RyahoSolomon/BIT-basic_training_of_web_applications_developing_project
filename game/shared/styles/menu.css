@@ -39,6 +39,19 @@ body {
     margin: 0 auto;
 }
 
+#continue-error {
+    margin: 0 auto;
+    width: fit-content;
+    max-width: 100%;
+    color: #f2e0ae;
+    text-align: center;
+}
+#continue-error:not(:empty) {
+    margin-top: 2vh;
+    padding: .4em .8em;
+    background: #352820;
+}
+
 .index-button {
     position: relative;
     width: clamp(220px, 20vw, 360px);

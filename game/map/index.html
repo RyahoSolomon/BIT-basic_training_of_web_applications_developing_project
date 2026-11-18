@@ -13,10 +13,13 @@
         <link type="text/css" rel="stylesheet" href="styles/map.css">
         <script>
             function save() {
+                const status = document.getElementById('map-save-error');
                 try {
-                    return GameProgress.saveAuto();
+                    const saved = GameProgress.saveAuto();
+                    status.textContent = '';
+                    return saved;
                 } catch (error) {
-                    alert('自动保存失败：' + error.message);
+                    status.textContent = '自动保存失败：' + error.message;
                     return false;
                 }
             }
@@ -42,6 +45,7 @@
         <main class="map-layout">
             <aside class="map-info-panel" aria-label="关卡与角色信息">
                 <section class="character-info" aria-labelledby="character-heading">
+                    <p id="map-save-error" role="alert"></p>
                     <h2 id="character-heading">角色信息</h2>
                     <ul class="character-list">
                         <li class="character-row">
@@ -110,7 +114,6 @@
                     document.getElementById('Level6').src = 'assets/images/captured-level.png';
                     document.getElementById('level-6').style.display = 'block';
                 }
-                if (saved) alert("已自动保存");
               }
         </script>
     </body>

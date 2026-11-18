@@ -45,6 +45,13 @@ body {
     text-align: center;
 }
 
+#map-save-error { margin: 0; }
+#map-save-error:not(:empty) {
+    margin-bottom: .75em;
+    color: #78321f;
+    font-size: .9em;
+}
+
 .character-list {
     margin: 0;
     padding: 0;

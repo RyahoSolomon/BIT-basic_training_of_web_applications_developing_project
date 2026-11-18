@@ -15,6 +15,7 @@
     <script src="../shared/scripts/player-name-entry.js" defer></script>
     <script>
         function construct() {
+            document.getElementById('continue-error').textContent = '';
             GameNameEntry.open();
             return false;
         }
@@ -23,7 +24,7 @@
                 GameProgress.restoreAuto();
                 window.location.href = "../map/index.html";
             } catch (error) {
-                alert(error.message);
+                document.getElementById('continue-error').textContent = error.message;
             }
             return false;
         }
@@ -49,6 +50,7 @@
             <a href="achievements.html">成就</a>
         </div>
     </nav>
+    <p id="continue-error" role="alert"></p>
     <div class="button-group" data-settings-host data-settings-context="menu"></div>
 </body>
 </html>

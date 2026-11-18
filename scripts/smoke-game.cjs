@@ -26,12 +26,19 @@ async function smoke(browser) {
   await page('game/story/chapter-1/plot.html');
   await readScene(browser);
   await until('battle choice', () => evaluate('!!document.querySelector("#button1")'));
+  await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `
+    window.openedTutorials = [];
+    window.open = url => { window.openedTutorials.push(new URL(url, location.href).href); return null; };
+  ` });
   await click('#button1');
-  // Keep controlling the game tab if the first-play tutorial opens in a new tab.
   await page('game/battle/index.html');
   assert.equal(await evaluate('level'), 0);
+  assert.equal(await evaluate('GameProgress.capture().progress.isFirstPlay'), false);
+  assert.deepEqual(await evaluate('openedTutorials'), [], 'First battle must not open the tutorial automatically');
   await click('#mission_confirm_mask');
   assert.ok(await evaluate('document.querySelector("#unit_0") && !!document.querySelector("#operation_button_0")'));
+  await click('#guide_hover_initial_mask');
+  assert.deepEqual(await evaluate('openedTutorials'), [pathToFileURL(path.resolve(__dirname, '../docs/game-guide.pdf')).href]);
   await click('#skip_game_hover_initial_mask');
   await page('game/battle/results/level-1/win.html');
   assert.match(await evaluate('document.querySelector(".result_inform").textContent'), /胜利/);

@@ -93,6 +93,7 @@ async function withBrowser(run, { userGesture = true } = {}) {
         errors.push(e.exception?.description || e.text);
       }
       if (method === 'Page.javascriptDialogOpening') {
+        errors.push('Unexpected browser dialog (' + params.type + '): ' + params.message);
         cdp.send('Page.handleJavaScriptDialog', {accept: true}).catch(e => errors.push(e.message));
       }
     });

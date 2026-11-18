@@ -40,6 +40,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   const initialStorage = await readStorage();
   await click(continueLink);
   await page(menuPage);
+  assert.match(await evaluate('document.getElementById("continue-error").innerText'), /还没有存档/);
   assert.deepEqual(await readStorage(), initialStorage, 'Continue before starting must not create a run');
   assert.equal(await evaluate('(() => {try {GameProgress.exportSave();} catch (error) {return error.code;}})()'), 'NO_PROGRESS');
 
@@ -92,23 +93,19 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   const failedAutoSave = await evaluate(`(() => {
     const originalSave = localStorage.getItem('game.save');
     const originalCurrent = localStorage.getItem('current');
-    const originalAlert = window.alert;
-    const messages = [];
     try {
       const corrupt = JSON.parse(originalCurrent);
       corrupt.user_level.level = 0;
       localStorage.setItem('current', JSON.stringify(corrupt));
-      window.alert = message => messages.push(String(message));
-      window.onload();
-      return {messages, originalSave, saved: localStorage.getItem('game.save')};
+      save();
+      return {message: document.getElementById('map-save-error').innerText, originalSave, saved: localStorage.getItem('game.save')};
     } finally {
-      window.alert = originalAlert;
       localStorage.setItem('current', originalCurrent);
     }
   })()`);
-  assert.equal(failedAutoSave.messages.length, 1);
-  assert.match(failedAutoSave.messages[0], /^自动保存失败：/);
+  assert.match(failedAutoSave.message, /^自动保存失败：/);
   assert.equal(failedAutoSave.saved, failedAutoSave.originalSave);
+  assert.equal(await evaluate('save(); document.getElementById("map-save-error").textContent'), '');
 
   const exported = await evaluate(`(() => {
     const current = JSON.parse(localStorage.current);

@@ -11,9 +11,7 @@ function pre_load()
   let is_first_play = localStorage.getItem("IsFirstPlay");
   if(is_first_play == null || is_first_play == "true")
   {
-    window.open("../../docs/game-guide.pdf");
     localStorage.setItem("IsFirstPlay", "false");
-    alert("首次游玩会弹出教程页面,请务必仔细阅读.部分浏览器会阻止页面弹出,右下角有按钮可随时打开教程.");
   }
   shuffleSelf(music_library, music_library.length);
   document.getElementById("audioPlayer").src = music_library[0];
