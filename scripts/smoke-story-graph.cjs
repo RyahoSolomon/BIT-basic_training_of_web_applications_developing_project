@@ -218,24 +218,21 @@ async function smoke(browser) {
   assert.ok(await evaluate('document.getElementById("audioPlayer").src.endsWith("005-kill-nut.mp3")'));
   console.log('PASS  same-page skip cancels pending image decode and caption timers without late node or background commits');
 
-  for (const atChoice of [false, true]) {
+  for (const skipToChoice of [false, true]) {
     await reset();
     await open(aftermath);
-    if (atChoice) {
+    if (skipToChoice) {
+      await node('main');
+      await click('[data-story-skip]');
+    } else {
       await readScene(browser, 'main');
-      await node('decision');
     }
-    await until('skip control', () => evaluate('!!document.querySelector("[data-story-skip]")'));
-    await click('[data-story-skip]');
-    await page(map);
+    await node('decision');
+    assert.equal(await evaluate('document.querySelector("[data-story-skip]") === null'), true);
     assert.equal((await state()).flag, 0);
     assert.equal((await state()).achievement, 0);
   }
   // An in-flight caption cannot take control again after the player leaves.
-  await reset();
-  await open(aftermath);
-  await readScene(browser, 'main');
-  await node('decision');
   await click('[data-story-choice="kill"]');
   await node('escape');
   await click('[data-story-skip]');
@@ -243,7 +240,7 @@ async function smoke(browser) {
   await delay(2200);
   await page(map);
   assert.equal((await state()).achievement, 0);
-  console.log('PASS  skipping before a decision or during a branch caption never chooses a result or commits a late transition');
+  console.log('PASS  reading and skipping both stop at the decision, and skipping a branch caption cancels its transition');
 }
 
 withBrowser(smoke, { userGesture: false }).then(() => console.log('PASS  story graph behavior')).catch(error => {

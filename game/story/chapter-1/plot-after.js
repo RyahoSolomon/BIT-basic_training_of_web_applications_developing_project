@@ -6,4 +6,5 @@ window.storyScene = {
     ],
     next: "../../map/index.html",
     skip: "../../map/index.html",
+    skipLabel: "跳过对白，返回地图",
 };

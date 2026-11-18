@@ -16,4 +16,5 @@ window.storyScene = {
     ],
     inlineChoice: { speaker: "{player}", label: "【到祭坛了!居然有这么多怪物!恐怕是被里面的灵力吸引的吧!准备战斗!】", to: "../../battle/index.html" },
     skip: "../../battle/index.html",
+    skipLabel: "跳过对白，进入战斗",
 };

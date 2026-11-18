@@ -1,7 +1,7 @@
 window.storyScene = {
     id: "chapter-6-before-battle",
     start: "waking",
-    skip: { exit: "../../battle/index.html" },
+    skip: { exit: "../../battle/index.html", label: "跳过对白，进入战斗" },
     nodes: {
         waking: {
             type: "intro",

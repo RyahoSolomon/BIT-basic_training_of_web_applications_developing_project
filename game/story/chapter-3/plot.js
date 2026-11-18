@@ -1,7 +1,7 @@
 window.storyScene = {
     id: "chapter-3-approach",
     start: "roadIntro",
-    skip: { exit: "../../battle/index.html" },
+    skip: { exit: "../../battle/index.html", label: "跳过对白，进入战斗" },
     nodes: {
         roadIntro: {
             type: "intro",

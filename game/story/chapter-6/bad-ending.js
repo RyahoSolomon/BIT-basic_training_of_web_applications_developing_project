@@ -54,5 +54,6 @@ window.storyScene = {
     }
   ],
   "next": "../../map/index.html",
+  "skipLabel": "跳过结局，返回地图",
   "boxImage": "../../assets/images/ui/text-box.png"
 };

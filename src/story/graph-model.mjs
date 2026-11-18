@@ -7,7 +7,7 @@ export function validateGraph(scene) {
     }
   };
   const skip = value => {
-    if (value === undefined) return;
+    if (value === undefined || value === false) return;
     if (value.node !== undefined && value.exit === undefined) target(value.node);
     else if (typeof value.exit !== 'string' || !value.exit || value.node !== undefined) {
       throw new Error('Story skip needs either a node or an exit');

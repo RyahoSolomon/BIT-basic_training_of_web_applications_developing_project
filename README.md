@@ -95,7 +95,7 @@ node scripts/smoke-audio.cjs
 window.storyScene = {
     id: "example-conversation",
     start: "greeting",
-    skip: { node: "menu" }, // 只略过对白，不替玩家选择推进选项。
+    skip: { node: "menu", label: "跳至下一选项" },
     nodes: {
         greeting: {
             type: "dialogue",
@@ -104,6 +104,7 @@ window.storyScene = {
         },
         menu: {
             type: "choice",
+            skip: false,
             choices: [
                 { id: "ask", label: "告诉我更多", kind: "topic", repeat: "always", to: "details" },
                 { id: "leave", label: "准备出发", kind: "advance", to: "exit" },
@@ -121,13 +122,15 @@ window.storyScene = {
 
 `kind` 说明选项用途，实际路线由 `to`/`next` 决定。`repeat` 默认 `"always"`，也可设为 `"hide"` 或 `"disable"`；问过的选项标记为已读，但不自动禁止再次询问。返回菜单只显示选项和刚才的对白，不重播开场问候。已读记录仅在当前页面有效，刷新重新开始，不增加逐句存档。
 
-节点及对白可配置 `background`、`transition`、`music`：省略就继承现状；同背景且未指定转场时直接换对白，同曲目不触碰播放状态。`music: null` 明确停止音乐，之后给出曲目即可重新启用，并继续遵守设置中的静音和音量。节点可以用 `skip` 覆盖整段的跳过目标，格式为 `{ node: "menu" }` 或 `{ exit: "../../map/index.html" }`。现有序章和第二关仍直接跳过到地图。
+节点及对白可配置 `background`、`transition`、`music`：省略就继承现状；同背景且未指定转场时直接换对白，同曲目不触碰播放状态。`music: null` 明确停止音乐，之后给出曲目即可重新启用，并继续遵守设置中的静音和音量。
+
+节点默认沿用场景的 `skip`，也可自行指定跳过的目标和提示，如 `{ node: "menu", label: "跳至下一选项" }` 或 `{ exit: "../../map/index.html", label: "跳过对白，返回地图" }`。设置 `skip: false` 可在当前节点隐藏跳过按钮。线性剧情使用 `skipLabel` 填写提示，`skip` 指定目标，省略 `skip` 时使用 `next`。
 
 选项的 `effects` 只在该选项首次被接受时执行，返回菜单重复选择不再次执行；支持 `{ type: "setFlag", value: 0或1 }` 和 `{ type: "achievement", id: "ach2", title: "保护坚果", description: "..." }`。剧情标记和成就立即与存档一起保存，失败则留在选项处提示重试；已解锁成就不重复弹窗。第二关仅实际选择放走才设置标记并授予成就，击杀、跳过或进入公共节点均不授予。
 
 编辑节点连接时，播放器会检查目标是否存在、选项 ID 是否重复等；允许补充询问返回菜单形成循环。
 
-剧情页的设置按钮下方提供 `skip_dialogue.png` 跳过按钮，执行场景的 `skip` 目标；未配置时使用 `next`。开场背景介绍跳过后返回地图。跳过会取消正在进行的背景转场，不触发被略过的选项效果。
+鼠标悬停或用 Tab 聚焦设置按钮下方的跳过图标时，提示会说明将略过什么、接下来去哪里。序章可直接跳到地图。第二关战后的“跳至下一选项”会停在是否放走妖族监国的选择上，玩家作出决定后，才可跳过余下对白返回地图。第五关普通好结局的跳过操作会略过战后对白和文字尾声，直接返回地图。跳过会取消正在进行的背景转场，不触发选项效果。
 
 例如，插入下面一条记录即可增加一句对白，保存并重新打开页面后生效，无需重新构建播放器。
 

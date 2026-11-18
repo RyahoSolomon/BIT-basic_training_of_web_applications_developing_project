@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal, flushSync } from 'react-dom';
+import SkipButton from './skip-button.jsx';
 import { useAdvanceInput } from './use-advance-input.js';
 
 function music(source) {
@@ -184,17 +185,12 @@ export default function GraphPlayer({ scene }) {
   const node = cursor ? scene.nodes[cursor.id] : null;
   const boxImage = node?.boxImage || scene.boxImage || '../../assets/images/ui/text-box.png';
   const boxReady = loadedBox === boxImage;
-  const line = node?.lines?.[cursor.index] || lastLine.current;
+  const line = node?.prompt || node?.lines?.[cursor.index] || lastLine.current;
   const font = { '--story-font-family': line.fontFamily || node?.fontFamily || scene.fontFamily };
-  const skipTarget = node?.skip ?? scene.skip;
-  const controls = document.querySelector('[data-settings-host]');
+  const skipTarget = (node ?? scene.nodes[scene.start]).skip ?? scene.skip;
   const award = awards[0];
   return <>
-    {controls && skipTarget && createPortal(
-      <button type="button" data-story-skip title="跳过剧情" aria-label="跳过剧情"
-        onClick={event => skip(event, skipTarget)}>
-        <img src="../../assets/images/skip_dialogue.png" alt="" draggable={false} />
-      </button>, controls)}
+    {skipTarget && <SkipButton label={skipTarget.label} onClick={event => skip(event, skipTarget)} />}
     {ready && node?.type === 'intro' &&
       <div className="centered-text" data-story-intro style={{ '--story-font-family': node.fontFamily || scene.fontFamily }}>
         {text(node.text)}

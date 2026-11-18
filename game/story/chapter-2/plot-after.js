@@ -1,23 +1,28 @@
+const decisionPrompt = { speaker: "[鸢阑]", text: "{player},你怎么看?" };
+
 // Choice effects belong to the decision, never to the common next-day dialogue.
 window.storyScene = {
     id: "chapter-2-aftermath",
     start: "main",
-    skip: { exit: "../../map/index.html" },
+    skip: { exit: "../../map/index.html", label: "跳过对白，返回地图" },
     nodes: {
         main: {
             type: "dialogue",
+            skip: { node: "decision", label: "跳至下一选项" },
             lines: [
                 { speaker: "{player}", text: "...这些家伙...可恶,我们得赶紧离开了,大部队马上就要来了...." },
                 { speaker: "[叶岱]", text: "...." },
                 { speaker: "[叶岱]", text: "杀吗?" },
                 { speaker: "[鸢阑]", text: "算了吧...反正这群人也没掌握什么信息,还是不要再激化人妖矛盾了..." },
                 { speaker: "[妖族监国]", text: "(捂着伤口躺在地上,咬着牙)" },
-                { speaker: "[鸢阑]", text: "{player},你怎么看?" },
+                decisionPrompt,
             ],
             next: "decision",
         },
         decision: {
             type: "choice",
+            prompt: decisionPrompt,
+            skip: false,
             choices: [
                 {
                     id: "spare",

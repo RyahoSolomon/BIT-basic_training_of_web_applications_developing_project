@@ -1,7 +1,7 @@
 window.storyScene = {
     id: "chapter-0",
     start: "history",
-    skip: { exit: "../../map/index.html" },
+    skip: { exit: "../../map/index.html", label: "跳过序章，进入地图" },
     nodes: {
         history: {
             type: "dialogue",

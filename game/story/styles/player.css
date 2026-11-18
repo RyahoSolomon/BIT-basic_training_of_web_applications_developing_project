@@ -97,6 +97,7 @@ body > .centered-text2 {
 }
 
 [data-story-skip] {
+    position: relative;
     display: block;
     width: clamp(38px, 7vh, 78px);
     aspect-ratio: 1;
@@ -115,6 +116,33 @@ body > .centered-text2 {
     aspect-ratio: 1;
     image-rendering: pixelated;
     -webkit-user-drag: none;
+}
+
+.story-skip-hint {
+    position: absolute;
+    right: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: max-content;
+    max-width: 70vw;
+    box-sizing: border-box;
+    padding: 0.4em 0.75em;
+    border: 1px solid #d0ae73;
+    background: #362820;
+    color: #fff5df;
+    font: 15px/1.45 var(--story-default-font);
+    pointer-events: none;
+    visibility: hidden;
+}
+
+[data-story-skip]:focus-visible .story-skip-hint {
+    visibility: visible;
+}
+
+@media (hover: hover) {
+    [data-story-skip]:hover .story-skip-hint {
+        visibility: visible;
+    }
 }
 
 #story-player [data-story-intro] {

@@ -12,4 +12,5 @@ window.storyScene = {
     ],
     inlineChoice: { speaker: "{player}", label: "【可恶...只能这样了吗?!准备战斗!】", to: "../../battle/index.html" },
     skip: "../../battle/index.html",
+    skipLabel: "跳过对白，进入战斗",
 };

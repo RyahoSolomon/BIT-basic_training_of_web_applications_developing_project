@@ -1,7 +1,7 @@
 window.storyScene = {
     id: "chapter-3-aftermath",
     start: "wallIntro",
-    skip: { exit: "../../map/index.html" },
+    skip: { exit: "../../map/index.html", label: "跳过对白，返回地图" },
     nodes: {
         wallIntro: {
             type: "intro",

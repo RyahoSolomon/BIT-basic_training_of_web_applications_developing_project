@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { createPortal, flushSync } from 'react-dom';
+import { flushSync } from 'react-dom';
 import '../../game/story/scripts/background-transition.js';
 import GraphPlayer from './graph-player.jsx';
+import SkipButton from './skip-button.jsx';
 import { validateGraph } from './graph-model.mjs';
 import { useAdvanceInput } from './use-advance-input.js';
 
@@ -100,13 +101,8 @@ function StoryPlayer({ scene, complete }) {
   const choice = finished ? scene.inlineChoice : null;
   const font = { '--story-font-family': (choice || line).fontFamily || scene.fontFamily };
   const skipTarget = scene.skip ?? scene.next;
-  const controls = document.querySelector('[data-settings-host]');
   return <>
-    {controls && skipTarget && createPortal(
-      <button type="button" data-story-skip title="跳过剧情" aria-label="跳过剧情"
-        onClick={event => activate(event, skipTarget)}>
-        <img src="../../assets/images/skip_dialogue.png" alt="" draggable={false} />
-      </button>, controls)}
+    {skipTarget && <SkipButton label={scene.skipLabel} onClick={event => activate(event, skipTarget)} />}
     {ready && line.caption && !finished &&
       <div className="centered-text1" style={{ ...font, opacity: 1 }}>{text(line.caption)}</div>}
     <div className="image-container" onClick={advance}

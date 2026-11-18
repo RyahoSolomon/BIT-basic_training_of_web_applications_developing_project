@@ -62,5 +62,6 @@ window.storyScene = {
     initial_music();
   },
   "skip": "../../map/index.html",
+  "skipLabel": "跳过对白和结局尾声，返回地图",
   "boxImage": "../../assets/images/ui/text-box.png"
 };

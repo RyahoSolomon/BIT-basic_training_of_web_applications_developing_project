@@ -24,6 +24,7 @@ window.storyScene = {
     { ...panguAppears, caption: "还没等到众人反应些什么,盘古突然开始咆哮,随后混沌向三人袭来,天崩地裂!" }
   ],
   "skip": "../../battle/index.html",
+  "skipLabel": "跳过对白，进入战斗",
   "boxImage": "../../assets/images/ui/text-box.png",
   "inlineChoice": {
     "label": "【该死!准备战斗!】",

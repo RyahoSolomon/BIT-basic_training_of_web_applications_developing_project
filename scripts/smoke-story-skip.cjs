@@ -10,15 +10,18 @@ const opening = 'game/story/chapter-0/background.html';
 const chapter1 = 'game/story/chapter-1/plot.html';
 const map = 'game/map/index.html';
 const battle = 'game/battle/index.html';
+const toBattle = { label: '跳过对白，进入战斗', destination: battle };
+const toMap = { label: '跳过对白，返回地图', destination: map };
+const skipEnding = { label: '跳过结局，返回地图', destination: map };
 const expectedRoutes = {
-  'chapter-0/background.html': map,
-  'chapter-1/plot.html': battle, 'chapter-1/plot-after.html': map,
-  'chapter-2/plot.html': battle, 'chapter-2/plot-after.html': map,
-  'chapter-3/plot.html': battle, 'chapter-3/plot-after.html': map,
-  'chapter-4/plot1.html': battle, 'chapter-4/plot3.html': map,
-  'chapter-5/plot1.html': battle, 'chapter-5/plota.html': map,
-  'chapter-5/plotb.html': map, 'chapter-5/bad-ending.html': map,
-  'chapter-6/plot1.html': battle, 'chapter-6/bad-ending.html': map,
+  'chapter-0/background.html': { label: '跳过序章，进入地图', destination: map },
+  'chapter-1/plot.html': toBattle, 'chapter-1/plot-after.html': toMap,
+  'chapter-2/plot.html': toBattle, 'chapter-2/plot-after.html': { label: '跳至下一选项', destination: map },
+  'chapter-3/plot.html': toBattle, 'chapter-3/plot-after.html': toMap,
+  'chapter-4/plot1.html': toBattle, 'chapter-4/plot3.html': toMap,
+  'chapter-5/plot1.html': toBattle, 'chapter-5/plota.html': { label: '跳过对白和结局尾声，返回地图', destination: map },
+  'chapter-5/plotb.html': toMap, 'chapter-5/bad-ending.html': skipEnding,
+  'chapter-6/plot1.html': toBattle, 'chapter-6/bad-ending.html': skipEnding,
 };
 
 async function storyPages(directory = path.join(root, 'game/story')) {
@@ -85,7 +88,7 @@ function installTransitionFixture(config) {
 }
 
 async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) {
-  async function skipButton() {
+  async function skipButton(label) {
     await until('loaded skip button', () => evaluate(`(() => {
       const image = document.querySelector('[data-story-skip] img');
       return image?.complete && image.naturalWidth > 0;
@@ -96,6 +99,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
       const box = button.getBoundingClientRect();
       const settings = document.querySelector('[data-settings-open]').getBoundingClientRect();
       return { count: buttons.length, tag: button.tagName, disabled: button.disabled,
+        hint: button.querySelector('.story-skip-hint')?.textContent, accessibleName: button.getAttribute('aria-label'),
         source: button.querySelector('img').src, inHost: !!button.closest('[data-settings-host]'),
         belowSettings: box.top >= settings.bottom, width: box.width, height: box.height,
         clickable: button.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)) };
@@ -103,9 +107,41 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     assert.equal(state.count, 1, 'A story page needs exactly one skip button');
     assert.equal(state.tag, 'BUTTON');
     assert.equal(state.disabled, false);
+    if (label) {
+      assert.equal(state.hint, label, 'Hover hint must describe where skipping leads');
+      assert.equal(state.accessibleName, label, 'Accessible name must match the hover hint');
+    }
     assert.match(state.source, /\/game\/assets\/images\/skip_dialogue\.png$/);
     assert.ok(state.inHost && state.belowSettings && state.width > 0 && state.height > 0 && state.clickable,
       'Skip must be clickable below the settings entry: ' + JSON.stringify(state));
+  }
+
+  async function checkHintVisibility() {
+    async function hintVisible(visible) {
+      await until('skip hint ' + (visible ? 'visible' : 'hidden'), () => evaluate(`
+        document.querySelector('.story-skip-hint').checkVisibility({ opacityProperty: true, visibilityProperty: true }) === ${visible}
+      `));
+    }
+
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+    await hintVisible(false);
+    const point = await evaluate(`(() => {
+      const box = document.querySelector('[data-story-skip]').getBoundingClientRect();
+      return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+    })()`);
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point });
+    await hintVisible(true);
+    await cdp.send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: 1, y: 1 });
+    await hintVisible(false);
+
+    await evaluate('document.querySelector("[data-settings-open]").focus()');
+    for (const type of ['keyDown', 'keyUp']) {
+      await cdp.send('Input.dispatchKeyEvent', { type, key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 });
+    }
+    assert.ok(await evaluate('document.activeElement.matches("[data-story-skip]")'));
+    await hintVisible(true);
+    await evaluate('document.activeElement.blur()');
+    await hintVisible(false);
   }
 
   async function ready() {
@@ -140,15 +176,29 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
   assert.deepEqual(pages, Object.keys(expectedRoutes).sort(), 'Update the expected routes when shared-player pages change');
   for (const file of pages) {
     const chapter = Number(/chapter-(\d+)/.exec(file)[1]);
+    const { label, destination } = expectedRoutes[file];
     await reset(chapter);
     await open('game/story/' + file);
-    await skipButton();
+    await skipButton(label);
     await click('[data-story-skip]');
-    await page(expectedRoutes[file]);
-    if (expectedRoutes[file] === battle) assert.equal(await evaluate('level'), chapter - 1,
+    if (file === 'chapter-2/plot-after.html') {
+      await until('second chapter decision', () => evaluate(`!!document.querySelector('[data-story-choice="spare"]')`));
+      assert.equal(await evaluate(`!!document.querySelector('[data-story-choice="kill"]')`), true);
+      assert.equal(await evaluate(`!!document.querySelector('[data-story-skip]')`), false);
+      assert.match(await evaluate('document.querySelector("#story-player .text").textContent'), /你怎么看\?$/);
+      assert.equal(await evaluate('Number(localStorage.testflag)'), 0);
+      assert.equal(await evaluate('Number(JSON.parse(localStorage.testachievement).ach2)'), 0);
+      await click('[data-story-choice="spare"]');
+      await until('spare achievement', () => evaluate(`!!document.querySelector('[data-story-achievement-close]')`));
+      await click('[data-story-achievement-close]');
+      await skipButton(toMap.label);
+      await click('[data-story-skip]');
+    }
+    await page(destination);
+    if (destination === battle) assert.equal(await evaluate('level'), chapter - 1,
       file + ': skipping entered the wrong battle');
   }
-  console.log('PASS  opening and all canonical chapter pages load one skip icon and follow their own navigation routes');
+  console.log('PASS  chapter skip hints match their destinations, and chapter 2 pauses for an explicit decision');
 
   for (const poison of [false, true]) {
     await reset(4, poison);
@@ -173,6 +223,7 @@ async function smoke({ evaluate, pointerClick: click, open, page, cdp, until }) 
     await open(file);
     await ready();
     await skipButton();
+    await checkHintVisibility();
     const text = await evaluate('document.querySelector("#story-player .text").textContent');
     await click('[data-settings-open]');
     const blocked = await evaluate(`(() => {

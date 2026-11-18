@@ -1,7 +1,7 @@
 window.storyScene = {
     id: "chapter-4-approach",
     start: "seaIntro",
-    skip: { exit: "../../battle/index.html" },
+    skip: { exit: "../../battle/index.html", label: "跳过对白，进入战斗" },
     nodes: {
         seaIntro: {
             type: "intro",
