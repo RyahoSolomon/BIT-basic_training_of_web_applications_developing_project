@@ -5,7 +5,7 @@ const { withBrowser } = require('./smoke-browser.cjs');
 const battlePage = 'game/battle/index.html';
 const achievementKey = 'testachievement';
 
-async function smoke({ evaluate, pointerClick, page, open, until }) {
+async function smoke({ evaluate, pointerClick, page, open, until, withTab }) {
   async function click(selector) {
     await until('clickable image ' + selector, () => evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
@@ -281,6 +281,49 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     assert.deepEqual(await evaluate('GameProgress.capture().progress.levels.slice(4)'), expected);
   }
   console.log('PASS  fifth-chapter victory retries atomically, unlocks the hidden chapter and preserves completion on replay');
+
+  for (const replacement of ['new game', 'import']) {
+    await startBattle(4);
+    await evaluate(`(() => {
+      const hero = units.find(unit => unit.name === 'user');
+      hero.level = 5;
+      hero.exp = 23;
+      current_info.hidden_clue_god = current_info.hidden_clue_poison = true;
+      spirit_count = 8;
+    })()`);
+    await withTab('game/pages/menu.html', async other => {
+      if (replacement === 'new game') {
+        await other.evaluate(`document.querySelector('a[onclick="return construct()"]').click();
+          const input = document.querySelector('#player-name');
+          input.value = 'test';
+          input.dispatchEvent(new Event('input'));
+          document.querySelector('[data-name-confirm]').click();`);
+        await other.page('game/story/chapter-0/background.html');
+      } else {
+        const fixture = require('./fixtures/progress.json');
+        await other.evaluate(`document.querySelector('[data-settings-open]').click();
+          const files = new DataTransfer();
+          files.items.add(new File([${JSON.stringify(JSON.stringify(fixture))}], 'progress.json', {type: 'application/json'}));
+          const input = document.querySelector('[data-save-file]');
+          input.files = files.files;
+          input.dispatchEvent(new Event('change'));`);
+        await other.page('game/map/index.html');
+      }
+      const expected = await other.evaluate('GameProgress.readAuto()');
+      const raw = await other.evaluate('({...localStorage})');
+      await evaluate('end_turn()');
+      assert.equal(await evaluate('document.querySelector("#battle-save-error:modal button")?.textContent'), '返回主菜单');
+      assert.deepEqual(await other.evaluate('({...localStorage})'), raw, replacement + ': stale settlement wrote to storage');
+      await click('#battle-save-error button');
+      await page('game/pages/menu.html');
+      assert.deepEqual(await other.evaluate('({...localStorage})'), raw, replacement + ': stale pagehide wrote to storage');
+      await click('a[onclick="return load()"]');
+      await page('game/map/index.html');
+      const resumed = await evaluate('GameProgress.capture()');
+      assert.deepEqual({...resumed, savedAt: expected.savedAt}, expected, replacement + ': Continue must restore the replacement');
+    });
+    console.log('PASS  second-tab ' + replacement + ' survives stale fifth-chapter settlement, leaving and Continue');
+  }
 }
 
 withBrowser(smoke, {userGesture: false}).catch(error => {

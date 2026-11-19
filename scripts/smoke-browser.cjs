@@ -87,33 +87,34 @@ async function withBrowser(run, { userGesture = true } = {}) {
     const tab = tabs.find(t => t.type === 'page' && t.url === 'about:blank');
     assert.ok(tab, 'Missing initial browser tab');
     const errors = [];
-    cdp = await connect(tab.webSocketDebuggerUrl, ({method, params}) => {
+    function onBrowserEvent(session, {method, params}) {
       if (method === 'Runtime.exceptionThrown') {
         const e = params.exceptionDetails;
         errors.push(e.exception?.description || e.text);
       }
       if (method === 'Page.javascriptDialogOpening') {
         errors.push('Unexpected browser dialog (' + params.type + '): ' + params.message);
-        cdp.send('Page.handleJavaScriptDialog', {accept: true}).catch(e => errors.push(e.message));
+        session.send('Page.handleJavaScriptDialog', {accept: true}).catch(e => errors.push(e.message));
       }
-    });
+    }
+    cdp = await connect(tab.webSocketDebuggerUrl, event => onBrowserEvent(cdp, event));
     await cdp.send('Runtime.enable');
     await cdp.send('Page.enable');
     await cdp.send('Network.enable');
     await cdp.send('Network.setBlockedURLs', {
       urls: ['*://fonts.googleapis.com/*', '*://fonts.gstatic.com/*'],
     });
-    async function evaluate(expression) {
-      const result = await cdp.send('Runtime.evaluate', {expression, returnByValue: true, userGesture});
+    async function evaluate(expression, session = cdp) {
+      const result = await session.send('Runtime.evaluate', {expression, returnByValue: true, userGesture});
       if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text);
       return result.result.value;
     }
-    async function page(file) {
+    async function page(file, session = cdp) {
       const href = pathToFileURL(path.join(root, file)).href;
       await until(file, async () => {
         assert.deepEqual(errors, [], 'Uncaught script errors: ' + errors.join('\n'));
         try {
-          return await evaluate('location.href === ' + JSON.stringify(href) + ' && document.readyState === "complete"');
+          return await evaluate('location.href === ' + JSON.stringify(href) + ' && document.readyState === "complete"', session);
         } catch (e) {
           if (!/context was destroyed|Cannot find context/.test(e.message)) throw e;
         }
@@ -152,7 +153,23 @@ async function withBrowser(run, { userGesture = true } = {}) {
       });
       await page(file);
     }
-    await run({ evaluate, click, pointerClick, page, open, cdp, until });
+    async function withTab(file, runInTab) {
+      const {targetId} = await cdp.send('Target.createTarget', {url: 'about:blank'});
+      let session;
+      try {
+        const sessionURL = 'ws://127.0.0.1:' + port + '/devtools/page/' + targetId;
+        session = await connect(sessionURL, event => onBrowserEvent(session, event));
+        await session.send('Runtime.enable');
+        await session.send('Page.enable');
+        await session.send('Page.navigate', {url: pathToFileURL(path.join(root, file)).href});
+        await page(file, session);
+        await runInTab({evaluate: expression => evaluate(expression, session), page: path => page(path, session)});
+      } finally {
+        await cdp.send('Target.closeTarget', {targetId});
+        session?.close();
+      }
+    }
+    await run({ evaluate, click, pointerClick, page, open, cdp, until, withTab });
     assert.deepEqual(errors, [], 'Uncaught script errors: ' + errors.join('\n'));
   } finally {
     if (cdp) {

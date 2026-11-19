@@ -442,6 +442,7 @@ function battle_progress_snapshot()
 
 function save_exp_info()
 {
+  if (!battle_save_is_current()) return;
   current_info = battle_progress_snapshot();
   localStorage.setItem("current", JSON.stringify(current_info));
 }

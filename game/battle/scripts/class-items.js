@@ -75,6 +75,7 @@ class Diary extends Item
     {
       if(units[i].x == this.x && units[i].y == this.y && units[i].commander_type == "player" && units[i].is_alive)
       {
+        if (!battle_save_is_current()) return;
         current_info.hidden_clue_god = true;
         loadPlots();
         this.rest_existing_turn = 0;

@@ -26,6 +26,29 @@ function win() {
     finish_battle({ outcome: 'win', perfectLevels: current_info.perfect_level_complete, achievementKeys: [] });
 }
 
+function show_battle_save_dialog(message, label, onConfirm) {
+    const dialog = document.getElementById('battle-save-error');
+    document.getElementById('battle-save-message').textContent = message;
+    dialog.oncancel = event => event.preventDefault();
+    const button = dialog.querySelector('button');
+    button.textContent = label;
+    button.onclick = () => {
+        dialog.close();
+        onConfirm();
+    };
+    dialog.showModal();
+}
+
+function battle_save_is_current() {
+    if (GameProgress.isBattleCurrent()) return true;
+    battle_settlement_started = true;
+    stop_turn_flow();
+    show_battle_save_dialog('当前存档已更换，本场战斗已结束。', '返回主菜单', () => {
+        location.href = '../pages/menu.html';
+    });
+    return false;
+}
+
 function finish_battle(result) {
     battle_settlement_started = true;
     // 取消尚未执行的回合推进，同时关闭战场操作入口。
@@ -35,7 +58,7 @@ function finish_battle(result) {
     load_items();
 
     if (result.outcome === 'lose') {
-        after_achievement_popups(lose);
+        after_achievement_popups(() => { if (battle_save_is_current()) lose(); });
         return;
     }
 
@@ -45,14 +68,8 @@ function finish_battle(result) {
         try {
             GameProgress.saveBattleVictory(current, result.achievementKeys);
         } catch (error) {
-            const dialog = document.getElementById('battle-save-error');
-            document.getElementById('battle-save-message').textContent = '胜利进度保存失败。' + error.message;
-            dialog.oncancel = event => event.preventDefault();
-            dialog.querySelector('button').onclick = () => {
-                dialog.close();
-                saveVictory();
-            };
-            dialog.showModal();
+            if (error.code === 'BATTLE_REPLACED') battle_save_is_current();
+            else show_battle_save_dialog('胜利进度保存失败。' + error.message, '重试保存', saveVictory);
             return;
         }
         current_info = current;
@@ -60,7 +77,7 @@ function finish_battle(result) {
             achievements[key] = true;
             achievement_popup(ACHIEVEMENT_IDS[key]);
         }
-        after_achievement_popups(show_victory_result);
+        after_achievement_popups(() => { if (battle_save_is_current()) show_victory_result(); });
     }
     saveVictory();
 }

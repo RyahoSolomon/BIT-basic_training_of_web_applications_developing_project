@@ -54,6 +54,7 @@ function initial_dialogue_option()
 
 function continue_dialogue()
 {
+  if (!battle_save_is_current()) return;
   current_info.hidden_clue_poison = true;
   document.getElementById("plot_option").innerHTML = "";
   document.getElementById("plot_option_masks").innerHTML = "";

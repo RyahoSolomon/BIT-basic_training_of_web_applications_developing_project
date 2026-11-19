@@ -19,6 +19,7 @@ function apply_battle_result(result) {
                 load_annoucement();
             }
         } else if (event.type === 'achievement-unlocked') {
+            if (!battle_save_is_current()) return;
             achievement_popup(ACHIEVEMENT_IDS[event.key]);
             localStorage.setItem(username + 'achievement', JSON.stringify(achievements));
             if (event.key === 'ach7') save_exp_info();

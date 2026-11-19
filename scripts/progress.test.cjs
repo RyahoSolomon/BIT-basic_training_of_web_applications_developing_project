@@ -65,6 +65,30 @@ test('victory checkpoints roll back together and replay preserves a cleared hidd
   assert.deepEqual(store.capture(), saved);
 });
 
+test('only a successful replacement invalidates an open battle, even for an identical import', () => {
+  const {storage, store: battle} = setup();
+  const menu = createStore(storage);
+  const file = encoded(advanced);
+  menu.importSave(file);
+  battle.beginBattle();
+  menu.restoreAuto();
+  menu.renamePlayer('旅人');
+  menu.saveAuto();
+  assert.ok(battle.isBattleCurrent());
+  storage.failNextWriteTo(SAVE_KEY);
+  expectUnchanged(storage, () => menu.importSave(file), 'STORAGE_ERROR');
+  assert.ok(battle.isBattleCurrent());
+
+  menu.importSave(file);
+  battle.beginBattle();
+  menu.importSave(file);
+  assert.equal(battle.isBattleCurrent(), false);
+  expectUnchanged(storage, () => battle.saveBattleVictory(advanced.progress.current, ['ach3']), 'BATTLE_REPLACED');
+  const beforeLeaving = storage.dump();
+  assert.deepEqual(battle.saveAuto(), advanced);
+  assert.deepEqual(storage.dump(), beforeLeaving);
+});
+
 test('new game needs no account and immediately persists a complete initial save', () => {
   const { storage, store } = setup();
   assert.equal(store.hasSave(), false);
@@ -217,7 +241,7 @@ test('browser rename broadcasts the committed name once and never notifies on fa
         runtimeName: storage.getItem('playerName'), savedName: JSON.parse(storage.getItem(SAVE_KEY)).playerName});
     },
   };
-  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../game/shared/scripts/progress.js'), 'utf8'), {window: browser});
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../game/shared/scripts/progress.js'), 'utf8'), {window: browser, crypto});
   browser.GameProgress.importSave(encoded(advanced));
   assert.equal(browser.GameProgress.renamePlayer(' 新名字 '), '新名字');
   assert.deepEqual(notifications, [{type: 'game:player-name-changed', name: '新名字',

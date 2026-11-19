@@ -19,6 +19,7 @@
     const FORMAT = 'the-origin-of-god';
     const VERSION = 1;
     const SAVE_KEY = 'game.save';
+    const RUN_KEY = 'game.runId';
     const SETTINGS_KEY = 'game.settings';
     const STORAGE_ID = 'test';
     const isObject = value => value !== null && typeof value === 'object' && !Array.isArray(value);
@@ -122,6 +123,14 @@
 
     function createStore(storage, now = () => new Date()) {
         const levelKeys = Array.from({ length: 6 }, (_, i) => 'level' + (i + 1));
+        let battleRunId;
+        function beginBattle() {
+            battleRunId = storage.getItem(RUN_KEY);
+        }
+        function isBattleCurrent() {
+            return battleRunId === undefined || battleRunId === storage.getItem(RUN_KEY);
+        }
+
         const activeFields = {
             current: {
                 keys: ['current'],
@@ -200,26 +209,32 @@
             }
         }
 
-        function apply(save, { settings = false, persist = false } = {}) {
+        function apply(save, { replaceRun = false } = {}) {
             const entries = Object.entries(activeFields).flatMap(([field, adapter]) => {
                 const values = adapter.write(save.progress[field]);
                 return adapter.keys.map((key, i) => [key, values[i]]);
             });
             entries.push(['username', STORAGE_ID], ['playerName', save.playerName], ['testachievement', JSON.stringify(save.achievements)],
                 ['testflag', String(save.endingFlag)]);
-            if (settings) entries.push([SETTINGS_KEY, JSON.stringify(save.settings)]);
-            if (persist) entries.push([SAVE_KEY, JSON.stringify(save)]);
+            if (replaceRun) {
+                // 每次新建或导入都开始独立的一局，即使玩家选择了同一个存档文件。
+                const runId = crypto.getRandomValues(new Uint32Array(4)).join('-');
+                entries.unshift([RUN_KEY, runId]);
+                entries.push([SETTINGS_KEY, JSON.stringify(save.settings)], [SAVE_KEY, JSON.stringify(save)]);
+            }
             writeAtomically(entries);
             return save;
         }
 
         function saveAuto() {
+            if (!isBattleCurrent()) return decodeSave(storage.getItem(SAVE_KEY));
             const save = capture();
             writeAtomically([[SAVE_KEY, JSON.stringify(save)]]);
             return save;
         }
 
         function saveBattleVictory(current, achievementKeys) {
+            if (!isBattleCurrent()) fail('BATTLE_REPLACED', '当前存档已更换，本场战斗已结束。');
             const save = capture();
             current = validate(current, definition.current, 'INVALID_PROGRESS');
             save.progress.current = current;
@@ -297,10 +312,12 @@
         return {
             createNewProgress,
             newGame: guarded(name => apply(snapshot(createNewProgress(), 0,
-                playerName(name, 'INVALID_NAME'), defaults(achievementsDefinition)), { settings: true, persist: true })),
+                playerName(name, 'INVALID_NAME'), defaults(achievementsDefinition)), { replaceRun: true })),
             renamePlayer: guarded(renamePlayer),
             capture: guarded(capture),
             saveAuto: guarded(saveAuto),
+            beginBattle: guarded(beginBattle),
+            isBattleCurrent: guarded(isBattleCurrent),
             saveBattleVictory: guarded(saveBattleVictory),
             applyStoryEffects: guarded(applyStoryEffects),
             hasSave: guarded(() => {
@@ -315,7 +332,7 @@
             exportSave: guarded(() => JSON.stringify(saveAuto(), null, 2)),
             importSave: guarded(text => {
                 if (typeof text !== 'string') fail('INVALID_SAVE', '请选择 JSON 存档文件。');
-                return apply(decodeSave(text), { settings: true, persist: true });
+                return apply(decodeSave(text), { replaceRun: true });
             }),
         };
     }
