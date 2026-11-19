@@ -31,7 +31,11 @@ body .button-text {
 }
 
 body .image-container {
+    --frame-pixel: clamp(1px, round(nearest, min(0.25vw, 0.5vh), 1px), 6px);
+    --nameplate-height: calc(100% * 16 / 68);
     position: fixed;
+    /* At the chapter text size of 2vw, 18vw leaves room for three lines and the frame. */
+    height: max(40vh, 18vw);
     z-index: 1;
     transition: none;
     animation: none;
@@ -51,23 +55,54 @@ body .text {
     opacity: 1;
 }
 
+/* The player loads this combined sprite for the scene. Paint its two frames separately. */
+#slideImage[src$="/text-box.png"] {
+    clip-path: inset(50%);
+}
+
+.image-container:has(> #slideImage[src$="/text-box.png"])::before {
+    content: "";
+    position: absolute;
+    inset: var(--nameplate-height) 0 0;
+    border-image: url("../../assets/images/ui/text-box-no.png") 12 fill /
+        calc(12 * var(--frame-pixel)) stretch;
+    image-rendering: pixelated;
+    pointer-events: none;
+}
+
+/* Back the slice joins with the parchment color while keeping the outer corners clear. */
+.image-container:has(> #slideImage[src$="/text-box.png"])::before,
+#slideImage[src$="/text-box.png"] + .topLeftText:not(:empty) {
+    border-style: solid;
+    border-color: transparent;
+    border-width: calc(4 * var(--frame-pixel));
+    background: #f3e0ba padding-box;
+}
+
 #story-player .topLeftText {
-    /* The nameplate occupies the top 16 pixels of the 68-pixel dialogue image. */
-    height: calc(100% * 16 / 68);
+    left: 0;
+    width: max-content;
+    min-width: min(7.75em, 100%);
+    max-width: 100%;
+    box-sizing: border-box;
+    height: var(--nameplate-height);
+    padding-inline: 1.2em;
     display: flex;
     align-items: center;
+    justify-content: center;
     font-size: min(max(12px, 2vw), 4vh);
     line-height: 1.1;
     text-shadow: none;
 }
 
-#story-player .topLeftText,
-#story-player .text {
-    left: 5%;
+#slideImage[src$="/text-box.png"] + .topLeftText:not(:empty) {
+    border-image: url("../../assets/images/ui/dialogue-nameplate.png") 6 fill /
+        calc(6 * var(--frame-pixel)) stretch;
+    image-rendering: pixelated;
 }
 
 #story-player .text {
-    /* Follow the opening narration's inset, leaving room for three-line dialogue. */
+    left: 5%;
     margin-top: 0.85em;
 }
 
@@ -227,7 +262,14 @@ body[data-story-transitioning] .story-history-open {
 }
 .story-history::backdrop { background: rgb(0 0 0 / 55%); }
 .story-history header { display: grid; align-items: center; }
-.story-history h2 { grid-area: 1 / 1; justify-self: center; margin: 0; font-size: 1.35em; }
+.story-history h2 {
+    grid-area: 1 / 1;
+    justify-self: center;
+    margin: 0;
+    font-size: 1.8em;
+    line-height: 1.2;
+    transform: translateY(calc(var(--frame-y) * -0.48));
+}
 .story-history-close {
     grid-area: 1 / 1;
     justify-self: end;
