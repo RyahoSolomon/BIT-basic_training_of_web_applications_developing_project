@@ -4,12 +4,12 @@ const arrival = {
 };
 
 const unease = {
-  "speaker": "[鸢阑]",
+  "speaker": "鸢阑",
   "text": "不对劲..."
 };
 
 const panguAppears = {
-  "speaker": "[叶岱]",
+  "speaker": "叶岱",
   "text": "是盘古!"
 };
 

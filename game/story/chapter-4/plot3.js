@@ -1,10 +1,10 @@
 const sharedLines = [
   {
-    "speaker": "[叶岱]",
+    "speaker": "叶岱",
     "text": "那些黑衣人...是神族"
   },
   {
-    "speaker": "[鸢阑]",
+    "speaker": "鸢阑",
     "text": "你说什么?神族?!为什么神族要袭击蓬莱?"
   }
 ];
@@ -30,7 +30,7 @@ const longLines = [
     "text": "那些人都凶悍异常,恐怕在神族也是他们长老的亲信一脉"
   },
   {
-    "speaker": "[鸢阑]",
+    "speaker": "鸢阑",
     "text": "神族长老吗...那他不会找我们麻烦吧..."
   },
   {
