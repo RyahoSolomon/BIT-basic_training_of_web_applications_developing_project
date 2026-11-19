@@ -163,7 +163,9 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await open('game/pages/menu.html');
     await startGame({ evaluate, click, page, cdp, until });
     const defaultFont = await checkPresentation('#story-player .text');
-    assert.match(defaultFont, /KaiTi|楷体/i, 'The shared default should use the KaiTi font stack');
+    assert.match(defaultFont, /^["']?FangSong\b/i, 'Dialogue should prefer FangSong');
+    const speakerFont = await font('#story-player .topLeftText');
+    assert.match(speakerFont, /KaiTi|楷体/i, 'Speaker names should use KaiTi');
     const slides = await dialogueLines({ evaluate, until }, 'history');
     assert.ok(await evaluate('document.getElementById("slideImage").src.endsWith("/text-box-no.png")'));
     for (let index = 0; index < slides.length; index++) {
@@ -187,7 +189,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       if (file === prologue) continue; // Already checked through the opening and palace.
       await open(file);
       await checkPresentation('#story-player .text', defaultFont);
-      assert.equal(await font('#story-player .topLeftText'), defaultFont, file + ': inconsistent speaker font');
+      assert.equal(await font('#story-player .topLeftText'), speakerFont, file + ': inconsistent speaker font');
       const lines = await dialogueLines({ evaluate, until });
       if (lines.length > 1) {
         const secondLine = lines[1];

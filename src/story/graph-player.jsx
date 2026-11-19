@@ -190,6 +190,7 @@ export default function GraphPlayer({ scene }) {
   const line = node?.prompt || node?.lines?.[cursor.index] || lastLine.current;
   const visible = ready && boxReady && node?.type !== 'intro';
   const isChoice = node?.type === 'choice';
+  const hasTopics = isChoice && node.choices.some(option => option.kind === 'topic');
   const history = useDialogueHistory(visible && (!isChoice || node.prompt) ? cursor : null,
     text(line.speaker), text(line.text), isChoice ? '' : text(line.caption), isChoice);
   const font = { '--story-font-family': line.fontFamily || node?.fontFamily || scene.fontFamily };
@@ -212,7 +213,7 @@ export default function GraphPlayer({ scene }) {
       <div className="text" style={{ whiteSpace: 'pre-line' }}>{text(line.text)}</div>
     </div>
     {ready && node?.type === 'choice' &&
-      <div className="button-container" style={{ display: 'flex' }}>
+      <div className="button-container" data-story-topics={hasTopics || undefined} style={{ display: 'flex' }}>
         {node.choices.map(option => {
           const wasSeen = seen.has(JSON.stringify([cursor.id, option.id]));
           if (wasSeen && option.repeat === 'hide') return null;
@@ -222,7 +223,12 @@ export default function GraphPlayer({ scene }) {
             style={{ border: 0, padding: 0, backgroundColor: 'transparent',
               '--story-font-family': option.fontFamily || node.fontFamily || scene.fontFamily }}
             onClick={event => choose(event, option)}>
-            <span className="button-text">{text(option.label)}</span>
+            <span className="button-text">
+              {hasTopics && <span className="story-choice-hint">
+                {option.kind === 'topic' ? (wasSeen ? '[已询问]' : '[询问]') : '[继续]'}{' '}
+              </span>}
+              {text(option.label)}
+            </span>
           </button>;
         })}
         {error && <p className="story-choice-error" role="alert">{error}</p>}

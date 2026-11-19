@@ -55,12 +55,16 @@ body .text {
     opacity: 1;
 }
 
-/* The player loads this combined sprite for the scene. Paint its two frames separately. */
-#slideImage[src$="/text-box.png"] {
+/* The scene image controls loading; the visible parchment uses nine-slice borders. */
+#slideImage:is([src$="/text-box.png"], [src$="/text-box-no.png"]) {
     clip-path: inset(50%);
 }
 
-.image-container:has(> #slideImage[src$="/text-box.png"])::before {
+.image-container:has(> #slideImage[src$="/text-box-no.png"]) {
+    --nameplate-height: 0px;
+}
+
+.image-container:has(> #slideImage:is([src$="/text-box.png"], [src$="/text-box-no.png"]))::before {
     content: "";
     position: absolute;
     inset: var(--nameplate-height) 0 0;
@@ -71,7 +75,7 @@ body .text {
 }
 
 /* Back the slice joins with the parchment color while keeping the outer corners clear. */
-.image-container:has(> #slideImage[src$="/text-box.png"])::before,
+.image-container:has(> #slideImage:is([src$="/text-box.png"], [src$="/text-box-no.png"]))::before,
 #slideImage[src$="/text-box.png"] + .topLeftText:not(:empty) {
     border-style: solid;
     border-color: transparent;
@@ -99,6 +103,11 @@ body .text {
     border-image: url("../../assets/images/ui/dialogue-nameplate.png") 6 fill /
         calc(6 * var(--frame-pixel)) stretch;
     image-rendering: pixelated;
+}
+
+#story-player .text,
+#story-player .button-text {
+    --story-default-font: var(--story-dialogue-font);
 }
 
 #story-player .text {
@@ -191,7 +200,26 @@ body > .centered-text2 {
     z-index: 2;
 }
 
-#story-player [data-choice-seen="true"] .button-text {
+#story-player [data-story-topics] { width: min(850px, 94vw); }
+#story-player [data-story-topics] .button {
+    width: 100%;
+    min-height: 72px;
+    height: auto;
+    background-size: 100% 100%;
+}
+#story-player [data-story-topics] .button-text {
+    display: block;
+    box-sizing: border-box;
+    height: auto;
+    margin-block: auto;
+    padding: 0.4em 1em;
+    font-size: clamp(16px, 2.1vw, 28px);
+    line-height: 1.35;
+    text-align: center;
+}
+.story-choice-hint { white-space: nowrap; }
+
+#story-player .button:disabled .button-text {
     opacity: 0.65;
 }
 
@@ -292,6 +320,7 @@ body[data-story-transitioning] .story-history-open {
 .story-history li { padding: 0.6em 0; }
 .story-history li + li { border-top: 1px solid #ccac77; }
 .story-history p { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.story-history p:not(.story-history-caption) { font-family: var(--story-dialogue-font); }
 .story-history .story-history-caption { color: #684d36; }
 .story-history-open:focus-visible,
 .story-history :focus-visible { outline: 2px solid #874f2b; outline-offset: 2px; }

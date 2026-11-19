@@ -137,10 +137,20 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await readBackgroundToEnd(index === 0);
     await readToEnd('main');
     await waitChoices();
+    assert.deepEqual(await evaluate("Array.from(document.querySelectorAll('.story-choice-hint'), hint => hint.textContent.trim())"),
+      ['[继续]', '[询问]']);
     if (index === 0) await screenshot('prologue-choices');
     await click('#story-player .button-container .button:nth-child(' + (index + 1) + ')');
     await page(prologue);
-    if (index === 1) assert.equal((await readToEnd('explanation')).length, 4);
+    if (index === 1) {
+      assert.equal((await readToEnd('explanation')).length, 4);
+      await waitChoices();
+      assert.equal(await evaluate("document.querySelector('[data-story-choice=ask] .story-choice-hint').textContent.trim()"), '[已询问]');
+      await click('[data-story-choice=ask]');
+      await readToEnd('explanation');
+      await waitChoices();
+      await click('[data-story-choice=depart]');
+    }
     assert.equal((await readToEnd('departure')).length, 2);
     await page(map);
   }

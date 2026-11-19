@@ -66,7 +66,7 @@ window.storyScene = {
             type: "choice",
             choices: [
                 { id: "depart", kind: "advance", label: "属下明白,我们立刻集结出发", to: "departure" },
-                { id: "ask", kind: "advance", label: "回宗师殿下,为何非龙鳞森林不可?毕竟那附近有妖族领地...", to: "explanation" },
+                { id: "ask", kind: "topic", repeat: "always", label: "回宗师殿下,为何非龙鳞森林不可?毕竟那附近有妖族领地...", to: "explanation" },
             ],
         },
         explanation: {
@@ -77,7 +77,7 @@ window.storyScene = {
                 { speaker: "法海", text: "四圣兽乃是用补天之石才可铸成,如今世界上恐再无此等法宝了..." },
                 { speaker: "法海", text: "想当年是当今人族帝王的祖先,初代轩辕和神农合力所铸,他们是我人族技艺的巅峰,可惜最后他们为了铸就圣兽元神,献出了自己的生命,技艺也都失传了..." },
             ],
-            next: "departure",
+            next: "decision",
         },
         departure: {
             type: "dialogue",

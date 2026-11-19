@@ -133,7 +133,7 @@
   align-items: center; /* 垂直居中 */
   height: 72px;
   color:rgb(4, 4, 4);
-  font-family: var(--story-font-family, var(--story-default-font));
+  font-family: var(--story-font-family, var(--story-dialogue-font));
   font-size: 32px;
 }
 

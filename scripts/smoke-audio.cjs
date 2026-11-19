@@ -306,6 +306,10 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
       }
       if (index === 1) {
         await readToEnd(source === prologue ? 'explanation' : 'exclusive');
+        if (source === prologue) {
+          await choices();
+          await click('[data-story-choice=depart]');
+        }
         await dialogueLines({ evaluate, until }, source === prologue ? 'departure' : 'common');
         await uninterrupted(source + ' branch rejoin');
       }

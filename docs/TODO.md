@@ -144,9 +144,9 @@
 
   相关位置：[结局演出](../game/story/scripts/ending.js)、[普通好结局](../game/story/chapter-5/plota.html)、[首次真结局](../game/story/chapter-6/true-ending-first.html)、[重复真结局](../game/story/chapter-6/true-ending.html)。
 
-- [ ] **23 · 为未来可重复询问的选项区分用途**
+- [x] **23 · 为可重复询问的选项区分用途**
 
-  用不同的小图标或标签区分“补充了解”和“推进剧情”，问过的内容标“已询问”，避免仅靠变灰让人误以为不能再点。这是后续对话模式的准备项，不是现有分支缺陷。
+  序章向法海询问龙鳞森林时，选项显示「[询问]」。听完解释后回到选择，原选项显示「[已询问]」，可再次听取回答。选择「[继续]」后出发。历史记录保留玩家选择的台词原文。
 
   相关位置：[节点播放器](../src/story/graph-player.jsx)、[选项样式](../game/story/styles/player.css)。
 
