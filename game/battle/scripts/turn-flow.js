@@ -1,7 +1,9 @@
 // 行动按“玩家操作 / 电脑执行 → 确认 → 等待 → 下一单位”推进。
 // 每次行动和等待任务都有标识，旧按钮与已取消的计时器不能推进新行动。
 const battle_turn_flow = {
-    id: 0, actor: null, phase: 'ready', timer: null, waitId: 0, suspended: false,
+    id: 0, actor: null, phase: 'ready', timer: null, waitId: 0,
+    waitUntil: 0, remainingWait: 0, pauseReasons: new Set(),
+    get suspended() { return this.pauseReasons.size > 0; },
     completed: new Set(), moved: new Set(),
 };
 const TURN_DELAY_MS = 300;
@@ -20,7 +22,7 @@ function can_select_player_unit(id) {
     const unit = units[id];
     return can_player_act() && !!unit && unit.is_alive && unit.commander_type === 'player' &&
         !has_unit_acted(unit) && !document.querySelector(
-            '#mission_icons > *, #plot > *, #achievement_popup > *, dialog[open]');
+            '#plot > *, #achievement_popup > *, dialog[open]');
 }
 
 function select_player_unit(id) {
@@ -125,11 +127,12 @@ function cancel_turn_wait() {
     flow.timer = null;
 }
 
-function schedule_next_turn() {
+function schedule_next_turn(delay = TURN_DELAY_MS) {
     const flow = battle_turn_flow;
     cancel_turn_wait();
     const waitId = flow.waitId;
     const turnId = flow.id;
+    flow.waitUntil = performance.now() + delay;
     flow.timer = setTimeout(function () {
         if (flow.waitId !== waitId || flow.id !== turnId || flow.suspended || flow.phase !== 'waiting') return;
         flow.timer = null;
@@ -145,7 +148,7 @@ function schedule_next_turn() {
         current_act_unit = next;
         flow.phase = 'ready';
         start_turn();
-    }, TURN_DELAY_MS);
+    }, delay);
 }
 
 function next_pending_unit() {
@@ -159,13 +162,24 @@ function stop_turn_flow() {
     clear_turn_controls();
 }
 
-window.addEventListener('pagehide', function () {
-    battle_turn_flow.suspended = true;
-    cancel_turn_wait();
-});
-window.addEventListener('pageshow', function () {
-    if (!battle_turn_flow.suspended) return;
-    battle_turn_flow.suspended = false;
-    // 后退恢复缓存页时只恢复尚未完成的等待，不重放已经执行的电脑行动。
-    if (battle_turn_flow.phase === 'waiting') schedule_next_turn();
-});
+function set_turn_paused(reason, paused) {
+    const flow = battle_turn_flow;
+    const wasSuspended = flow.suspended;
+    if (paused) flow.pauseReasons.add(reason);
+    else flow.pauseReasons.delete(reason);
+    // 只在首次暂停和最后一次恢复时处理计时器。保留选格、行动角色和电脑确认按钮。
+    if (flow.phase !== 'waiting' || flow.suspended === wasSuspended) return;
+    if (flow.suspended) {
+        flow.remainingWait = Math.max(0, flow.waitUntil - performance.now());
+        cancel_turn_wait();
+    } else {
+        schedule_next_turn(flow.remainingWait);
+    }
+}
+
+function set_mission_turn_paused(paused) {
+    set_turn_paused('mission', paused);
+}
+
+window.addEventListener('pagehide', () => set_turn_paused('page', true));
+window.addEventListener('pageshow', () => set_turn_paused('page', false));

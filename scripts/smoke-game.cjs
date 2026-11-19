@@ -35,7 +35,7 @@ async function smoke(browser) {
   assert.equal(await evaluate('level'), 0);
   assert.equal(await evaluate('GameProgress.capture().progress.isFirstPlay'), false);
   assert.deepEqual(await evaluate('openedTutorials'), [], 'First battle must not open the tutorial automatically');
-  await click('#mission_confirm_mask');
+  await click('#mission_confirm_button');
   assert.ok(await evaluate('document.querySelector("#unit_0") && !!document.querySelector("#operation_button_0")'));
   await click('#guide_hover_initial_mask');
   assert.deepEqual(await evaluate('openedTutorials'), [pathToFileURL(path.resolve(__dirname, '../docs/game-guide.pdf')).href]);

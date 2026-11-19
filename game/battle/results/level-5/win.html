@@ -13,11 +13,9 @@
     <script type="text/javascript" src="../../scripts/gameover.js"></script>
     <script>
       function leave(){
-        window.localStorage.setItem('level5',1);
         var current = window.localStorage.getItem('current');
         current = JSON.parse(current);
         if(current.hidden_clue_god && current.hidden_clue_poison){
-            window.localStorage.setItem('level6',114);
             window.location.href = "../../../story/chapter-5/plotb.html";
         }
         else{

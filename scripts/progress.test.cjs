@@ -46,6 +46,25 @@ function expectUnchanged(storage, action, code) {
   assert.deepEqual(storage.dump(), before, 'Rejected operation must not change any stored data');
 }
 
+test('victory checkpoints roll back together and replay preserves a cleared hidden chapter', () => {
+  const { storage, store } = setup();
+  const current = store.newGame('旅人').progress.current;
+  Object.assign(current, {level: 4, hidden_clue_god: true, hidden_clue_poison: true});
+  current.user_level.exp = 13;
+  storage.failNextWriteTo(SAVE_KEY);
+  expectUnchanged(storage, () => store.saveBattleVictory(current, ['ach4']), 'STORAGE_ERROR');
+  store.saveBattleVictory(current, ['ach4']);
+  let saved = store.readAuto();
+  assert.deepEqual(saved.progress.levels.slice(4), [1, 114]);
+  assert.deepEqual(saved.progress.current, current);
+  assert.equal(saved.achievements.ach4, 1);
+  store.saveBattleVictory({...current, level: 5}, []);
+  store.saveBattleVictory(current, []);
+  saved = store.readAuto();
+  assert.deepEqual(saved.progress.levels.slice(4), [1, 1]);
+  assert.deepEqual(store.capture(), saved);
+});
+
 test('new game needs no account and immediately persists a complete initial save', () => {
   const { storage, store } = setup();
   assert.equal(store.hasSave(), false);

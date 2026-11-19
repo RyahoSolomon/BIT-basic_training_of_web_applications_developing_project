@@ -96,7 +96,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, cdp, until }) 
     await evaluate('localStorage.setItem("IsFirstPlay", "false")');
     for (const file of [map, story, battle]) {
       await open(file);
-      if (file === battle) await click('#mission_confirm_mask');
+      if (file === battle) await click('#mission_confirm_button');
       if (file === story) await until('story ready', () => evaluate(`
         getComputedStyle(document.querySelector('#story-player .image-container')).visibility === 'visible'
         && document.body.dataset.storyTransitioning !== 'true'

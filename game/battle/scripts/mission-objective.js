@@ -1,59 +1,61 @@
-function load_mission_icons(ingame)
-{
-  let mission_icons = '<div id = "task_book"><img id = "mission_confirm_button" src = "assets/images/ui/task-confirm.png"><a id = "mission_confirm_text">确认</a>';
-  let level_title = get_level_title(level);
-  mission_icons += '<div class = "title_container"><a class = "level_title"></a></div>';
-  mission_icons += '<div class = "subtitle_container"><a class = "mission_title">胜利条件:(任达其一)</a></div>';
-  let win_conditions = get_win_condition();
-  for(let i = 0; i < win_conditions.length; i ++)
-  {
-    mission_icons += '<div class = "mission_info_container"><a class = "mission_info" data-mission-condition></a></div>';
+function initialize_mission_book() {
+  const dialog = document.getElementById('task_book');
+  function openMission() {
+    if (dialog.open) return;
+    render_mission_book();
+    dialog.showModal();
+    set_mission_turn_paused(true);
   }
-  mission_icons += '<div class = "subtitle_container"><a class = "mission_title">失败条件:(任达其一)</a></div>';
-  let lose_conditions = get_lose_condition();
-  for(let i = 0; i < lose_conditions.length; i ++)
-  {
-    mission_icons += '<div class = "mission_info_container"><a class = "mission_info" data-mission-condition></a></div>';
+  function closeMission() {
+    if (!dialog.open) return;
+    dialog.close();
+    set_mission_turn_paused(false);
   }
-  if(level === 2 && current_info.hidden_clue_god == false)
-  {
-    mission_icons += '<div class = "subtitle_container"><a class = "mission_title">支线任务</a></div><div class = "mission_info_container"><a class = "mission_info">•废墟中似乎有本奇怪的书,有机会在怪物被消灭前去看看吧!</a></div>';
-  }
-  if(level === 3 && current_info.hidden_clue_poison == false)
-  {
-    mission_icons += '<div class = "subtitle_container"><a class = "mission_title">支线任务</a></div><div class = "mission_info_container"><a class = "mission_info">•太上老君正好在!去他正下方的那个单元格看看吧!</a></div>';
-  }
-  if(level === 4)
-  {
-    mission_icons += '<div class = "subtitle_container"><a class = "mission_title">特别注意:</a></div><div class = "mission_info_container"><a class = "mission_info">•回合结束时岩浆块上的己方角色会受到2点伤害</a></div><div class = "mission_info_container"><a class = "mission_info">•盘古会每回合使用八卦神阵中的一卦</a></div><div class = "mission_info_container"><a class = "mission_info">•盘古会每数回合召唤援军</a></div>';
-  }
-  else if(level === 5)
-  {
-    mission_icons += '<div class = "subtitle_container"><a class = "mission_title">特别注意:</a></div><div class = "mission_info_container"><a class = "mission_info">•神族长老(真盘古)会每数回合召唤援军袭击死士</a></div>';
-  }
-  mission_icons += '</div>';
-  document.getElementById("mission_icons").innerHTML = mission_icons;
-  const mission = document.getElementById("mission_icons");
-  mission.querySelector('.level_title').textContent = level_title;
-  const conditions = [...win_conditions, ...lose_conditions];
-  mission.querySelectorAll('[data-mission-condition]').forEach((label, index) => {
-    label.textContent = conditions[index];
+  document.getElementById('mission_confirm_button').addEventListener('click', closeMission);
+  dialog.addEventListener('cancel', event => {
+    event.preventDefault();
+    closeMission();
   });
-  document.getElementById("mission_confirm_text").style.position = "absolute";
-  document.getElementById("mission_confirm_text").style.left = "182px";
-  document.getElementById("mission_confirm_text").style.top = "420px";
-  let mission_confirm_mask = '<img id = "mission_confirm_mask" onclick = "mission_confirm(' + ingame + ')"  onmouseenter = "load_mission_hover_mask()" onmouseleave = "clear_mission_hover_mask()" src = "assets/images/mask/mission-confirm-mask.png">';
-  document.getElementById("mission_confirm_masks").innerHTML = mission_confirm_mask;
+  dialog.addEventListener('close', () => {
+    // A new review can open before the previous close event is delivered.
+    if (!dialog.open) set_mission_turn_paused(false);
+  });
+  document.getElementById('check_mission_info_mask').addEventListener('click', openMission);
+  openMission();
 }
 
-function mission_confirm(ingame)
-{
-  clear_mission_icons();
-  if(!ingame)
-  {
-    start_game();
+function render_mission_book() {
+  document.getElementById('mission_title').textContent = get_level_title();
+  const conditions = document.getElementById('mission_conditions');
+  conditions.replaceChildren();
+  function addSection(title, lines) {
+    const heading = document.createElement('h3');
+    heading.textContent = title;
+    conditions.append(heading);
+    for (const text of lines) {
+      const line = document.createElement('p');
+      line.textContent = text;
+      conditions.append(line);
+    }
   }
-  initial_music();
+
+  addSection('胜利条件:(任达其一)', get_win_condition());
+  addSection('失败条件:(任达其一)', get_lose_condition());
+  if (level === 2 && !current_info.hidden_clue_god) {
+    addSection('支线任务', ['•废墟中似乎有本奇怪的书,有机会在怪物被消灭前去看看吧!']);
+  }
+  if (level === 3 && !current_info.hidden_clue_poison) {
+    addSection('支线任务', ['•太上老君正好在!去他正下方的那个单元格看看吧!']);
+  }
+  if (level === 4) {
+    addSection('特别注意:', [
+      '•回合结束时岩浆块上的己方角色会受到2点伤害',
+      '•盘古会每回合使用八卦神阵中的一卦',
+      '•盘古会每数回合召唤援军',
+    ]);
+  } else if (level === 5) {
+    addSection('特别注意:', ['•神族长老(真盘古)会每数回合召唤援军袭击死士']);
+  }
 }
 
 function get_level_title()

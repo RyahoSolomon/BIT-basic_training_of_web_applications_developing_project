@@ -215,7 +215,7 @@ async function smoke({ evaluate, click, pointerClick, page, open, cdp, until }) 
         localStorage.current = JSON.stringify(current);
       })()`);
       await open(battlePage);
-      await click('#mission_confirm_mask');
+      await click('#mission_confirm_button');
       await resources('battle ' + (level + 1));
       if (outcome === 'win') await click('#skip_game_hover_initial_mask');
       else await evaluate('lose()');

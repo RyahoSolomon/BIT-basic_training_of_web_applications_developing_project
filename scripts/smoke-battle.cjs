@@ -23,7 +23,7 @@ async function smoke({ evaluate, click, page, open }) {
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);
     await open(battlePage);
-    await click('#mission_confirm_mask');
+    await click('#mission_confirm_button');
     assert.equal(await evaluate('level'), level);
   }
 

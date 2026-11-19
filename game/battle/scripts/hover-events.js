@@ -27,18 +27,6 @@ function clear_operation_hover_mask()
   document.getElementById("hover_mask").innerHTML = '';
 }
 
-function clear_mission_icons()
-{
-  document.getElementById("mission_confirm_masks").innerHTML = '';
-  document.getElementById("mission_icons").innerHTML = '';
-  document.getElementById("mission_hover_mask").innerHTML = '';
-}
-
-function clear_mission_hover_mask()
-{
-  document.getElementById("mission_hover_mask").innerHTML = '';
-}
-
 function clear_achievement_icons()
 {
   document.getElementById("achievement_popup").innerHTML = '';
@@ -76,11 +64,6 @@ function clear_dialogue_hover_mask()
   document.getElementById("plot_option_hover_masks").innerHTML = '';
 }
 
-
-function load_mission_hover_mask()
-{
-  document.getElementById("mission_hover_mask").innerHTML = '<img src = "assets/images/mask/mission-confirm-hover-mask.png" id = "mission_confirm_hover_mask">'; 
-}
 
 function load_skip_game_hover_mask()
 {

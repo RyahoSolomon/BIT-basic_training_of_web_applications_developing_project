@@ -4,7 +4,7 @@ const { withBrowser } = require('./smoke-browser.cjs');
 
 const battlePage = 'game/battle/index.html';
 
-async function smoke({ evaluate, pointerClick, page, open, until }) {
+async function smoke({ evaluate, pointerClick, page, open, until, cdp }) {
   async function click(selector) {
     await until('loaded control ' + selector, () => evaluate(`(() => {
       const element = document.querySelector(${JSON.stringify(selector)});
@@ -13,7 +13,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     await pointerClick(selector);
   }
 
-  async function startBattle(extra = '', current = 0) {
+  async function openBattle(level) {
     await open('game/pages/menu.html');
     await evaluate(`(() => {
       localStorage.clear();
@@ -23,13 +23,18 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
         ach6: true, ach7: true, ach8: true,
       }));
       const current = JSON.parse(localStorage.current);
-      current.level = 1;
+      current.level = ${level};
       GamePreferences.setVolume('music', 0);
       localStorage.setItem('current', JSON.stringify(current));
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);
     await open(battlePage);
-    await click('#mission_confirm_mask');
+  }
+
+  async function startBattle(extra = '', current = 0) {
+    await openBattle(1);
+    await click('#mission_confirm_button');
+    await until('playable board', () => evaluate('can_player_act()'));
     await evaluate(`(() => {
       map = Array.from({length: height}, () => Array(width).fill(7));
       units = [new Protagonist(0), new Goblin(1)];
@@ -61,6 +66,50 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     await until('past the normal handoff interval', () => evaluate('delayProbeFinished'));
   }
 
+  await openBattle(3);
+  assert.deepEqual(await evaluate(`[document.querySelector('dialog#task_book:modal') !== null,
+    document.activeElement.id, battle_turn_flow.actor.name, battle_turn_flow.phase, battle_turn_flow.id]`),
+  [true, 'mission_confirm_button', 'zijue', 'confirmation', 1]);
+  await evaluate("window.firstConfirmation = document.querySelector('#operation_hover_initial_mask_0')");
+  await click('#mission_confirm_button');
+  assert.ok(await evaluate(`!document.querySelector('#task_book:modal') && battle_turn_flow.id === 1
+    && firstConfirmation === document.querySelector('#operation_hover_initial_mask_0')`),
+    'Closing the opening book must preserve the existing AI confirmation');
+  await click('#operation_hover_initial_mask_0');
+  await until('following ally awaiting confirmation', () => evaluate(
+    'current_act_unit === 1 && battle_turn_flow.phase === "confirmation"'));
+  console.log('PASS  chapter four starts once and preserves its first AI action through the opening book');
+
+  await startBattle();
+  await click('#operation_hover_initial_mask_0');
+  const destination = '#mask img[id="4_2"]';
+  await click('#check_mission_info_mask');
+  const point = await evaluate(`(() => {
+    const cell = document.querySelector(${JSON.stringify(destination)}).getBoundingClientRect();
+    const x = cell.x + cell.width / 2, y = cell.y + cell.height / 2;
+    const book = document.querySelector('#task_book:modal').getBoundingClientRect();
+    return {x, y, outside: x < book.left || x > book.right || y < book.top || y > book.bottom};
+  })()`);
+  assert.ok(point.outside, 'The selected cell must be behind the backdrop');
+  for (const type of ['mousePressed', 'mouseReleased']) {
+    await cdp.send('Input.dispatchMouseEvent', {type, x: point.x, y: point.y, button: 'left', clickCount: 1});
+  }
+  assert.deepEqual(await evaluate(`[units[0].x, units[0].y, have_moved, selected_operation,
+    document.querySelector('#task_book').open]`), [4, 1, false, 'move', true]);
+  await evaluate("document.querySelector('[data-settings-open]').focus()");
+  assert.ok(await evaluate("document.querySelector('#task_book').contains(document.activeElement)"),
+    'Background controls must not take focus while reading');
+  for (const type of ['rawKeyDown', 'keyUp']) {
+    await cdp.send('Input.dispatchKeyEvent', {type, key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27});
+  }
+  await until('Escape returns control to the board', () => evaluate('can_player_act()'));
+  await click(destination);
+  assert.deepEqual(await evaluate('[current_act_unit, units[0].x, units[0].y, have_moved]'), [0, 4, 2, true]);
+  await click('#check_mission_info_mask');
+  await click('#mission_confirm_button');
+  assert.equal(await evaluate('have_moved'), true);
+  console.log('PASS  the modal shields the selected cell and board focus; closing preserves the move allowance');
+
   await startBattle();
   const immediate = await evaluate(`(() => {
     window.responsiveness = {};
@@ -84,9 +133,23 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     frame: {phase: 'waiting', current: 0},
     click: {phase: 'waiting', current: 0},
   });
-  await click('#mission_confirm_mask');
+  await evaluate(`
+    const missionReview = document.getElementById('check_mission_info_mask');
+    document.getElementById('mission_confirm_button').click();
+    missionReview.click();
+    window.dispatchEvent(new PageTransitionEvent('pagehide', {persisted: true}));
+    window.dispatchEvent(new PageTransitionEvent('pageshow', {persisted: true}));
+  `);
+  await afterDelay();
+  assert.deepEqual(await evaluate(`[document.querySelector('#task_book').open,
+    current_act_unit, battle_turn_flow.phase, battle_turn_flow.timer]`), [true, 0, 'waiting', null],
+    'Restoring the page or handling an earlier close must keep the handoff paused while the book is open');
+  await click('#mission_confirm_button');
   await until('next unit after the responsive wait', () => evaluate('current_act_unit === 1 && battle_turn_flow.phase === "confirmation"'));
-  console.log('PASS  timers, rendering and a real task-button click run while the previous turn is waiting');
+  const resumed = await state();
+  await afterDelay();
+  assert.deepEqual(await state(), resumed, 'Resume must hand off only once');
+  console.log('PASS  the waiting turn resumes once after both the mission book and page suspension have cleared');
 
   await startBattle();
   await evaluate('selected_move(0); click_block(4, 2); start_turn();');
@@ -188,7 +251,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
   await startBattle();
   await evaluate(`
     window.winCalls = 0;
-    win = () => { winCalls++; };
+    show_victory_result = () => { winCalls++; };
     end_turn();
     units[1].is_alive = false;
     settle_battle();
@@ -199,10 +262,15 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
   console.log('PASS  terminal settlement cancels an already scheduled handoff');
 
   await startBattle();
-  await evaluate('end_turn(); window.dispatchEvent(new PageTransitionEvent("pagehide", {persisted: true}));');
+  await evaluate(`
+    end_turn();
+    document.getElementById('check_mission_info_mask').click();
+    window.dispatchEvent(new PageTransitionEvent('pagehide', {persisted: true}));
+    document.getElementById('mission_confirm_button').click();
+  `);
   await afterDelay();
-  assert.deepEqual(await evaluate('({current: current_act_unit, phase: battle_turn_flow.phase, timer: battle_turn_flow.timer, suspended: battle_turn_flow.suspended})'),
-    {current: 0, phase: 'waiting', timer: null, suspended: true});
+  assert.deepEqual(await evaluate('({current: current_act_unit, phase: battle_turn_flow.phase, timer: battle_turn_flow.timer})'),
+    {current: 0, phase: 'waiting', timer: null}, 'Closing the book must respect a suspended page');
   await evaluate('window.dispatchEvent(new PageTransitionEvent("pageshow", {persisted: true})); window.dispatchEvent(new PageTransitionEvent("pageshow", {persisted: true}));');
   await until('one handoff after restoring a cached page', () => evaluate('current_act_unit === 1 && battle_turn_flow.phase === "confirmation"'));
   const restored = await state();

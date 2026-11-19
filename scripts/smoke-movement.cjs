@@ -30,7 +30,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);
     await open(battlePage);
-    await click('#mission_confirm_mask');
+    await click('#mission_confirm_button');
   }
 
   let comparedUnits = 0;

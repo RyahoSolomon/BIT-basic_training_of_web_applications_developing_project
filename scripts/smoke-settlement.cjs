@@ -31,7 +31,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       localStorage.setItem('IsFirstPlay', 'false');
     })()`);
     await open(battlePage);
-    await click('#mission_confirm_mask');
+    await click('#mission_confirm_button');
   }
 
   async function arrange(extra = '') {
@@ -50,7 +50,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
       units_display_update();
       load_items();
       window.settlementCalls = {win: 0, lose: 0, starts: 0, ids: [], writes: []};
-      win = () => { settlementCalls.win++; save_exp_info(); };
+      show_victory_result = () => { settlementCalls.win++; };
       lose = () => { settlementCalls.lose++; save_exp_info(); };
       start_turn = () => { settlementCalls.starts++; };
       const popup = achievement_popup;
@@ -106,6 +106,8 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
     assert.ok((await snapshot()).interactiveMasks.operations > 0, 'Fixture starts with actionable unit controls');
     await evaluate(entrance + '()');
     const first = await snapshot();
+    assert.equal(first.calls.writes.filter(write => write.key === 'game.save').length, 1,
+      'Victory must be checkpointed before the first award is dismissed');
     assert.deepEqual(first.interactiveMasks, {board: 0, operations: 0}, 'Settlement clears actionable battle controls');
     await evaluate('end_turn(); end_round();');
     assert.deepEqual(await snapshot(), first, entrance + ': repeated requests cannot enqueue again');
@@ -223,6 +225,7 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
   await startBattle();
   await evaluate(`(() => {
     for (const unit of units) if (unit.side === 1) unit.is_alive = false;
+    units[0].exp = 17;
     achievements.ach4 = true;
     localStorage.setItem(username + 'achievement', JSON.stringify(achievements));
     end_round();
@@ -233,8 +236,51 @@ async function smoke({ evaluate, pointerClick, page, open, until }) {
   const saved = await evaluate(`({current: JSON.parse(localStorage.current), achievements: JSON.parse(localStorage.getItem(${JSON.stringify(achievementKey)}))})`);
   assert.equal(saved.current.level, 0);
   assert.equal(saved.current.perfect_level_complete[0], true);
-  assert.equal(saved.achievements.ach8, true);
-  console.log('PASS  real victory navigation retains the corrected achievement and perfect-clear progress');
+  assert.equal(saved.achievements.ach8, 1);
+  await click('[data-settings-open]');
+  await click('[data-menu-leave]');
+  await page('game/pages/menu.html');
+  await click('a[onclick="return load()"]');
+  await page('game/map/index.html');
+  const resumed = await evaluate('GameProgress.readAuto()');
+  assert.equal(resumed.progress.levels[0], 1);
+  assert.equal(resumed.progress.current.user_level.exp, 17);
+  assert.equal(resumed.progress.current.perfect_level_complete[0], true);
+  assert.equal(resumed.achievements.ach8, 1);
+  assert.ok(await evaluate('document.getElementById("level-2").offsetWidth > 0'));
+  console.log('PASS  saving and leaving the victory screen retains experience, unlocks and achievements on Continue');
+
+  for (const previous of [0, 1]) {
+    await startBattle(4);
+    await evaluate(`(() => {
+      current_info.hidden_clue_god = current_info.hidden_clue_poison = true;
+      localStorage.level6 = ${previous};
+      spirit_count = 8;
+      if (${previous} === 0) {
+        const original = Storage.prototype.setItem;
+        Storage.prototype.setItem = function(key, value) {
+          if (key === 'game.save') {
+            Storage.prototype.setItem = original;
+            throw new Error('Simulated storage failure');
+          }
+          return original.call(this, key, value);
+        };
+      }
+      end_turn();
+    })()`);
+    if (previous === 0) {
+      assert.ok(await evaluate('document.querySelector("#battle-save-error:modal") !== null'));
+      assert.deepEqual(await evaluate('[localStorage.level5, localStorage.level6]'), ['0', '0']);
+      await click('#battle-save-error button');
+    }
+    await page('game/battle/results/level-5/win.html');
+    const expected = [1, previous === 0 ? 114 : 1];
+    assert.deepEqual(await evaluate('GameProgress.readAuto().progress.levels.slice(4)'), expected);
+    await click('#confirm');
+    await page('game/story/chapter-5/plotb.html');
+    assert.deepEqual(await evaluate('GameProgress.capture().progress.levels.slice(4)'), expected);
+  }
+  console.log('PASS  fifth-chapter victory retries atomically, unlocks the hidden chapter and preserves completion on replay');
 }
 
 withBrowser(smoke, {userGesture: false}).catch(error => {

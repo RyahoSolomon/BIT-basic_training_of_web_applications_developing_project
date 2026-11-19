@@ -171,10 +171,12 @@ async function smoke(browser) {
 
     await evaluate('GameProgress.newGame("战斗旧名"); localStorage.IsFirstPlay = "false"');
     await open('game/battle/index.html');
+    await click('#mission_confirm_button');
     await rename('战斗新名');
-    assert.ok((await evaluate('document.getElementById("mission_icons").textContent')).includes('战斗新名'));
     await click('[data-settings-close]');
-    await click('#mission_confirm_mask');
+    await click('#check_mission_info_mask');
+    assert.ok((await evaluate('document.querySelector("#task_book[open]").textContent')).includes('战斗新名'));
+    await click('#mission_confirm_button');
     const beforeBattle = await evaluate('({ round, current_state, operation_count, units: units.map(unit => ({ uuid: unit.uuid, x: unit.x, y: unit.y, health: unit.health, armor: unit.armor })) })');
     await rename('在场新名');
     assert.deepEqual(await evaluate('({ round, current_state, operation_count, units: units.map(unit => ({ uuid: unit.uuid, x: unit.x, y: unit.y, health: unit.health, armor: unit.armor })) })'), beforeBattle,

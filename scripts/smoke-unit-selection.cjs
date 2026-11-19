@@ -33,7 +33,7 @@ async function smoke({ evaluate, pointerClick, open, until, cdp }) {
       GamePreferences.setVolume('music', 0);
     })()`);
     await open(battlePage);
-    await click('#mission_confirm_mask');
+    await click('#mission_confirm_button');
     if (!fixture) return;
     await evaluate(`(() => {
       map = Array.from({length: height}, () => Array(width).fill(7));
@@ -158,9 +158,9 @@ async function smoke({ evaluate, pointerClick, open, until, cdp }) {
   await startBattle(1, true);
   await click('#check_mission_info_mask');
   await evaluate('units_display_update()');
-  await portrait(1);
+  assert.equal(await evaluate('select_player_unit(1)'), false);
   assert.equal(await evaluate('current_act_unit'), 0);
-  await click('#mission_confirm_mask');
+  await click('#mission_confirm_button');
   const hoverPoint = await evaluate(`(() => {
     const rect = document.getElementById('hover_initial_mask_3_2').getBoundingClientRect();
     return {x: rect.x + rect.width / 2, y: rect.y + rect.height / 2};

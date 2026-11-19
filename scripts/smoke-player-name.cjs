@@ -139,8 +139,8 @@ async function smoke(browser) {
     await readNamedScene();
     await evaluate('localStorage.IsFirstPlay = "false"');
     await open('game/battle/index.html');
-    assert.ok((await evaluate('document.getElementById("mission_icons").textContent')).includes(playerName));
-    await click('#mission_confirm_mask');
+    assert.ok((await evaluate('document.getElementById("task_book").textContent')).includes(playerName));
+    await click('#mission_confirm_button');
     const hero = await evaluate(`(() => {
       const hero = units.find(unit => unit.name === 'user');
       return { name: hero.name_cn, title: document.getElementById('hover_initial_mask_' + hero.x + '_' + hero.y).title };

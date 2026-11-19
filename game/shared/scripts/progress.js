@@ -219,6 +219,29 @@
             return save;
         }
 
+        function saveBattleVictory(current, achievementKeys) {
+            const save = capture();
+            current = validate(current, definition.current, 'INVALID_PROGRESS');
+            save.progress.current = current;
+            const levels = save.progress.levels;
+            levels[current.level] = 1;
+            const entries = [['current', JSON.stringify(current)], [levelKeys[current.level], '1']];
+            if (current.level === 4 && current.hidden_clue_god && current.hidden_clue_poison && levels[5] === 0) {
+                levels[5] = 114;
+                entries.push([levelKeys[5], '114']);
+            }
+            if (achievementKeys.length) {
+                for (const key of achievementKeys) {
+                    if (!Object.hasOwn(achievementsDefinition, key)) fail('INVALID_PROGRESS', '未知的通关成就。');
+                    save.achievements[key] = 1;
+                }
+                entries.push(['testachievement', JSON.stringify(save.achievements)]);
+            }
+            entries.push([SAVE_KEY, JSON.stringify(save)]);
+            writeAtomically(entries);
+            return save;
+        }
+
         function applyStoryEffects(effects) {
             if (!Array.isArray(effects) || effects.some(effect => !isObject(effect) ||
                 (effect.type === 'setFlag' ? !isFlag(effect.value) :
@@ -278,6 +301,7 @@
             renamePlayer: guarded(renamePlayer),
             capture: guarded(capture),
             saveAuto: guarded(saveAuto),
+            saveBattleVictory: guarded(saveBattleVictory),
             applyStoryEffects: guarded(applyStoryEffects),
             hasSave: guarded(() => {
                 try { decodeSave(storage.getItem(SAVE_KEY)); return true; }

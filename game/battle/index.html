@@ -118,12 +118,21 @@
       <img id = "skip_game_hover_initial_mask" src = "assets/images/mask/transparent-other-button.png" onclick = "win()" onmouseenter = "load_skip_game_hover_mask()" onmouseleave="reset_other_buttons_hover_mask()" title = "跳过游戏:自动获得游戏胜利,但有可能错过关键剧情和隐藏结局触发.">
       <img id = "guide_hover_initial_mask" src = "assets/images/mask/transparent-other-button.png" onclick = "window.open('../../docs/game-guide.pdf')" onmouseenter = "load_guide_hover_mask()" onmouseleave="reset_other_buttons_hover_mask()" title = "查看教程">
       <img id = "back_to_map_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "window.location.href = '../map/index.html'" onmouseenter = "load_control_button_hover_mask(0)" onmouseleave="reset_other_buttons_hover_mask()" title = "返回大地图(不保存本场战役获得的经验,但保留成就和隐藏线索)">
-      <img id = "check_mission_info_mask" class = "control_hover_initial_mask" src = "assets/images/mask/control-button-mask.png" onclick = "load_mission_icons(true)" onmouseenter = "load_control_button_hover_mask(1)" onmouseleave="reset_other_buttons_hover_mask()" title = "回顾任务目标">
+      <button type="button" id="check_mission_info_mask" class="control_hover_initial_mask" title="回顾任务目标" aria-label="回顾任务目标" aria-haspopup="dialog" aria-controls="task_book"
+        onmouseenter="load_control_button_hover_mask(1)" onmouseleave="reset_other_buttons_hover_mask()"></button>
     </div>
     <div id = 'mask'></div>
-    <div id = "mission_icons"></div>
-    <div id = "mission_hover_mask"></div>
-    <div id = "mission_confirm_masks"></div>
+    <dialog id="task_book" aria-labelledby="mission_title">
+      <div class="mission-details">
+        <h2 id="mission_title"></h2>
+        <div id="mission_conditions"></div>
+      </div>
+      <button type="button" id="mission_confirm_button" autofocus>确认</button>
+    </dialog>
+    <dialog id="battle-save-error" aria-labelledby="battle-save-message">
+      <p id="battle-save-message"></p>
+      <button type="button" autofocus>重试保存</button>
+    </dialog>
     <div id = "achievement_popup"></div>
     <div id = "achievement_confirm_hover_mask"></div>
     <div id = "achievement_confirm_mask"></div>
@@ -137,20 +146,15 @@
   <script type="text/javascript" src="scripts/audio.js"></script>
   <script>
       pre_load();
-      //loadPlots()
-      load_mission_icons(false);
-      //achievement_popup(4);
+      start_game();
+      initialize_mission_book();
       window.addEventListener('game:player-name-changed', () => {
         displayName = GameProfile.getName();
         for (const unit of units) {
           if (unit.name === 'user') unit.name_cn = displayName;
         }
         if (map) units_display_update();
-        // Refresh only the visible labels, preserving battle and dialogue state.
-        const conditions = [...get_win_condition(), ...get_lose_condition()];
-        document.querySelectorAll('#mission_icons [data-mission-condition]').forEach((label, index) => {
-          label.textContent = conditions[index];
-        });
+        if (document.getElementById('task_book').open) render_mission_book();
         const teller = document.getElementById('name_content');
         if (teller?.hasAttribute('data-plot-index')) renderPlotText(Number(teller.dataset.plotIndex));
       });

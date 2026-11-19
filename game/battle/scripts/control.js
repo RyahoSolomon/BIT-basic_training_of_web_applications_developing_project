@@ -429,46 +429,21 @@ function fuck_away(id)
   }
 }
 
-function save_exp_info()
+function battle_progress_snapshot()
 {
-  // console.log("开始搜索");
-  for(let i = 0; i < units_count; i++)
-  {
-    if(units[i].commander_type == "player")
-    {
-      switch(units[i].name)
-      {
-        case "user":
-        {
-          // console.log("user信息储存成功!");
-          user_level.level = units[i].level;
-          user_level.exp = units[i].exp;
-        }
-        case "yuanlan":
-        {
-          // console.log("鸟信息储存成功!");
-          yuanlan_level.level = units[i].level;
-          yuanlan_level.exp = units[i].exp;
-        }
-        case "yedai":
-        {
-          // console.log("山信息储存成功!");
-          yedai_level.level = units[i].level;
-          yedai_level.exp = units[i].exp;
-        }
-      }
+  const current = { ...current_info, level };
+  for (const unit of units) {
+    if (unit.commander_type === "player") {
+      current[unit.name + "_level"] = { level: unit.level, exp: unit.exp };
     }
   }
-  // console.log("level:" + level)
-  current_info.level = level;
-  // console.log("current_info.level:" + current_info.level)
-  current_info.user_level = user_level;
-  current_info.yuanlan_level = yuanlan_level;
-  current_info.yedai_level = yedai_level;
+  return current;
+}
+
+function save_exp_info()
+{
+  current_info = battle_progress_snapshot();
   localStorage.setItem("current", JSON.stringify(current_info));
-  // let temp = JSON.parse(localStorage.getItem("current"));
-  // console.log("temp.level:" + temp.level);
-  console.log("储存完成");
 }
 
 function game_over()
@@ -477,9 +452,8 @@ function game_over()
   save_exp_info();
 }
 
-function win()
+function show_victory_result()
 {
-  game_over();
   switch(level)
   {
     case 0:

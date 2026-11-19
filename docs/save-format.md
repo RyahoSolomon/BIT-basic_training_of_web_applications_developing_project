@@ -79,6 +79,7 @@
 | `hasSave()` | 完整校验 `game.save`，存在可读存档时返回 `true`，空档或坏档返回 `false`；存储访问失败仍抛异常 |
 | `readAuto()` | 只读取并校验 `game.save`，返回存档快照；不恢复运行状态、不改写存储，供主菜单按已保存的通关进度选择背景 |
 | `saveAuto()` | 保存当前完整快照到唯一的 `game.save`，返回快照 |
+| `saveBattleVictory(current, achievementKeys)` | 提交通关时的角色进度、新成就和关卡状态，同步更新运行数据与唯一存档，返回保存的快照 |
 | `restoreAuto()` | 校验并恢复 `game.save` 的名字、进度、成就和标记，返回文件中的快照；不写 `game.settings` 或改写原存档 |
 | `exportSave()` | 先保存当前完整快照，再返回含缩进的 JSON 字符串，界面可将其下载为文件 |
 | `importSave(text)` | 完整校验 JSON 字符串，再恢复全部运行状态、设置及唯一存档，返回恢复的快照 |

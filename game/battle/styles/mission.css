@@ -1,121 +1,81 @@
 @import url("../../shared/styles/xingkai.css");
-#mission_icons
-{
-  height: 0;
-  width: 1280px;
-  margin: 0 auto;
-  position: relative;
-  color: #a1ffaa;
+
+#check_mission_info_mask {
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
-#mission_confirm_masks
-{
-  height: 0;
-  width: 1280px;
-  margin: 0 auto;
-  position: relative;
-  color: rgb(130, 43, 216);
-}
-
-#task_book
-{
-  position: absolute;
-  top: -620px;
-  left: 421px;
-  width: 438px;
-  height: 540px;
-  background-image: url("../assets/images/ui/task-book.png");
-}
-
-#mission_confirm_button
-{
-  position: absolute;
-  top: 400px;
-  left: 135px;
-  height: 72px;
-  width: 168px;
-}
-
-#mission_confirm_text
-{
+#task_book {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  box-sizing: border-box;
+  container-type: inline-size;
+  width: min(438px, 94vw, 77vh);
+  max-width: none;
+  max-height: none;
+  aspect-ratio: 438 / 540;
+  padding: 0;
+  border: 0;
+  background: url("../assets/images/ui/task-book.png") center / 100% 100% no-repeat;
+  color: rgb(117, 50, 30);
   font-family: "KaiTi", "楷体", "STKaiti", serif;
-  font-size: 32px;
-  color:rgb(117, 50, 30);
 }
 
-#mission_hover_mask
-{
-  height: 0;
-  width: 1280px;
-  margin: 0 auto;
-  position: relative;
-  color: rgb(130, 43, 216);
+html:has(#task_book[open]) {
+  overflow: hidden;
 }
 
-#mission_confirm_hover_mask
-{
-  left: 556px;
-  top: -220px;
+#task_book::backdrop {
+  background: rgb(0 0 0 / 55%);
+}
+
+.mission-details {
   position: absolute;
+  inset: 8% 10% 27% 11%;
+  overflow: auto;
 }
 
-#mission_confirm_mask
-{
-  left: 556px;
-  top: -220px;
-  height: 72px;
-  width: 168px;
+#mission_title {
+  margin: 0;
+  font: 400 7.3cqw / 1.2 var(--xingkai-font);
+}
+
+#mission_conditions h3 {
+  margin: 3cqw 0;
+  font-size: 5.25cqw;
+  line-height: 1.15;
+  font-weight: 900;
+  -webkit-text-stroke: .4px currentColor;
+}
+
+#mission_conditions p {
+  margin: 0;
+  font-size: 3.65cqw;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+#mission_confirm_button {
   position: absolute;
+  bottom: 12.6%;
+  left: 30.8%;
+  width: 38.4%;
+  height: 13.33%;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font: 400 7.3cqw / 1 "KaiTi", "楷体", "STKaiti", serif;
+  background: url("../assets/images/ui/task-confirm.png") center / 100% 100% no-repeat;
   cursor: pointer;
 }
 
-.level_title
-{
-  margin: auto;
-  font-size: 32px;
-  font-family: var(--xingkai-font);
-  color:rgb(117, 50, 30);
-  left: 11%;
-  position: relative;
+#mission_confirm_button:hover {
+  background-image: url("../assets/images/mask/mission-confirm-hover-mask.png"), url("../assets/images/ui/task-confirm.png");
 }
 
-.title_container
-{
-  margin: 10% auto 0% auto;
-}
-
-.mission_title
-{
-  margin: auto;
-  font-size: 23px;
-  font-family: "KaiTi", "楷体", "STKaiti", serif;
-  font-weight: 900;
-  -webkit-text-stroke: .4px currentColor;
-  color:rgb(117, 50, 30);
-  left: 12%;
-  position: relative;
-}
-
-.subtitle_container
-{
-  margin: 3% auto;
-}
-
-.mission_info
-{
-  margin: auto;
-  font-size: 16px;
-  font-weight: 700;
-  font-family: "KaiTi", "楷体", "STKaiti", serif;
-  color:rgb(117, 50, 30);
-  left: 6%;
-  position: relative;
-}
-
-
-.mission_info_container
-{
-  position: relative;
-  left: 6%;
-  width:360px;
+#mission_confirm_button:focus-visible {
+  outline: 2px solid #654126;
+  outline-offset: 2px;
 }
