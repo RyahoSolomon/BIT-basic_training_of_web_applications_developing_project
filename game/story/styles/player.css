@@ -197,8 +197,8 @@ body[data-story-transitioning] .story-history-open {
 }
 
 .story-history {
-    --frame-y: clamp(36px, 8vmin, 76px);
-    --frame-x: clamp(48px, 10vmin, 96px);
+    --frame-y: clamp(54px, 12vmin, 114px);
+    --frame-x: clamp(72px, 15vmin, 144px);
     box-sizing: border-box;
     width: min(94vw, 52rem);
     height: min(84dvh, 38rem);
@@ -216,6 +216,15 @@ body[data-story-transitioning] .story-history-open {
 }
 
 .story-history[open] { display: flex; flex-direction: column; }
+.story-history::before {
+    content: "";
+    position: absolute;
+    inset: var(--frame-y) var(--frame-x);
+    z-index: -1;
+    background: url("../../assets/images/loong_watermark.png") center / contain no-repeat;
+    opacity: 0.15;
+    pointer-events: none;
+}
 .story-history::backdrop { background: rgb(0 0 0 / 55%); }
 .story-history header { display: grid; align-items: center; }
 .story-history h2 { grid-area: 1 / 1; justify-self: center; margin: 0; font-size: 1.35em; }
