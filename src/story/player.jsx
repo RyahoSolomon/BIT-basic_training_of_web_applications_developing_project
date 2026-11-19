@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import '../../game/story/scripts/background-transition.js';
 import GraphPlayer from './graph-player.jsx';
+import DialogueHistory, { useDialogueHistory } from './dialogue-history.jsx';
 import SkipButton from './skip-button.jsx';
 import { validateGraph } from './graph-model.mjs';
 import { useAdvanceInput } from './use-advance-input.js';
@@ -99,10 +100,15 @@ function StoryPlayer({ scene, complete }) {
 
   const line = scene.lines[index] || {};
   const choice = finished ? scene.inlineChoice : null;
+  const visible = ready && boxReady;
+  const history = useDialogueHistory(visible ? (choice ? scene.lines.length : index) : null,
+    text(choice ? choice.speaker : line.speaker), text(choice ? choice.label : line.text),
+    choice ? '' : text(line.caption));
   const font = { '--story-font-family': (choice || line).fontFamily || scene.fontFamily };
   const skipTarget = scene.skip ?? scene.next;
   return <>
     {skipTarget && <SkipButton label={scene.skipLabel} onClick={event => activate(event, skipTarget)} />}
+    <DialogueHistory entries={history} canOpen={visible} />
     {ready && line.caption && !finished &&
       <div className="centered-text1" style={{ ...font, opacity: 1 }}>{text(line.caption)}</div>}
     <div className="image-container" onClick={advance}

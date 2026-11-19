@@ -120,11 +120,11 @@
 
   相关位置：[共享键盘输入](../game/story/scripts/advance-input.js)、[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)、[开场背景介绍](../game/story/chapter-0/plot.js)。验证：`npm run test:story-keyboard`。
 
-- [ ] **19 · 增加只读的对白回看记录**
+- [x] **19 · 增加只读的对白回看记录**
 
-  点快漏读后允许回看本段已出现的台词，保留说话人。先做只读记录，不回滚选择、成就或其他奖励。
+  剧情页左上角的「历史记录」可回看本段已出现的台词、说话人和已选答复。窗口打开时定位到最新一句，向上滚动可阅读早先的对白，关闭后从原处继续。
 
-  相关位置：[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)。
+  相关位置：[对白记录](../src/story/dialogue-history.jsx)、[普通播放器](../src/story/player.jsx)、[节点播放器](../src/story/graph-player.jsx)。验证：`npm run test:story-history`。
 
 - [ ] **20 · 明确跳过剧情的范围与去向**
 

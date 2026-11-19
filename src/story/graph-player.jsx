@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal, flushSync } from 'react-dom';
 import SkipButton from './skip-button.jsx';
+import DialogueHistory, { useDialogueHistory } from './dialogue-history.jsx';
 import { useAdvanceInput } from './use-advance-input.js';
 
 function music(source) {
@@ -144,6 +145,7 @@ export default function GraphPlayer({ scene }) {
           .filter((effect, i, all) => all.findIndex(other => other.id === effect.id) === i);
       }
       visited.current.add(key);
+      history.current.push({ speaker: player, text: text(option.label) });
       setSeen(new Set(visited.current));
       setError('');
       if (newAwards.length) {
@@ -186,11 +188,16 @@ export default function GraphPlayer({ scene }) {
   const boxImage = node?.boxImage || scene.boxImage || '../../assets/images/ui/text-box.png';
   const boxReady = loadedBox === boxImage;
   const line = node?.prompt || node?.lines?.[cursor.index] || lastLine.current;
+  const visible = ready && boxReady && node?.type !== 'intro';
+  const isChoice = node?.type === 'choice';
+  const history = useDialogueHistory(visible && (!isChoice || node.prompt) ? cursor : null,
+    text(line.speaker), text(line.text), isChoice ? '' : text(line.caption), isChoice);
   const font = { '--story-font-family': line.fontFamily || node?.fontFamily || scene.fontFamily };
   const skipTarget = (node ?? scene.nodes[scene.start]).skip ?? scene.skip;
   const award = awards[0];
   return <>
     {skipTarget && <SkipButton label={skipTarget.label} onClick={event => skip(event, skipTarget)} />}
+    <DialogueHistory entries={history} canOpen={visible && !award} />
     {ready && node?.type === 'intro' &&
       <div className="centered-text" data-story-intro style={{ '--story-font-family': node.fontFamily || scene.fontFamily }}>
         {text(node.text)}
