@@ -50,9 +50,9 @@ window.StoryBackgroundTransition = class StoryBackgroundTransition {
         return layer;
     }
 
-    async fade(layer, from, to, duration) {
+    async fade(layer, from, to, duration, endDelay = 0) {
         const animation = layer.animate([{ opacity: from }, { opacity: to }], {
-            duration, easing: 'ease-in-out', fill: 'forwards',
+            duration, endDelay, easing: 'ease-in-out', fill: 'forwards',
         });
         this.animations.add(animation);
         try {
@@ -78,7 +78,7 @@ window.StoryBackgroundTransition = class StoryBackgroundTransition {
             cancelled,
         ]);
         const image = source === null ? null : source || this.currentImage();
-        const type = ['black', 'white', 'crossfade'].includes(transition) ? transition : 'black';
+        const type = ['black', 'white', 'crossfade', 'blackout'].includes(transition) ? transition : 'black';
         const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 600;
         try {
             // Never remove the old background or start an effect before decode.
@@ -112,7 +112,9 @@ window.StoryBackgroundTransition = class StoryBackgroundTransition {
                 if (!current()) return false;
             } else {
                 layer.style.backgroundColor = type === 'white' ? '#fff' : '#000';
-                await this.fade(layer, 0, 1, duration / 2);
+                // Keep the screen black between the two fades for a two-second scene break.
+                const hold = type === 'blackout' ? 2000 - duration : 0;
+                await this.fade(layer, 0, 1, duration / 2, hold);
                 if (!current()) return false;
                 document.body.style.backgroundImage = background;
                 onCommit();

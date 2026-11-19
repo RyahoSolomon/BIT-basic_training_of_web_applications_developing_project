@@ -97,6 +97,10 @@ body > .centered-text2 {
     background-repeat: no-repeat;
 }
 
+.story-transition-layer[data-transition="blackout"] {
+    z-index: 3; /* Cover the narration and location caption together. */
+}
+
 [data-story-skip] {
     position: relative;
     display: block;

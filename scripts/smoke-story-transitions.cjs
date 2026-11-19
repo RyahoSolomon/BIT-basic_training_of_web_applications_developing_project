@@ -38,6 +38,7 @@ function installFixture(config) {
         const style = layer && getComputedStyle(layer);
         const container = document.querySelector('.image-container');
         state.frames.push({
+          time: performance.now(),
           background: getComputedStyle(document.body).backgroundImage,
           bodyColor: getComputedStyle(document.body).backgroundColor,
           text: document.querySelector('#story-player .text')?.textContent,
@@ -222,13 +223,23 @@ async function smoke({ evaluate, pointerClick: click, open, cdp, until }) {
     await ready(slide.text);
   }
   await start();
+  await until('opening blackout', () => evaluate(`(() => {
+    const layer = document.querySelector('.story-transition-layer[data-transition="blackout"]');
+    return layer && Number(getComputedStyle(layer).opacity) === 1
+      && Number(getComputedStyle(layer).zIndex) > Number(getComputedStyle(document.querySelector('#story-player')).zIndex);
+  })()`));
+  await extraClicks();
   await until('palace introduction shown', () => evaluate(`
     !!document.querySelector('[data-story-intro]')
     && getComputedStyle(document.body).backgroundImage.includes('/005-huguo-palace.png')
-    && transitionSmoke.frames.some(frame => frame.background.includes('/005-huguo-palace.png'))
+    && document.body.dataset.storyTransitioning !== 'true'
   `));
-  assert.ok((await frames()).every(frame => !frame.layer), 'An extra transition played when entering the palace');
-  console.log('PASS  palace introduction follows the last history slide without an added effect');
+  const blackout = (await frames()).filter(frame => frame.layer?.type === 'blackout');
+  const dark = blackout.filter(frame => frame.layer.opacity === 1 && frame.layer.color === 'rgb(0, 0, 0)');
+  assert.ok(dark.length && dark.at(-1).time - dark[0].time >= 1200, 'The opening must hold at full black');
+  assert.ok(blackout.at(-1).time - blackout[0].time >= 1800, 'The opening blackout ended too soon');
+  await ready(await evaluate('storyScene.nodes.main.lines[0].text'));
+  console.log('PASS  opening narration fades through black to the palace caption and first dialogue');
 
   // Cancellation while decode or animation is pending must settle the caller
   // without committing late, even if the image subsequently finishes decoding.

@@ -44,7 +44,7 @@ window.storyScene = {
             type: "intro",
             text: "某日上午 京城 人族皇宫 玄阳殿",
             duration: 2000,
-            transition: "none",
+            transition: "blackout",
             music: "../../assets/audio/002-huguo-palace.mp3",
             background: "../../assets/images/background/005-huguo-palace.png",
             next: "main",
