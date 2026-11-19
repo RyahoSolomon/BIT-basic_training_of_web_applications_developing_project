@@ -240,7 +240,7 @@ body[data-story-transitioning] .story-history-open {
     max-width: none;
     max-height: none;
     margin: auto;
-    padding: var(--frame-y) var(--frame-x);
+    padding: calc(var(--frame-y) * 0.52) var(--frame-x) var(--frame-y);
     background: transparent;
     border: 0 solid transparent;
     border-image: url("../../assets/images/basic_window_loong.png") 37 48 fill /
@@ -268,7 +268,6 @@ body[data-story-transitioning] .story-history-open {
     margin: 0;
     font-size: 1.8em;
     line-height: 1.2;
-    transform: translateY(calc(var(--frame-y) * -0.48));
 }
 .story-history-close {
     grid-area: 1 / 1;
@@ -276,7 +275,7 @@ body[data-story-transitioning] .story-history-open {
     width: 36px;
     height: 36px;
     padding: 0;
-    transform: translate(calc(var(--frame-x) * 0.42), calc(var(--frame-y) * -0.34));
+    transform: translate(calc(var(--frame-x) * 0.42), calc(var(--frame-y) * 0.14));
     border-image: url("../../assets/images/close.png") 7 fill / 43.75% stretch;
 }
 
