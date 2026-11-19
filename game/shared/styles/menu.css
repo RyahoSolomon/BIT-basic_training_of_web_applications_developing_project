@@ -62,7 +62,62 @@ body {
     image-rendering: pixelated;
 }
 
-.index-button a {
+button.index-button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+.continue-entry {
+    position: relative;
+    display: grid;
+}
+
+#continue-hint {
+    position: absolute;
+    z-index: 1;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    width: max-content;
+    max-width: min(17rem, 90vw);
+    padding: .55em .85em;
+    border: 1px solid #b3915a;
+    background: #352820;
+    color: #fff1d3;
+    font: 18px/1.45 "KaiTi", "楷体", serif;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#continue-saved-at:not(:empty) {
+    display: block;
+    color: #e0cba7;
+}
+
+.continue-entry:has(:focus-visible) #continue-hint { visibility: visible; }
+@media (hover: hover) {
+    .continue-entry:hover #continue-hint { visibility: visible; }
+}
+@media (max-width: 840px) {
+    #continue-hint {
+        left: 50%;
+        top: auto;
+        bottom: calc(100% + 6px);
+        transform: translateX(-50%);
+    }
+}
+
+.index-button:disabled {
+    filter: grayscale(1);
+    opacity: .7;
+    cursor: default;
+}
+
+.index-button a,
+button.index-button > span {
     position: relative;
     display: flex;
     justify-content: center;

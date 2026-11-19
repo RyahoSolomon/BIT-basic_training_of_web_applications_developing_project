@@ -7,7 +7,8 @@
 }
 
 :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):focus-visible,
-.index-button a:focus-visible {
+.index-button a:focus-visible,
+button.index-button:focus-visible {
     outline: 2px solid #f0cc84;
     outline-offset: 3px;
     box-shadow: 0 0 0 3px #654126;
@@ -21,7 +22,7 @@
 /* Touch input gets press feedback without a persistent emulated hover. */
 @media (hover: hover) and (pointer: fine) {
     :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:not([data-settings-close], [data-name-close], [data-name-confirm], [data-name-edit]):hover,
-    .index-button:hover {
+    .index-button:not(:disabled):hover {
         --button-hover-filter: brightness(1.12)
             drop-shadow(1px 0 0 #e4bd79) drop-shadow(-1px 0 0 #e4bd79)
             drop-shadow(0 1px 0 #e4bd79) drop-shadow(0 -1px 0 #e4bd79);
@@ -41,7 +42,7 @@
 }
 
 :is([data-settings-open], [data-story-skip], #game-settings button, #player-name-dialog button):enabled:is(:active, [data-pointer-pressed]),
-.index-button:is(:active, [data-pointer-pressed]) {
+.index-button:not(:disabled):is(:active, [data-pointer-pressed]) {
     --button-pressed-filter: brightness(.88);
     --button-pressed-transform: translateY(2px);
 }

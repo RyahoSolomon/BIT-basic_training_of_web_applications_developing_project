@@ -230,17 +230,15 @@ test('invalid names, damaged saved checkpoints and failed rename writes preserve
 test('browser rename broadcasts the committed name once and never notifies on failure', () => {
   const { storage } = setup();
   const notifications = [];
-  const browser = {
+  const browser = Object.assign(new EventTarget(), {
     localStorage: storage,
     GameProfile: require('../game/shared/scripts/profile.js'),
-    CustomEvent: class {
-      constructor(type, options) { this.type = type; this.detail = options.detail; }
-    },
-    dispatchEvent(event) {
-      notifications.push({type: event.type, name: event.detail.name,
-        runtimeName: storage.getItem('playerName'), savedName: JSON.parse(storage.getItem(SAVE_KEY)).playerName});
-    },
-  };
+    Event, CustomEvent,
+  });
+  browser.addEventListener('game:player-name-changed', event => {
+    notifications.push({type: event.type, name: event.detail.name,
+      runtimeName: storage.getItem('playerName'), savedName: JSON.parse(storage.getItem(SAVE_KEY)).playerName});
+  });
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, '../game/shared/scripts/progress.js'), 'utf8'), {window: browser, crypto});
   browser.GameProgress.importSave(encoded(advanced));
   assert.equal(browser.GameProgress.renamePlayer(' 新名字 '), '新名字');

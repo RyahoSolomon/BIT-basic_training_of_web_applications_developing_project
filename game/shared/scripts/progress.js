@@ -3,7 +3,9 @@
     const api = factory(typeof module === 'object' && module.exports ? require('./profile.js') : root.GameProfile);
     if (typeof module === 'object' && module.exports) module.exports = api;
     else {
-        const store = api.createStore(root.localStorage);
+        const store = api.createStore(root.localStorage, undefined, () => {
+            root.dispatchEvent(new root.Event('game:save-changed'));
+        });
         root.GameProgress = {
             ...store,
             renamePlayer(raw) {
@@ -121,7 +123,7 @@
 
     function createNewProgress() { return defaults(definition); }
 
-    function createStore(storage, now = () => new Date()) {
+    function createStore(storage, now = () => new Date(), onSaveChanged) {
         const levelKeys = Array.from({ length: 6 }, (_, i) => 'level' + (i + 1));
         let battleRunId;
         function beginBattle() {
@@ -207,6 +209,7 @@
                 }
                 throw error;
             }
+            if (onSaveChanged && entries.some(([key]) => key === SAVE_KEY)) onSaveChanged();
         }
 
         function apply(save, { replaceRun = false } = {}) {

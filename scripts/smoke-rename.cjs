@@ -133,7 +133,7 @@ async function smoke(browser) {
     await page(menu);
     await menuWithoutName();
     assert.equal(await evaluate('GameProfile.getName()'), name, 'Returning to the menu discarded the chosen name');
-    await click('a[onclick="return load()"]');
+    await click('#continue-game');
     await page(map);
     assert.equal(await evaluate('GameProfile.getName()'), name);
     await settings();

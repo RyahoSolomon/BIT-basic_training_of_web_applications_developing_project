@@ -40,8 +40,12 @@
         <div class="index-button">
             <a href="../story/chapter-0/background.html" onclick="return construct()">开始</a>
         </div>
-        <div class="index-button">
-            <a href="#" onclick="return load()">继续</a>
+        <div class="continue-entry">
+            <button type="button" id="continue-game" class="index-button" aria-describedby="continue-hint" onclick="load()" disabled><span>继续</span></button>
+            <div id="continue-hint" role="tooltip">
+                <span id="continue-summary"></span>
+                <small id="continue-saved-at"></small>
+            </div>
         </div>
         <div class="index-button">
             <a href="achievements.html">成就</a>

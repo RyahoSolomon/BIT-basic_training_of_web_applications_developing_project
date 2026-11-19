@@ -240,7 +240,7 @@ async function smoke({ evaluate, pointerClick, page, open, until, withTab }) {
   await click('[data-settings-open]');
   await click('[data-menu-leave]');
   await page('game/pages/menu.html');
-  await click('a[onclick="return load()"]');
+  await click('#continue-game');
   await page('game/map/index.html');
   const resumed = await evaluate('GameProgress.readAuto()');
   assert.equal(resumed.progress.levels[0], 1);
@@ -317,7 +317,7 @@ async function smoke({ evaluate, pointerClick, page, open, until, withTab }) {
       await click('#battle-save-error button');
       await page('game/pages/menu.html');
       assert.deepEqual(await other.evaluate('({...localStorage})'), raw, replacement + ': stale pagehide wrote to storage');
-      await click('a[onclick="return load()"]');
+      await click('#continue-game');
       await page('game/map/index.html');
       const resumed = await evaluate('GameProgress.capture()');
       assert.deepEqual({...resumed, savedAt: expected.savedAt}, expected, replacement + ': Continue must restore the replacement');

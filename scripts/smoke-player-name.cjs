@@ -162,7 +162,7 @@ async function smoke(browser) {
     await click('[data-menu-leave]');
     await page(menu);
     await evaluate('localStorage.playerName = "temporary"');
-    await click('a[onclick="return load()"]');
+    await click('#continue-game');
     await page(map);
     assert.equal(await evaluate('GameProfile.getName()'), playerName, 'Continue did not restore the saved display name');
 

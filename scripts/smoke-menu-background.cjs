@@ -23,6 +23,7 @@ function saveFor(levels) {
 
 async function smoke({ evaluate, open, cdp, until }) {
   const storage = () => evaluate('Object.fromEntries(Object.entries(localStorage))');
+  const summary = () => evaluate("document.getElementById('continue-summary').textContent");
 
   async function background(filename) {
     const url = await evaluate('new URL(' + JSON.stringify('../assets/images/background/' + filename) + ', location.href).href');
@@ -58,6 +59,8 @@ async function smoke({ evaluate, open, cdp, until }) {
   assert.equal(await evaluate('localStorage.getItem("game.save")'), null);
   assert.equal(await evaluate('localStorage.getItem("current")'), null);
   await reshow(backgrounds[0]);
+  assert.match(await summary(), /暂无存档/);
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('continue-hint')).visibility"), 'hidden');
   console.log('PASS  a fresh menu uses first-chapter artwork without creating a game');
 
   const stages = [
@@ -73,11 +76,14 @@ async function smoke({ evaluate, open, cdp, until }) {
     await open(menu);
     await background(backgrounds[index]);
     await reshow(backgrounds[index]);
+    assert.equal(await summary(), fixture.playerName + ' · 第' + '一二三四五六'[index] + '关');
   }
   await importSave([1, 1, 1, 1, 1, 0]);
   await reshow(backgrounds[4]);
+  assert.equal(await summary(), fixture.playerName + ' · 主线已通关');
   await importSave([1, 1, 1, 1, 1, 1]);
   await reshow(backgrounds[5]);
+  assert.equal(await summary(), fixture.playerName + ' · 全部通关');
   await importSave([1, 0, 1, 1, 1, 114]);
   await reshow(backgrounds[1]);
   console.log('PASS  all six upcoming chapters, replayed battles, locked hidden chapter and completed endings');

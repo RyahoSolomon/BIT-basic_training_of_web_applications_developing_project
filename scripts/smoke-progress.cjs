@@ -5,7 +5,7 @@ const { withBrowser } = require('./smoke-browser.cjs');
 const menuPage = 'game/pages/menu.html';
 const mapPage = 'game/map/index.html';
 const newGameLink = 'a[onclick="return construct()"]';
-const continueLink = 'a[onclick="return load()"]';
+const continueButton = '#continue-game';
 
 async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   const readStorage = () => evaluate('Object.fromEntries(Object.entries(localStorage))');
@@ -38,9 +38,10 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   assert.equal(await evaluate('GameProgress.hasSave()'), false);
   assert.equal(await evaluate('localStorage.getItem("username")'), 'test');
   const initialStorage = await readStorage();
-  await click(continueLink);
+  assert.equal(await evaluate("document.querySelector('#continue-game').disabled"), true);
+  await click(continueButton);
   await page(menuPage);
-  assert.match(await evaluate('document.getElementById("continue-error").innerText'), /还没有存档/);
+  assert.equal(await evaluate('document.getElementById("continue-error").innerText'), '');
   assert.deepEqual(await readStorage(), initialStorage, 'Continue before starting must not create a run');
   assert.equal(await evaluate('(() => {try {GameProgress.exportSave();} catch (error) {return error.code;}})()'), 'NO_PROGRESS');
 
@@ -64,7 +65,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   await click('[data-settings-open]');
   await click('[data-menu-leave]');
   await page(menuPage);
-  await click(continueLink);
+  await click(continueButton);
   await page(mapPage);
   assert.deepEqual(withoutTime(await readSave()), withoutTime(initial));
   console.log('PASS  no-account start immediately creates one complete local save');
@@ -74,7 +75,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   assert.deepEqual(await readSave(), advanced);
   assert.deepEqual(await evaluate('JSON.parse(localStorage.getItem("game.settings"))'), advanced.settings);
   await open(menuPage);
-  await click(continueLink);
+  await click(continueButton);
   await assertRestored(advanced, 'Imported save');
 
   const newSettings = {music: {volume: 62, muted: false}, sound: {volume: 19, muted: true}};
@@ -86,7 +87,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
     localStorage.setItem('playerName', '临时名');
     localStorage.setItem('game.settings', ${JSON.stringify(JSON.stringify(newSettings))});
   `);
-  await click(continueLink);
+  await click(continueButton);
   await assertRestored({...advanced, settings: newSettings}, 'Continue with newer settings');
   console.log('PASS  continue restores progress, clues, achievements and flag while preserving global audio choices');
 
@@ -125,7 +126,7 @@ async function smoke({ evaluate, pointerClick: click, page, open, until }) {
   await open(menuPage);
   assert.equal(await evaluate('GameProgress.hasSave()'), false);
   assert.deepEqual(await importSave(exportedSave), exportedSave);
-  await click(continueLink);
+  await click(continueButton);
   await assertRestored(exportedSave, 'Export/import round trip');
   console.log('PASS  exported JSON restores full progress, achievements and settings in an empty browser profile');
 
