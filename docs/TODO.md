@@ -220,11 +220,13 @@
 
   相关位置：[声音设置](../game/shared/scripts/settings.js)、[音量偏好](../game/shared/scripts/preferences.js)。
 
-- [ ] **35 · 核对外部字体与重复资源引用**
+- [ ] **35 · 核对离线和慢网下的字体加载**
 
-  移除无效字体请求与重复引用，按实际需要本地化资源，让离线和慢网络情况下的启动更稳定。
+  华文行楷已改用项目内的字体文件。第五关三个剧情页已移除重复的字体预连接，第六关真结局页已移除重复的字体样式表引用。
 
-  相关位置：[战斗字体引用](../game/battle/index.html)、[结局字体引用](../game/story/chapter-5/plota.html)、[共用剧情样式](../game/story/styles/player.css)。
+  仍有 17 个页面通过 Google Fonts 加载字体。待核对离线时的字体回退和慢网下的文字显示，再决定哪些字体需要随项目分发。
+
+  相关位置：[本地行楷样式](../game/shared/styles/xingkai.css)、[战斗页](../game/battle/index.html)、[第五关剧情页](../game/story/chapter-5/plota.html)、[第六关真结局页](../game/story/chapter-6/true-ending.html)。
 
 - [ ] **36 · 统一按钮点击区域与键盘焦点**
 
